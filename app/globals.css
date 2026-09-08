@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ad slots: luôn có khoảng cách an toàn với nút chức năng, không che nội dung */
+.ad-slot {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+.ad-slot iframe,
+.ad-slot img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tool content spacing */
+.tool-action-area button,
+.tool-action-area a {
+  margin: 0.25rem;
+}
+.tool-action-area + .ad-slot,
+.ad-slot + .tool-action-area {
+  margin-top: 2.5rem;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+
+/* Print: ẩn quảng cáo khi in */
+@media print {
+  .ad-slot,
+  .site-header,
+  .site-footer-ads {
+    display: none !important;
+  }
+}
