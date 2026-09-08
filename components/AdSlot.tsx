@@ -1,25 +1,72 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useSite } from "@/lib/site-config";
 import { sanitizeAdHtml } from "@/lib/ads";
 import type { AdZoneId } from "@/lib/ads";
+
+declare global {
+  interface Window {
+    adsbygoogle: unknown[];
+    _adsenseLoaded?: boolean;
+  }
+}
+
+function loadAdSense(clientId: string) {
+  if (typeof window === "undefined") return;
+  if (window._adsenseLoaded) return;
+  const s = document.createElement("script");
+  s.async = true;
+  s.crossOrigin = "anonymous";
+  s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
+  document.head.appendChild(s);
+  window.adsbygoogle = window.adsbygoogle || [];
+  window._adsenseLoaded = true;
+}
 
 /**
  * AdSlot — khu vực quảng cáo an toàn:
  * - Luôn có nhãn "Quảng cáo" + margin lớn (≥32px) cách nút chức năng.
  * - Không sticky/fixed che nội dung, không popup, không giả nút.
  * - Responsive: mobile co giãn 100%, không tràn ngang.
- * - Admin bật/tắt từng zone, dán custom HTML (Adsense).
+ * - Admin bật/tắt từng zone, dán custom HTML (Adsense <ins> tag).
  */
 export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; className?: string }) {
-  const { isAdEnabled, getAdZone } = useSite();
+  const { isAdEnabled, getAdZone, config } = useSite();
+  const ref = useRef<HTMLDivElement>(null);
+
   if (!isAdEnabled(zone)) return null;
   const z = getAdZone(zone);
   const custom = z?.customHtml?.trim() ?? "";
 
+  useEffect(() => {
+    if (!custom || !ref.current) return;
+
+    const ins = ref.current.querySelectorAll("ins.adsbygoogle");
+    if (ins.length === 0) return;
+
+    // Extract data-ad-client from first <ins> to load AdSense script
+    const firstIns = ins[0] as HTMLElement;
+    const clientId = firstIns.getAttribute("data-ad-client");
+    if (clientId) {
+      loadAdSense(clientId);
+    }
+
+    // Push each ad unit after a small delay to ensure script is loaded
+    const timer = setTimeout(() => {
+      try {
+        ins.forEach(() => {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        });
+      } catch {}
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [custom]);
+
   return (
     <div
+      ref={ref}
       className={`ad-slot ${className}`}
       role="complementary"
       aria-label={`Quảng cáo: ${z?.name ?? zone}`}
@@ -42,8 +89,7 @@ export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; class
               {z?.name ?? zone} — {z?.sizes ?? "Responsive"}
             </span>
             <span className="max-w-xl text-xs text-slate-400">
-              Vị trí dành cho Google AdSense. Dán mã vào Trang Admin → Quảng cáo. Banner responsive, không che nội
-              dung.
+              Vị trí dành cho Google AdSense. Dán mã &lt;ins&gt; tag vào Trang Admin → Quảng cáo.
             </span>
             <span className="mt-1 hidden text-[11px] text-slate-300 sm:block">970×250 • 728×90 • 336×280 • 320×100</span>
           </div>

@@ -136,14 +136,15 @@ export default function AdminPage() {
                   <p className="text-xs text-slate-500">{z.desc} • Gợi ý: {z.sizes}</p>
                 </div>
               </div>
-              <label className="mt-3 block text-xs font-bold text-slate-500">Mã quảng cáo (HTML / AdSense) — để trống = hiện placeholder:</label>
+              <label className="mt-3 block text-xs font-bold text-slate-500">Mã quảng cáo — dán only thẻ &lt;ins&gt; (KHÔNG dán &lt;script&gt;):</label>
               <textarea
                 value={z.customHtml}
                 onChange={(e) => setZone(z.id, { customHtml: e.target.value })}
                 rows={3}
-                placeholder='<ins class="adsbygoogle" data-ad-client="ca-pub-XXXX" ...></ins>'
+                placeholder='<ins class="adsbygoogle" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>'
                 className="mt-1 w-full rounded-xl border bg-slate-50 p-3 font-mono text-xs outline-none focus:border-blue-500"
               />
+              <p className="mt-1 text-[11px] text-slate-400">Chỉ dán thẻ <code>&lt;ins class="adsbygoogle"&gt;</code>, KHÔNG dán <code>&lt;script&gt;</code>. Script AdSense đã load tự động.</p>
             </div>
           ))}
         </div>
