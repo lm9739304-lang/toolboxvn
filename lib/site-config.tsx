@@ -18,7 +18,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   disabledTools: [],
   featuredTools: ["tao-mat-khau", "dem-tu", "json-formatter", "tao-ma-qr", "tinh-bmi", "doi-tien-te", "tao-slug", "ma-hoa-base64"],
   adZones: DEFAULT_AD_ZONES,
-  siteName: "ToolBox VN",
+  siteName: "toolboxvn",
   adminPass: "admin123",
 };
 

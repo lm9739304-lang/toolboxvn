@@ -393,7 +393,7 @@ export function MyIp() {
 }
 
 export function SerpPreview() {
-  const [title, setTitle] = useState("ToolBox VN – 100+ công cụ online miễn phí");
+  const [title, setTitle] = useState("toolboxvn – 100+ công cụ online miễn phí");
   const [url, setUrl] = useState("https://toolbox.vn/");
   const [desc, setDesc] = useState("Tổng hợp 100+ công cụ online miễn phí: đếm từ, tạo QR, tính BMI, format JSON... Nhanh, chuẩn SEO, responsive.");
   return (
@@ -441,7 +441,7 @@ export function SitemapGen() {
 }
 
 export function MetaGen() {
-  const [title, setTitle] = useState("ToolBox VN");
+  const [title, setTitle] = useState("toolboxvn");
   const [desc, setDesc] = useState("100+ công cụ online miễn phí");
   const [url, setUrl] = useState("https://toolbox.vn/");
   const out = `<title>${title}</title>\n<meta name="description" content="${desc}" />\n<link rel="canonical" href="${url}" />\n<meta property="og:title" content="${title}" />\n<meta property="og:description" content="${desc}" />\n<meta property="og:url" content="${url}" />\n<meta property="og:type" content="website" />\n<meta name="twitter:card" content="summary_large_image" />`;

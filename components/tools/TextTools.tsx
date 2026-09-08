@@ -111,7 +111,7 @@ export function RemoveAccents() {
 }
 
 export function SlugGenerator() {
-  const [text, setText] = useState("ToolBox VN: 100+ công cụ online miễn phí!");
+  const [text, setText] = useState("toolboxvn: 100+ công cụ online miễn phí!");
   const [sep, setSep] = useState("-");
   const out = useMemo(() => toSlug(text).replace(/-/g, sep || "-"), [text, sep]);
   return (
@@ -217,10 +217,10 @@ export function LoremGen() {
   const [lang, setLang] = useState("vi");
   const paras = [
     "Công cụ online miễn phí giúp bạn làm việc nhanh hơn mỗi ngày. Chỉ cần dán nội dung, kết quả hiện ngay mà không cần đăng nhập.",
-    "ToolBox VN chạy hoàn toàn trên trình duyệt nên dữ liệu của bạn không bao giờ rời khỏi máy. Tốc độ nhanh, bảo mật và tối ưu cho mobile.",
+    "toolboxvn chạy hoàn toàn trên trình duyệt nên dữ liệu của bạn không bao giờ rời khỏi máy. Tốc độ nhanh, bảo mật và tối ưu cho mobile.",
     "Từ đếm từ, tạo QR, tính BMI đến format JSON — mọi thứ gói gọn trong một website nhẹ, chuẩn SEO, deploy dễ dàng trên Vercel.",
     "Hãy thử các công cụ văn bản, chuyển đổi đơn vị và tiện ích tài chính. Mỗi công cụ có URL riêng để chia sẻ và lưu bookmark.",
-    "Nếu thấy hữu ích, hãy chia sẻ ToolBox VN tới bạn bè. Mọi góp ý giúp chúng tôi cải thiện tốc độ và thêm công cụ mới.",
+    "Nếu thấy hữu ích, hãy chia sẻ toolboxvn tới bạn bè. Mọi góp ý giúp chúng tôi cải thiện tốc độ và thêm công cụ mới.",
   ];
   const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
   const out = useMemo(() => Array.from({ length: Math.min(20, Math.max(1, n)) }, (_, i) => lang === "vi" ? paras[i % paras.length] : lorem).join("\n\n"), [n, lang]);
@@ -248,7 +248,7 @@ const FANCY = [
   (s: string) => `☆彡${s}彡☆`,
 ];
 export function FancyText() {
-  const [text, setText] = useState("ToolBox VN");
+  const [text, setText] = useState("toolboxvn");
   const outs = useMemo(() => {
     try {
       const bold = text.replace(/[A-Za-z]/g, (c) => {

@@ -15,7 +15,7 @@ export default function Footer() {
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 text-white">
                 🧰
               </span>
-              ToolBox VN
+              toolboxvn
             </div>
             <p className="mt-3 text-sm text-slate-600">
               100+ công cụ online miễn phí: văn bản, dev, chuyển đổi, tài chính, sức khoẻ, SEO... Chạy 100% trên
@@ -56,7 +56,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-2 border-t border-slate-100 py-5 text-xs text-slate-500 sm:flex-row">
-          <span>© 2026 ToolBox VN — Made for speed. Deploy: Vercel / Cloudflare Pages.</span>
+          <span>© 2026 toolboxvn — Made for speed. Deploy: Vercel / Cloudflare Pages.</span>
           <span>Tốc độ • SEO • Responsive • 100% client-side</span>
         </div>
       </div>

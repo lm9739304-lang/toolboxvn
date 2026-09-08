@@ -1,4 +1,4 @@
-# ToolBox VN — 100+ công cụ online miễn phí
+# toolboxvn — 100+ công cụ online miễn phí
 
 Next.js 16 (App Router) + Tailwind, **static export** (`out/`) → deploy 1-click lên **Vercel** hoặc **Cloudflare Pages**.
 

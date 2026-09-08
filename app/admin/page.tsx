@@ -53,7 +53,7 @@ export default function AdminPage() {
       <div className="mx-auto max-w-md py-16">
         <div className="rounded-3xl border bg-white p-8 text-center">
           <p className="text-4xl">🔐</p>
-          <h1 className="mt-2 text-xl font-extrabold">Trang quản trị ToolBox VN</h1>
+          <h1 className="mt-2 text-xl font-extrabold">Trang quản trị toolboxvn</h1>
           <p className="mt-1 text-sm text-slate-500">Mặc định: <code className="rounded bg-slate-100 px-1 font-mono">admin123</code> (đổi trong tab Cài đặt)</p>
           <input
             type="password"
@@ -75,7 +75,7 @@ export default function AdminPage() {
   return (
     <div className="py-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-extrabold">⚙️ Admin — Quản lý ToolBox VN</h1>
+        <h1 className="text-2xl font-extrabold">⚙️ Admin — Quản lý toolboxvn</h1>
         <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">{enabledCount}/{TOOL_COUNT} tools đang bật</span>
         <button onClick={() => setAuthed(false)} className="ml-auto rounded-xl border px-3 py-1.5 text-sm font-bold">Đăng xuất</button>
       </div>

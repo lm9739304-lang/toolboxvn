@@ -20,14 +20,14 @@ export async function generateMetadata({
   const tool = getTool(slug);
   if (!tool) return { title: "Không tìm thấy" };
   const title = `${tool.name} miễn phí online`;
-  const description = `${tool.description} Dùng ngay trên ToolBox VN — nhanh, miễn phí, không cần đăng nhập.`;
+  const description = `${tool.description} Dùng ngay trên toolboxvn — nhanh, miễn phí, không cần đăng nhập.`;
   return {
     title,
     description,
     keywords: [tool.name, ...tool.keywords, tool.category],
     alternates: { canonical: `${SITE_URL}/cong-cu/${tool.slug}` },
     openGraph: {
-      title: `${tool.name} | ToolBox VN`,
+      title: `${tool.name} | toolboxvn`,
       description,
       url: `${SITE_URL}/cong-cu/${tool.slug}`,
       type: "article",

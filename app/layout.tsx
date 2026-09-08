@@ -10,19 +10,19 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://toolbox.vn";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ToolBox VN – 100+ công cụ online miễn phí",
-    template: "%s | ToolBox VN",
+    default: "toolboxvn – 100+ công cụ online miễn phí",
+    template: "%s | toolboxvn",
   },
   description:
     "Tổng hợp 100+ công cụ online miễn phí: đếm từ, tạo QR, format JSON, tính BMI, đổi tiền tệ, SEO... Chạy 100% trên trình duyệt, nhanh, responsive, chuẩn SEO.",
   keywords: ["công cụ online", "toolbox vn", "đếm từ", "tạo qr", "format json", "tính bmi", "đổi tiền"],
-  authors: [{ name: "ToolBox VN" }],
+  authors: [{ name: "toolboxvn" }],
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     locale: "vi_VN",
-    siteName: "ToolBox VN",
-    title: "ToolBox VN – 100+ công cụ online miễn phí",
+    siteName: "toolboxvn",
+    title: "toolboxvn – 100+ công cụ online miễn phí",
     description: "100+ tools miễn phí, tốc độ cao, mỗi tool có URL riêng.",
   },
   twitter: { card: "summary_large_image" },
@@ -39,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "ToolBox VN",
+    name: "toolboxvn",
     url: SITE_URL,
     description: "100+ công cụ online miễn phí",
     inLanguage: "vi-VN",

@@ -60,7 +60,7 @@ export const DEFAULT_AD_ZONES: AdZone[] = [
 ];
 
 /**
- * NGUYÊN TẮC QUẢNG CÁO AN TOÀN của ToolBox VN:
+ * NGUYÊN TẮC QUẢNG CÁO AN TOÀN của toolboxvn:
  * - Không popup, không interstitial che nội dung, không sticky bottom che nút.
  * - Không đặt sát nút chức năng (<24px). AdSlot luôn có margin ≥32px với tool-action-area.
  * - Có nhãn "Quảng cáo" rõ ràng, không giả dạng nút Tải/Copy/Tiếp tục.
