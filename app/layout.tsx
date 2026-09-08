@@ -53,6 +53,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="vi" className="h-full antialiased" suppressHydrationWarning>
       <head>
         <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5166273745005497"
+          crossOrigin="anonymous"
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `!function(){if(typeof MutationObserver==="undefined")return;var badAttrs=["bis_skin_checked","data-adblock","data-abp","data-block","data-adblockrule"];new MutationObserver(function(muts){for(var i=0;i<muts.length;i++){var m=muts[i];if(m.type==="attributes"&&badAttrs.indexOf(m.attributeName)!==-1){m.target.removeAttribute(m.attributeName)}}}).observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:badAttrs})}();`,
           }}
