@@ -127,12 +127,12 @@ export function ImageRotate() {
     <div className="space-y-3">
       <input type="file" accept="image/*" onChange={async (e) => { const f = e.target.files?.[0]; if (f) setImg(await loadImage(f)); }} className="w-full rounded-xl border border-dashed p-4 text-sm" />
       <div className="tool-action-area flex flex-wrap gap-2">
-        <button onClick={() => setAngle((a) => (a + 90) % 360)} className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-bold text-white">↻ 90°</button>
-        <button onClick={() => setFlip(flip === "h" ? "none" : "h")} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-bold">⇋ Lật ngang</button>
-        <button onClick={() => setFlip(flip === "v" ? "none" : "v")} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-bold">⇅ Lật dọc</button>
+        <button onClick={() => setAngle((a) => (a + 90) % 360)} className="rounded-lg bg-[var(--bg)] px-3 py-2 text-sm font-bold text-white">↻ 90°</button>
+        <button onClick={() => setFlip(flip === "h" ? "none" : "h")} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-bold">⇋ Lật ngang</button>
+        <button onClick={() => setFlip(flip === "v" ? "none" : "v")} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-bold">⇅ Lật dọc</button>
         {img && <button onClick={() => { const a = document.createElement("a"); a.download = "anh-xoay.png"; a.href = ref.current!.toDataURL(); a.click(); }} className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-bold text-white">⬇ Tải</button>}
       </div>
-      <canvas ref={ref} className="max-h-96 w-full rounded-xl border bg-white" />
+      <canvas ref={ref} className="max-h-96 w-full rounded-xl border bg-[var(--bg-elevated)]" />
     </div>
   );
 }

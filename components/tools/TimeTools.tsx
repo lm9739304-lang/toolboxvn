@@ -25,7 +25,7 @@ export function Countdown() {
       <Field label="Thời điểm đích"><input type="datetime-local" value={target} onChange={(e) => setTarget(e.target.value)} className={inputCls} /></Field>
       <div className="grid grid-cols-4 gap-3 text-center">
         {[[d, "Ngày"] as const, [h, "Giờ"] as const, [m, "Phút"] as const, [s, "Giây"] as const].map(([v, l]) => (
-          <div key={l} className="rounded-2xl bg-slate-900 p-4 text-white"><p className="font-mono text-4xl font-extrabold">{String(v).padStart(2, "0")}</p><p className="text-xs opacity-70">{l}</p></div>
+          <div key={l} className="rounded-2xl bg-[var(--bg)] p-4 text-white"><p className="font-mono text-4xl font-extrabold">{String(v).padStart(2, "0")}</p><p className="text-xs opacity-70">{l}</p></div>
         ))}
       </div>
       {diff === 0 && <p className="text-center font-bold text-emerald-600">🎉 Đã đến giờ!</p>}
@@ -48,7 +48,7 @@ export function Stopwatch() {
   const f = (v: number, p = 2) => String(v).padStart(p, "0");
   return (
     <div className="space-y-4 text-center">
-      <p className="font-mono text-6xl font-extrabold">{f(Math.floor(ms / 6e4))}:{f(Math.floor(ms / 1e3) % 60)}<span className="text-2xl text-slate-400">.{f(Math.floor(ms / 10) % 100)}</span></p>
+      <p className="font-mono text-6xl font-extrabold">{f(Math.floor(ms / 6e4))}:{f(Math.floor(ms / 1e3) % 60)}<span className="text-2xl text-[var(--fg-muted)]">.{f(Math.floor(ms / 10) % 100)}</span></p>
       <p className="font-mono text-2xl" suppressHydrationWarning>{clock}</p>
       <div className="tool-action-area flex justify-center gap-2">
         <button onClick={() => setRunning(!running)} className={`rounded-xl px-6 py-2.5 font-bold text-white ${running ? "bg-amber-500" : "bg-emerald-600"}`}>{running ? "⏸ Dừng" : "▶ Chạy"}</button>
@@ -69,7 +69,7 @@ export function Timestamp() {
       <div className="space-y-2">
         <Field label="Unix timestamp → ngày"><input value={ts} onChange={(e) => setTs(e.target.value)} className={`${inputCls} font-mono`} /></Field>
         <ResultBox><span suppressHydrationWarning>{fromTs}</span></ResultBox>
-        <button onClick={() => setTs(String(Math.floor(Date.now() / 1000)))} className="rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-bold">Dùng hiện tại</button>
+        <button onClick={() => setTs(String(Math.floor(Date.now() / 1000)))} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-1.5 text-sm font-bold">Dùng hiện tại</button>
       </div>
       <div className="space-y-2">
         <Field label="Ngày → timestamp"><input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} className={inputCls} /></Field>
@@ -152,10 +152,10 @@ export function WorldClock() {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
       {CITIES.map(([name, tz]) => (
-        <div key={tz} className="rounded-xl border bg-white p-3 text-center">
-          <p className="text-xs font-bold text-slate-500">{name}</p>
+        <div key={tz} className="rounded-xl border bg-[var(--bg-elevated)] p-3 text-center">
+          <p className="text-xs font-bold text-[var(--fg-muted)]">{name}</p>
           <p className="font-mono text-2xl font-extrabold" suppressHydrationWarning>{now ? new Date(now).toLocaleTimeString("vi-VN", { timeZone: tz, hour12: false }) : "--:--:--"}</p>
-          <p className="text-xs text-slate-400" suppressHydrationWarning>{now ? new Date(now).toLocaleDateString("vi-VN", { timeZone: tz }) : "—"}</p>
+          <p className="text-xs text-[var(--fg-muted)]" suppressHydrationWarning>{now ? new Date(now).toLocaleDateString("vi-VN", { timeZone: tz }) : "—"}</p>
         </div>
       ))}
     </div>
@@ -195,7 +195,7 @@ export function Zodiac() {
       <Field label="Ngày sinh"><input type="date" value={dob} onChange={(e) => setDob(e.target.value)} className={inputCls} /></Field>
       <p className="text-6xl">{z[2]}</p>
       <p className="text-2xl font-extrabold">{z[0]}</p>
-      <p className="text-sm text-slate-500">{z[1]} • Tham khảo vui</p>
+      <p className="text-sm text-[var(--fg-muted)]">{z[1]} • Tham khảo vui</p>
     </div>
   );
 }
@@ -211,7 +211,7 @@ export function CanChi() {
     <div className="space-y-3 text-center">
       <Field label="Năm dương lịch"><input value={year} onChange={(e) => setYear(e.target.value.replace(/\D/g, ""))} className={`${inputCls} text-center font-mono text-xl`} /></Field>
       <p className="text-4xl font-extrabold">{can} {chi}</p>
-      <p className="text-sm text-slate-500">Năm {y} • {(MENH[`${can} ${chi}`] ?? "Tra mệnh chi tiết theo ngũ hành nạp âm")} (tham khảo)</p>
+      <p className="text-sm text-[var(--fg-muted)]">Năm {y} • {(MENH[`${can} ${chi}`] ?? "Tra mệnh chi tiết theo ngũ hành nạp âm")} (tham khảo)</p>
       <ResultBox>{`Can: ${can} | Chi: ${chi}\nCon giáp: ${chi}\nNăm ${y} ${((y - 4) % 12) % 2 === 0 ? "— năm con giáp mạnh mẽ" : ""}`}</ResultBox>
     </div>
   );
@@ -227,10 +227,10 @@ export function Typing() {
   const wpm = start && input ? Math.round((typed.length / ((Date.now() - start) / 60000)) * 10) / 10 : 0;
   return (
     <div className="space-y-3">
-      <div className="rounded-xl border bg-white p-4 leading-8">
+      <div className="rounded-xl border bg-[var(--bg-elevated)] p-4 leading-8">
         {words.map((w, i) => {
           const t = typed[i];
-          const cls = t === undefined ? "text-slate-700" : t === w ? "text-emerald-600 font-bold" : "bg-red-100 text-red-700 rounded";
+          const cls = t === undefined ? "text-[var(--fg-secondary)]" : t === w ? "text-emerald-600 font-bold" : "bg-red-100 text-red-700 rounded";
           return <span key={i} className={`${cls} mr-2`}>{w}</span>;
         })}
       </div>
@@ -255,7 +255,7 @@ export function Notepad() {
   }, [text]);
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between text-sm text-slate-500">
+      <div className="flex items-center justify-between text-sm text-[var(--fg-muted)]">
         <span>{text.length} ký tự • {(text.trim().match(/\S+/g) || []).length} từ {saved && "• ✓ Đã lưu"}</span>
         <div className="tool-action-area flex gap-2">
           <CopyBtn text={text} />

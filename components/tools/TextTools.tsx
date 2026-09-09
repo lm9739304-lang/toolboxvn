@@ -31,7 +31,7 @@ export function TextStats({ mode }: { mode: string }) {
       </div>
       <div className="tool-action-area flex flex-wrap gap-2">
         <CopyBtn text={`Từ: ${s.words}, Ký tự: ${s.chars}, Câu: ${s.sentences}, Đoạn: ${s.paragraphs}`} />
-        <button onClick={() => setText("")} className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold">Xoá</button>
+        <button onClick={() => setText("")} className="rounded-xl border border-[var(--border)] px-4 py-2 text-sm font-semibold">Xoá</button>
       </div>
       {mode === "word-freq" && <WordFreq text={text} />}
     </div>
@@ -44,12 +44,12 @@ export function WordFreq({ text }: { text: string }) {
     (text.toLowerCase().match(/[\p{L}\p{N}]+/gu) || []).forEach((w) => m.set(w, (m.get(w) ?? 0) + 1));
     return [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 50);
   }, [text]);
-  if (!rows.length) return <p className="text-sm text-slate-500">Nhập văn bản để xem tần suất từ.</p>;
+  if (!rows.length) return <p className="text-sm text-[var(--fg-muted)]">Nhập văn bản để xem tần suất từ.</p>;
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200">
+    <div className="overflow-hidden rounded-xl border border-[var(--border-subtle)]">
       <table className="w-full text-sm">
-        <thead className="bg-slate-50"><tr><th className="p-2 text-left">Từ</th><th className="p-2 text-right">Số lần</th></tr></thead>
-        <tbody>{rows.map(([w, c]) => <tr key={w} className="border-t border-slate-100"><td className="p-2">{w}</td><td className="p-2 text-right font-bold">{c}</td></tr>)}</tbody>
+        <thead className="bg-[var(--bg-recessed)]"><tr><th className="p-2 text-left">Từ</th><th className="p-2 text-right">Số lần</th></tr></thead>
+        <tbody>{rows.map(([w, c]) => <tr key={w} className="border-t border-[var(--border-subtle)]"><td className="p-2">{w}</td><td className="p-2 text-right font-bold">{c}</td></tr>)}</tbody>
       </table>
     </div>
   );
@@ -63,12 +63,12 @@ export function CaseConverter() {
     <div className="space-y-3">
       <textarea value={text} onChange={(e) => setText(e.target.value)} rows={6} placeholder="Nhập văn bản..." className={textareaCls} />
       <div className="tool-action-area flex flex-wrap gap-2">
-        <button onClick={() => conv((s) => s.toUpperCase())} className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white">UPPERCASE</button>
-        <button onClick={() => conv((s) => s.toLowerCase())} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-semibold">lowercase</button>
-        <button onClick={() => conv((s) => s.replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase()))} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-semibold">Title Case</button>
-        <button onClick={() => conv((s) => s.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase()))} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-semibold">Sentence case</button>
-        <button onClick={() => conv((s) => [...s].map((c, i) => (i % 2 ? c.toUpperCase() : c.toLowerCase())).join(""))} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-semibold">aLtErNaTiNg</button>
-        <button onClick={() => conv((s) => [...s].map((c) => (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase())).join(""))} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-semibold">iNVERSE</button>
+        <button onClick={() => conv((s) => s.toUpperCase())} className="rounded-lg bg-[var(--bg)] px-3 py-2 text-sm font-semibold text-white">UPPERCASE</button>
+        <button onClick={() => conv((s) => s.toLowerCase())} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-semibold">lowercase</button>
+        <button onClick={() => conv((s) => s.replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase()))} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-semibold">Title Case</button>
+        <button onClick={() => conv((s) => s.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase()))} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-semibold">Sentence case</button>
+        <button onClick={() => conv((s) => [...s].map((c, i) => (i % 2 ? c.toUpperCase() : c.toLowerCase())).join(""))} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-semibold">aLtErNaTiNg</button>
+        <button onClick={() => conv((s) => [...s].map((c) => (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase())).join(""))} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-semibold">iNVERSE</button>
       </div>
       <ResultBox>{out || "Kết quả..."}</ResultBox>
       <div className="tool-action-area flex gap-2"><CopyBtn text={out} /><DownloadBtn text={out} filename="converted.txt" /></div>
@@ -88,7 +88,7 @@ export function ReverseText() {
     <div className="space-y-3">
       <div className="flex gap-2 text-sm">
         {[["all", "Đảo tất cả"], ["words", "Đảo từng từ"], ["lines", "Đảo dòng"]].map(([v, l]) => (
-          <button key={v} onClick={() => setMode(v)} className={`rounded-lg px-3 py-1.5 font-semibold ${mode === v ? "bg-blue-600 text-white" : "bg-slate-100"}`}>{l}</button>
+          <button key={v} onClick={() => setMode(v)} className={`rounded-lg px-3 py-1.5 font-semibold ${mode === v ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>{l}</button>
         ))}
       </div>
       <textarea value={text} onChange={(e) => setText(e.target.value)} rows={6} className={textareaCls} placeholder="Nhập..." />
@@ -132,7 +132,7 @@ export function CleanSpaces() {
       <textarea value={text} onChange={(e) => setText(e.target.value)} rows={6} className={textareaCls} placeholder="Văn bản lộn xộn..." />
       <div className="tool-action-area flex flex-wrap gap-2">
         <button onClick={() => setOut(text.replace(/[ \t]+/g, " ").replace(/^[ \t]+|[ \t]+$/gm, "").replace(/\n{3,}/g, "\n\n").trim())} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white">Chuẩn hoá</button>
-        <button onClick={() => setOut(text.trim())} className="rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold">Trim 2 đầu</button>
+        <button onClick={() => setOut(text.trim())} className="rounded-lg bg-[var(--bg-recessed)] px-4 py-2 text-sm font-semibold">Trim 2 đầu</button>
       </div>
       <ResultBox>{out}</ResultBox>
       <div className="tool-action-area flex gap-2"><CopyBtn text={out} /></div>
@@ -173,9 +173,9 @@ export function LineTools({ mode }: { mode: string }) {
       <div className="tool-action-area flex flex-wrap gap-2">
         <button onClick={run} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white">Thực hiện</button>
         {mode === "sort-lines" && (<>
-          <button onClick={() => setOut([...text.split("\n")].sort((a, b) => a.localeCompare(b, "vi")).join("\n"))} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-semibold">A→Z</button>
-          <button onClick={() => setOut([...text.split("\n")].sort((a, b) => b.localeCompare(a, "vi")).join("\n"))} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-semibold">Z→A</button>
-          <button onClick={() => setOut([...text.split("\n")].sort((a, b) => a.length - b.length).join("\n"))} className="rounded-lg bg-slate-200 px-3 py-2 text-sm font-semibold">Ngắn→Dài</button>
+          <button onClick={() => setOut([...text.split("\n")].sort((a, b) => a.localeCompare(b, "vi")).join("\n"))} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-semibold">A→Z</button>
+          <button onClick={() => setOut([...text.split("\n")].sort((a, b) => b.localeCompare(a, "vi")).join("\n"))} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-semibold">Z→A</button>
+          <button onClick={() => setOut([...text.split("\n")].sort((a, b) => a.length - b.length).join("\n"))} className="rounded-lg bg-[var(--bg-recessed)] px-3 py-2 text-sm font-semibold">Ngắn→Dài</button>
         </>)}
       </div>
       <ResultBox>{out}</ResultBox>
@@ -207,7 +207,7 @@ export function TextDiff() {
         <Stat label="Chỉ có ở A" value={diff.onlyA} />
         <Stat label="Chỉ có ở B" value={diff.onlyB} />
       </div>
-      <p className="text-sm text-slate-600">Độ giống: <b>{diff.totalA + diff.totalB ? Math.round((2 * diff.same) / (diff.totalA + diff.totalB) * 100) : 0}%</b> (so theo dòng chính xác).</p>
+      <p className="text-sm text-[var(--fg-secondary)]">Độ giống: <b>{diff.totalA + diff.totalB ? Math.round((2 * diff.same) / (diff.totalA + diff.totalB) * 100) : 0}%</b> (so theo dòng chính xác).</p>
     </div>
   );
 }
@@ -262,7 +262,7 @@ export function FancyText() {
     <div className="space-y-3">
       <input value={text} onChange={(e) => setText(e.target.value)} className={inputCls} placeholder="Nhập chữ..." />
       {outs.map((o, i) => (
-        <div key={i} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-3">
+        <div key={i} className="flex items-center gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-3">
           <span className="flex-1 break-all text-sm">{o}</span>
           <CopyBtn text={o} label="Copy" />
         </div>
@@ -279,9 +279,9 @@ export function SeoTrim() {
   return (
     <div className="space-y-3">
       <Field label={`Title (${td}/60 ký tự)'} `}><input value={title} onChange={(e) => setTitle(e.target.value)} className={inputCls} placeholder="Tiêu đề SEO..." /></Field>
-      <div className="h-2 overflow-hidden rounded bg-slate-100"><div className="h-full bg-blue-500" style={{ width: `${Math.min(100, (td / 60) * 100)}%` }} /></div>
+      <div className="h-2 overflow-hidden rounded bg-[var(--bg-recessed)]"><div className="h-full bg-blue-500" style={{ width: `${Math.min(100, (td / 60) * 100)}%` }} /></div>
       <Field label={`Description (${dd}/160 ký tự)`}><textarea value={desc} onChange={(e) => setDesc(e.target.value)} rows={3} className={textareaCls} /></Field>
-      <div className="h-2 overflow-hidden rounded bg-slate-100"><div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (dd / 160) * 100)}%` }} /></div>
+      <div className="h-2 overflow-hidden rounded bg-[var(--bg-recessed)]"><div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (dd / 160) * 100)}%` }} /></div>
       <div className="tool-action-area flex gap-2"><CopyBtn text={title} label="Copy title" /><CopyBtn text={desc} label="Copy desc" /></div>
     </div>
   );
@@ -300,10 +300,10 @@ export function KeywordDensity() {
     <div className="space-y-3">
       <textarea value={text} onChange={(e) => setText(e.target.value)} rows={7} className={textareaCls} placeholder="Dán bài viết..." />
       <div className="overflow-hidden rounded-xl border">
-        <table className="w-full text-sm"><thead className="bg-slate-50"><tr><th className="p-2 text-left">Từ khoá</th><th className="p-2">Số lần</th><th className="p-2">Mật độ</th></tr></thead>
+        <table className="w-full text-sm"><thead className="bg-[var(--bg-recessed)]"><tr><th className="p-2 text-left">Từ khoá</th><th className="p-2">Số lần</th><th className="p-2">Mật độ</th></tr></thead>
           <tbody>{rows.map((r) => <tr key={r.w} className="border-t"><td className="p-2">{r.w}</td><td className="p-2 text-center">{r.c}</td><td className="p-2 text-center font-bold">{r.d}%</td></tr>)}</tbody></table>
       </div>
-      <p className="text-xs text-slate-500">Mật độ lý tưởng cho từ khoá chính: 1–2%.</p>
+      <p className="text-xs text-[var(--fg-muted)]">Mật độ lý tưởng cho từ khoá chính: 1–2%.</p>
     </div>
   );
 }

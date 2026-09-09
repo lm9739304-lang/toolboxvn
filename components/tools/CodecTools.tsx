@@ -30,7 +30,7 @@ export function Base64Tool({ decode = false }: { decode?: boolean }) {
       <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={6} className={textareaCls} placeholder={decode ? "Dán Base64..." : "Nhập văn bản..."} />
       <div className="tool-action-area flex gap-2">
         <button onClick={() => run(true)} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white">Mã hoá →</button>
-        <button onClick={() => run(false)} className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white">← Giải mã</button>
+        <button onClick={() => run(false)} className="rounded-lg bg-[var(--bg)] px-4 py-2 text-sm font-semibold text-white">← Giải mã</button>
       </div>
       {err && <p className="text-sm text-red-600">{err}</p>}
       <ResultBox>{out}</ResultBox>
@@ -50,7 +50,7 @@ export function UrlCodec() {
       <Field label="Encode"><input value={input} onChange={(e) => setInput(e.target.value)} className={inputCls} /></Field>
       <ResultBox>{enc}</ResultBox>
       <div className="tool-action-area flex gap-2"><CopyBtn text={enc} /></div>
-      <p className="text-xs text-slate-500">encodeURI (giữ :/?#): {encAll}</p>
+      <p className="text-xs text-[var(--fg-muted)]">encodeURI (giữ :/?#): {encAll}</p>
       <Field label="Decode"><input value={decIn} onChange={(e) => setDecIn(e.target.value)} className={inputCls} placeholder="Dán chuỗi %..." /></Field>
       <ResultBox>{dec}</ResultBox>
     </div>
@@ -68,8 +68,8 @@ export function HtmlEntities() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">
-        <button onClick={() => setMode("enc")} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === "enc" ? "bg-blue-600 text-white" : "bg-slate-100"}`}>Encode</button>
-        <button onClick={() => setMode("dec")} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === "dec" ? "bg-blue-600 text-white" : "bg-slate-100"}`}>Decode</button>
+        <button onClick={() => setMode("enc")} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === "enc" ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Encode</button>
+        <button onClick={() => setMode("dec")} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === "dec" ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Decode</button>
       </div>
       <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={5} className={textareaCls} />
       <ResultBox>{out}</ResultBox>
@@ -109,7 +109,7 @@ export function ShaMulti() {
       <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={4} className={textareaCls} />
       <div className="tool-action-area"><button onClick={run} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white">Băm tất cả</button></div>
       {Object.entries(outs).map(([k, v]) => (
-        <div key={k}><p className="text-xs font-bold text-slate-500">{k}</p><ResultBox>{v}</ResultBox></div>
+        <div key={k}><p className="text-xs font-bold text-[var(--fg-muted)]">{k}</p><ResultBox>{v}</ResultBox></div>
       ))}
     </div>
   );
@@ -171,7 +171,7 @@ export function Md5Tool() {
       <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={4} className={textareaCls} placeholder="Nhập chuỗi..." />
       <ResultBox>{out || "Hash MD5..."}</ResultBox>
       <div className="tool-action-area flex gap-2"><CopyBtn text={out} /></div>
-      <p className="text-xs text-slate-500">MD5 không nên dùng cho mật khẩu. Hãy dùng SHA-256 + salt.</p>
+      <p className="text-xs text-[var(--fg-muted)]">MD5 không nên dùng cho mật khẩu. Hãy dùng SHA-256 + salt.</p>
     </div>
   );
 }
@@ -218,8 +218,8 @@ export function MorseTool() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">
-        <button onClick={() => setMode("enc")} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === "enc" ? "bg-blue-600 text-white" : "bg-slate-100"}`}>Chữ → Morse</button>
-        <button onClick={() => setMode("dec")} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === "dec" ? "bg-blue-600 text-white" : "bg-slate-100"}`}>Morse → Chữ</button>
+        <button onClick={() => setMode("enc")} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === "enc" ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Chữ → Morse</button>
+        <button onClick={() => setMode("dec")} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === "dec" ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Morse → Chữ</button>
       </div>
       <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={4} className={textareaCls} />
       <ResultBox>{out}</ResultBox>
@@ -263,7 +263,7 @@ export function JsonFormatter() {
       <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={7} className={textareaCls} spellCheck={false} />
       <div className="tool-action-area flex flex-wrap gap-2">
         <button onClick={() => fmt(2)} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white">Làm đẹp</button>
-        <button onClick={() => fmt(0)} className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white">Thu gọn</button>
+        <button onClick={() => fmt(0)} className="rounded-lg bg-[var(--bg)] px-4 py-2 text-sm font-semibold text-white">Thu gọn</button>
       </div>
       {err && <p className="text-sm text-red-600">{err}</p>}
       <ResultBox>{out}</ResultBox>
@@ -317,8 +317,8 @@ export function HtmlPreview() {
   return (
     <div className="space-y-3">
       <textarea value={code} onChange={(e) => setCode(e.target.value)} rows={7} className={textareaCls} spellCheck={false} />
-      <p className="text-xs text-slate-500">Preview chạy trong iframe sandbox an toàn.</p>
-      <iframe title="preview" sandbox="allow-scripts" srcDoc={code} className="h-64 w-full rounded-xl border border-slate-300 bg-white" />
+      <p className="text-xs text-[var(--fg-muted)]">Preview chạy trong iframe sandbox an toàn.</p>
+      <iframe title="preview" sandbox="allow-scripts" srcDoc={code} className="h-64 w-full rounded-xl border border-[var(--border)] bg-[var(--bg-elevated)]" />
     </div>
   );
 }
@@ -337,7 +337,7 @@ export function MarkdownPreview() {
   return (
     <div className="grid gap-3 md:grid-cols-2">
       <textarea value={md} onChange={(e) => setMd(e.target.value)} rows={12} className={textareaCls} />
-      <div className="prose-sm rounded-xl border border-slate-200 bg-white p-4 text-sm" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="prose-sm rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4 text-sm" dangerouslySetInnerHTML={{ __html: html }} />
     </div>
   );
 }
@@ -348,7 +348,7 @@ export function Minifier() {
   return (
     <div className="space-y-3">
       <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={7} className={textareaCls} />
-      <p className="text-xs text-slate-500">Giảm {(input.length - out.length)} ký tự ({input.length ? Math.round((input.length - out.length) / input.length * 100) : 0}%).</p>
+      <p className="text-xs text-[var(--fg-muted)]">Giảm {(input.length - out.length)} ký tự ({input.length ? Math.round((input.length - out.length) / input.length * 100) : 0}%).</p>
       <ResultBox>{out}</ResultBox>
       <div className="tool-action-area flex gap-2"><CopyBtn text={out} /></div>
     </div>
@@ -401,10 +401,10 @@ export function SerpPreview() {
       <Field label="Title"><input value={title} onChange={(e) => setTitle(e.target.value)} className={inputCls} /></Field>
       <Field label="URL"><input value={url} onChange={(e) => setUrl(e.target.value)} className={inputCls} /></Field>
       <Field label="Description"><textarea value={desc} onChange={(e) => setDesc(e.target.value)} rows={3} className={textareaCls} /></Field>
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
-        <p className="text-xs text-slate-500">{url}</p>
+      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4">
+        <p className="text-xs text-[var(--fg-muted)]">{url}</p>
         <p className="text-xl text-[#1a0dab] hover:underline">{title.slice(0, 60)}</p>
-        <p className="text-sm text-slate-600">{desc.slice(0, 160)}</p>
+        <p className="text-sm text-[var(--fg-secondary)]">{desc.slice(0, 160)}</p>
       </div>
     </div>
   );
@@ -492,7 +492,7 @@ export function PingTest() {
       <Field label="URL test"><input value={url} onChange={(e) => setUrl(e.target.value)} className={inputCls} /></Field>
       <div className="tool-action-area"><button onClick={test} disabled={run} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{run ? "Đang đo..." : "Đo ping"}</button></div>
       {ms !== null && <p className="text-2xl font-extrabold">{ms} ms</p>}
-      <p className="text-xs text-slate-500">Đo thời gian fetch từ trình duyệt bạn tới server (tham khảo, chịu ảnh hưởng mạng).</p>
+      <p className="text-xs text-[var(--fg-muted)]">Đo thời gian fetch từ trình duyệt bạn tới server (tham khảo, chịu ảnh hưởng mạng).</p>
     </div>
   );
 }

@@ -61,8 +61,8 @@ export function Vat() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">
-        <button onClick={() => setMode("add")} className={`rounded-lg px-3 py-1.5 text-sm font-bold ${mode === "add" ? "bg-blue-600 text-white" : "bg-slate-100"}`}>Giá chưa VAT → có VAT</button>
-        <button onClick={() => setMode("sub")} className={`rounded-lg px-3 py-1.5 text-sm font-bold ${mode === "sub" ? "bg-blue-600 text-white" : "bg-slate-100"}`}>Đã gồm VAT → tách</button>
+        <button onClick={() => setMode("add")} className={`rounded-lg px-3 py-1.5 text-sm font-bold ${mode === "add" ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Giá chưa VAT → có VAT</button>
+        <button onClick={() => setMode("sub")} className={`rounded-lg px-3 py-1.5 text-sm font-bold ${mode === "sub" ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Đã gồm VAT → tách</button>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="Số tiền"><input value={v} onChange={(e) => setV(e.target.value.replace(/\D/g, ""))} className={inputCls} /></Field>
@@ -115,7 +115,7 @@ export function Salary() {
         <Stat label="Thuế TNCN" value={fmtVND(tax)} />
         <Stat label="NET nhận" value={fmtVND(net)} />
       </div>
-      <p className="text-xs text-slate-500">Ước tính tham khảo (giảm trừ bản thân 11tr, chưa tính người phụ thuộc).</p>
+      <p className="text-xs text-[var(--fg-muted)]">Ước tính tham khảo (giảm trừ bản thân 11tr, chưa tính người phụ thuộc).</p>
     </div>
   );
 }
@@ -180,7 +180,7 @@ export function Calculator() {
     <div className="space-y-3">
       <input value={expr} onChange={(e) => setExpr(e.target.value)} onKeyDown={(e) => e.key === "Enter" && calc()} className={`${inputCls} font-mono text-xl`} placeholder="2*(3+4)/5" />
       <div className="grid grid-cols-4 gap-2">
-        {keys.map((k) => <button key={k} onClick={() => setExpr(expr + k)} className="rounded-xl border bg-white py-3 font-mono text-lg font-bold hover:bg-slate-50">{k}</button>)}
+        {keys.map((k) => <button key={k} onClick={() => setExpr(expr + k)} className="rounded-xl border bg-[var(--bg-elevated)] py-3 font-mono text-lg font-bold hover:bg-[var(--bg-recessed)]">{k}</button>)}
       </div>
       <div className="tool-action-area flex gap-2">
         <button onClick={calc} className="flex-1 rounded-xl bg-blue-600 py-3 font-bold text-white">= Tính</button>
@@ -214,8 +214,8 @@ export function Bmr() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">
-        <button onClick={() => setSex("nam")} className={`rounded-lg px-4 py-2 text-sm font-bold ${sex === "nam" ? "bg-blue-600 text-white" : "bg-slate-100"}`}>Nam</button>
-        <button onClick={() => setSex("nu")} className={`rounded-lg px-4 py-2 text-sm font-bold ${sex === "nu" ? "bg-pink-600 text-white" : "bg-slate-100"}`}>Nữ</button>
+        <button onClick={() => setSex("nam")} className={`rounded-lg px-4 py-2 text-sm font-bold ${sex === "nam" ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Nam</button>
+        <button onClick={() => setSex("nu")} className={`rounded-lg px-4 py-2 text-sm font-bold ${sex === "nu" ? "bg-pink-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Nữ</button>
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
         <Field label="Cao (cm)"><input value={h} onChange={(e) => setH(e.target.value)} className={inputCls} /></Field>
@@ -223,7 +223,7 @@ export function Bmr() {
         <Field label="Tuổi"><input value={age} onChange={(e) => setAge(e.target.value)} className={inputCls} /></Field>
       </div>
       <p className="text-center text-4xl font-extrabold">{Math.round(bmr)} kcal/ngày</p>
-      <p className="text-center text-sm text-slate-500">Năng lượng khi nghỉ ngơi hoàn toàn.</p>
+      <p className="text-center text-sm text-[var(--fg-muted)]">Năng lượng khi nghỉ ngơi hoàn toàn.</p>
     </div>
   );
 }
@@ -270,12 +270,12 @@ export function IdealWeight() {
   return (
     <div className="space-y-3">
       <div className="flex gap-2">
-        <button onClick={() => setSex("nam")} className={`rounded-lg px-4 py-2 text-sm font-bold ${sex === "nam" ? "bg-blue-600 text-white" : "bg-slate-100"}`}>Nam</button>
-        <button onClick={() => setSex("nu")} className={`rounded-lg px-4 py-2 text-sm font-bold ${sex === "nu" ? "bg-pink-600 text-white" : "bg-slate-100"}`}>Nữ</button>
+        <button onClick={() => setSex("nam")} className={`rounded-lg px-4 py-2 text-sm font-bold ${sex === "nam" ? "bg-blue-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Nam</button>
+        <button onClick={() => setSex("nu")} className={`rounded-lg px-4 py-2 text-sm font-bold ${sex === "nu" ? "bg-pink-600 text-white" : "bg-[var(--bg-recessed)]"}`}>Nữ</button>
       </div>
       <Field label="Chiều cao (cm)"><input value={h} onChange={(e) => setH(e.target.value)} className={inputCls} /></Field>
       <p className="text-center text-4xl font-extrabold">{devine.toFixed(1)} kg</p>
-      <p className="text-center text-sm text-slate-500">Khoảng lý tưởng: {(devine * 0.95).toFixed(1)} – {(devine * 1.05).toFixed(1)} kg</p>
+      <p className="text-center text-sm text-[var(--fg-muted)]">Khoảng lý tưởng: {(devine * 0.95).toFixed(1)} – {(devine * 1.05).toFixed(1)} kg</p>
     </div>
   );
 }
@@ -359,7 +359,7 @@ export function Signature() {
       <Field label="Họ tên"><input value={name} onChange={(e) => setName(e.target.value)} className={inputCls} /></Field>
       <Field label="Chức danh"><input value={role} onChange={(e) => setRole(e.target.value)} className={inputCls} /></Field>
       <Field label="SĐT"><input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} /></Field>
-      <div className="rounded-xl border bg-white p-4" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="rounded-xl border bg-[var(--bg-elevated)] p-4" dangerouslySetInnerHTML={{ __html: html }} />
       <div className="tool-action-area flex gap-2"><CopyBtn text={html} label="Copy HTML" /></div>
     </div>
   );

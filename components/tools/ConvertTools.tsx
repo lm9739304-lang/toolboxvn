@@ -15,7 +15,7 @@ export function NumberBase() {
       {n !== null && (
         <div className="grid gap-2 sm:grid-cols-2">
           {[["BIN (2)", n.toString(2)], ["OCT (8)", n.toString(8)], ["DEC (10)", n.toString(10)], ["HEX (16)", n.toString(16).toUpperCase()]].map(([l, v]) => (
-            <div key={l} className="flex items-center gap-2 rounded-xl border bg-white p-2.5"><span className="text-xs font-bold text-slate-400">{l}</span><code className="flex-1 break-all font-mono text-sm font-bold">{v}</code><CopyBtn text={v} label="Copy" /></div>
+            <div key={l} className="flex items-center gap-2 rounded-xl border bg-[var(--bg-elevated)] p-2.5"><span className="text-xs font-bold text-[var(--fg-muted)]">{l}</span><code className="flex-1 break-all font-mono text-sm font-bold">{v}</code><CopyBtn text={v} label="Copy" /></div>
           ))}
         </div>
       )}
@@ -88,7 +88,7 @@ function UnitConverter({ units, baseLabel }: { units: Unit[]; baseLabel: string 
         {units.map((u) => {
           const c = base / u.toBase;
           const disp = Math.abs(c) >= 1e9 || (Math.abs(c) < 1e-6 && c !== 0) ? c.toExponential(4) : String(Math.round(c * 1e6) / 1e6);
-          return <div key={u.label} className="flex items-center gap-2 rounded-xl border bg-white p-2.5"><span className="w-24 text-xs font-bold text-slate-500">{u.label}</span><code className="flex-1 font-mono text-sm font-bold">{disp}</code><CopyBtn text={disp} label="Copy" /></div>;
+          return <div key={u.label} className="flex items-center gap-2 rounded-xl border bg-[var(--bg-elevated)] p-2.5"><span className="w-24 text-xs font-bold text-[var(--fg-muted)]">{u.label}</span><code className="flex-1 font-mono text-sm font-bold">{disp}</code><CopyBtn text={disp} label="Copy" /></div>;
         })}
       </div>
     </div>
@@ -118,7 +118,7 @@ export function UnitTemp() {
       </div>
       <div className="grid gap-2 sm:grid-cols-3">
         {[["°C", c] as const, ["°F", f] as const, ["K", k] as const].map(([l, x]) => (
-          <div key={l} className="rounded-xl border bg-white p-3 text-center"><p className="text-2xl font-extrabold">{Math.round(x * 100) / 100} {l}</p></div>
+          <div key={l} className="rounded-xl border bg-[var(--bg-elevated)] p-3 text-center"><p className="text-2xl font-extrabold">{Math.round(x * 100) / 100} {l}</p></div>
         ))}
       </div>
     </div>
@@ -139,10 +139,10 @@ export function Currency() {
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
         {Object.entries(RATES).map(([k, r]) => (
-          <div key={k} className="flex items-center gap-2 rounded-xl border bg-white p-2.5"><span className="w-14 text-xs font-bold">{k}</span><code className="flex-1 font-mono text-sm font-bold" suppressHydrationWarning>{(vnd / r).toLocaleString("vi-VN", { maximumFractionDigits: 2 })}</code></div>
+          <div key={k} className="flex items-center gap-2 rounded-xl border bg-[var(--bg-elevated)] p-2.5"><span className="w-14 text-xs font-bold">{k}</span><code className="flex-1 font-mono text-sm font-bold" suppressHydrationWarning>{(vnd / r).toLocaleString("vi-VN", { maximumFractionDigits: 2 })}</code></div>
         ))}
       </div>
-      <p className="text-xs text-slate-500">Tỉ giá tham khảo (VND), cập nhật tay — không dùng cho giao dịch thực.</p>
+      <p className="text-xs text-[var(--fg-muted)]">Tỉ giá tham khảo (VND), cập nhật tay — không dùng cho giao dịch thực.</p>
     </div>
   );
 }
