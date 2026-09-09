@@ -19,13 +19,18 @@ export default function Header() {
   const results = useMemo(() => {
     const s = cmdQ.trim().toLowerCase();
     if (!s) return TOOLS.slice(0, 8);
-    return TOOLS.filter(
-      (t) =>
-        t.name.toLowerCase().includes(s) ||
-        t.slug.includes(s.replace(/\s+/g, "-")) ||
-        t.keywords.some((k) => k.toLowerCase().includes(s))
-    ).slice(0, 12);
-  }, [cmdQ]);
+    return TOOLS.filter((tool) => {
+      const d = getToolDisplay(tool, lang);
+      return (
+        tool.name.toLowerCase().includes(s) ||
+        d.name.toLowerCase().includes(s) ||
+        tool.description.toLowerCase().includes(s) ||
+        d.description.toLowerCase().includes(s) ||
+        tool.slug.includes(s.replace(/\s+/g, "-")) ||
+        tool.keywords.some((k) => k.toLowerCase().includes(s))
+      );
+    }).slice(0, 12);
+  }, [cmdQ, lang]);
 
   const openCmd = useCallback(() => { setCmdOpen(true); setCmdQ(""); }, []);
   const closeCmd = useCallback(() => setCmdOpen(false), []);
@@ -103,7 +108,7 @@ export default function Header() {
             </div>
             <div className="max-h-80 overflow-y-auto p-1">
               {results.length === 0 && (
-                <p className="px-3 py-8 text-center text-[13px] text-[var(--fg-muted)]">No tools found.</p>
+                <p className="px-3 py-8 text-center text-[13px] text-[var(--fg-muted)]">{t("noResults")}</p>
               )}
               {results.map((tool) => {
                 const display = getToolDisplay(tool, lang);

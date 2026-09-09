@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { CATEGORIES } from "@/lib/tools";
+import { CATEGORIES, TOOLS } from "@/lib/tools";
 import AdSlot from "./AdSlot";
 import { CATEGORY_ICONS } from "./Icon";
 import { useLang } from "@/lib/language-context";
 import { translations } from "@/lib/translations";
+import { getToolDisplay } from "@/lib/tools";
 
 const CAT_KEY_MAP: Record<string, keyof typeof translations.en> = {
   "Văn bản": "catText",
@@ -22,7 +23,9 @@ const CAT_KEY_MAP: Record<string, keyof typeof translations.en> = {
 };
 
 export default function Footer() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const popularSlugs = ["dem-tu", "tao-mat-khau", "json-formatter", "tao-ma-qr", "tinh-bmi"];
+  const popularTools = popularSlugs.map((s) => TOOLS.find((tool) => tool.slug === s)).filter(Boolean) as typeof TOOLS;
   return (
     <footer className="mt-16 border-t border-[var(--border-subtle)]">
       <div className="mx-auto max-w-6xl px-4">
@@ -57,11 +60,16 @@ export default function Footer() {
           <div>
             <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{t("footerPopular")}</h3>
             <ul className="mt-2.5 space-y-1.5">
-              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/dem-tu">Word counter</Link></li>
-              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/tao-mat-khau">Password generator</Link></li>
-              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/json-formatter">JSON formatter</Link></li>
-              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/tao-ma-qr">QR generator</Link></li>
-              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/tinh-bmi">BMI calculator</Link></li>
+              {popularTools.map((tool) => {
+                const d = getToolDisplay(tool, lang);
+                return (
+                  <li key={tool.slug}>
+                    <Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href={`/cong-cu/${tool.slug}`}>
+                      {d.name}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div>

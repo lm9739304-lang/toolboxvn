@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useLang } from "@/lib/language-context";
 
 export function copyText(text: string): Promise<boolean> {
   if (!text) return Promise.resolve(false);
@@ -25,8 +26,10 @@ function fallbackCopy(text: string): boolean {
   }
 }
 
-export function CopyBtn({ text, label = "Sao chép" }: { text: string; label?: string }) {
+export function CopyBtn({ text, label }: { text: string; label?: string }) {
   const [ok, setOk] = useState(false);
+  const { t } = useLang();
+  const btnLabel = label ?? t("copyBtn");
   return (
     <button
       onClick={async () => {
@@ -34,15 +37,16 @@ export function CopyBtn({ text, label = "Sao chép" }: { text: string; label?: s
         setOk(r);
         setTimeout(() => setOk(false), 1500);
       }}
-      className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-40 dark:bg-blue-600 dark:hover:bg-blue-500"
+      className="rounded-lg bg-[var(--accent)] px-4 py-2 text-[13px] font-semibold text-white transition-default hover:bg-[var(--accent-hover)] disabled:opacity-40"
       disabled={!text}
     >
-      {ok ? "✓ Đã copy" : label}
+      {ok ? `✓ ${t("copied")}` : btnLabel}
     </button>
   );
 }
 
 export function DownloadBtn({ text, filename, mime = "text/plain" }: { text: string; filename: string; mime?: string }) {
+  const { t } = useLang();
   return (
     <button
       onClick={() => {
@@ -54,9 +58,9 @@ export function DownloadBtn({ text, filename, mime = "text/plain" }: { text: str
         setTimeout(() => URL.revokeObjectURL(a.href), 2000);
       }}
       disabled={!text}
-      className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50 disabled:opacity-40 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+      className="rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] px-4 py-2 text-[13px] font-semibold text-[var(--fg)] transition-default hover:bg-[var(--bg-recessed)] disabled:opacity-40"
     >
-      ⬇ Tải về
+      {t("download")}
     </button>
   );
 }
@@ -64,22 +68,22 @@ export function DownloadBtn({ text, filename, mime = "text/plain" }: { text: str
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300">{label}</span>
+      <span className="mb-1 block text-[13px] font-semibold text-[var(--fg-secondary)]">{label}</span>
       {children}
     </label>
   );
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-800";
+  "w-full rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2.5 text-[13px] text-[var(--fg)] outline-none transition-default focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-bg)]";
 
 export const textareaCls =
-  "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 font-mono text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-800";
+  "w-full rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2.5 font-mono text-[13px] text-[var(--fg)] outline-none transition-default focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-bg)]";
 
 export function ResultBox({ children, mono = true }: { children: React.ReactNode; mono?: boolean }) {
   return (
     <div
-      className={`min-h-[80px] whitespace-pre-wrap break-words rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 ${
+      className={`min-h-[80px] whitespace-pre-wrap break-words rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-recessed)] p-3 text-[13px] text-[var(--fg)] ${
         mono ? "font-mono" : ""
       }`}
     >
@@ -90,9 +94,9 @@ export function ResultBox({ children, mono = true }: { children: React.ReactNode
 
 export function Stat({ label, value }: { label: string; value: string | number | React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 text-center dark:border-slate-600 dark:bg-slate-800">
-      <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100" suppressHydrationWarning>{value}</div>
-      <div className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">{label}</div>
+    <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-3 text-center">
+      <div className="text-[20px] font-extrabold text-[var(--fg)]" suppressHydrationWarning>{value}</div>
+      <div className="mt-1 text-[11px] font-medium text-[var(--fg-muted)]">{label}</div>
     </div>
   );
 }

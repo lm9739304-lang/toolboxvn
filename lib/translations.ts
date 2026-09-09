@@ -62,6 +62,8 @@ export const translations = {
     saved: "Saved",
     share: "Share",
     copied: "Copied!",
+    copyBtn: "Copy",
+    download: "Download",
 
     // ToolCard
     unfavorite: "Unfavorite",
@@ -152,6 +154,8 @@ export const translations = {
     saved: "Đã lưu",
     share: "Chia sẻ",
     copied: "Đã copy!",
+    copyBtn: "Sao chép",
+    download: "Tải về",
 
     // ToolCard
     unfavorite: "Bỏ yêu thích",

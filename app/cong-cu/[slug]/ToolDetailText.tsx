@@ -43,29 +43,33 @@ export function ToolGuide({ guide }: { guide: string[] }) {
   );
 }
 
-export function ToolRelated({ related }: { related: { slug: string; name: string; icon: string; category: string }[] }) {
-  const { t } = useLang();
+export function ToolRelated({ related }: { related: Tool[] }) {
+  const { t, lang } = useLang();
   return (
     <section className="mt-8">
       <h2 className="text-[14px] font-semibold text-[var(--fg)]">{t("relatedTools")}</h2>
       <div className="mt-3 space-y-1">
-        {related.map((r) => (
-          <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="tool-row">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
-              <Icon name={r.icon} className="h-4 w-4" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <span className="block truncate text-[13px] font-medium">{r.name}</span>
-              <span className="block text-[11px] text-[var(--fg-muted)]">{r.category}</span>
-            </div>
-          </Link>
-        ))}
+        {related.map((r) => {
+          const d = getToolDisplay(r, lang);
+          return (
+            <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="tool-row">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
+                <Icon name={r.icon} className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <span className="block truncate text-[13px] font-medium">{d.name}</span>
+                <span className="block text-[11px] text-[var(--fg-muted)]">{r.category}</span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-export function ToolSidebar({ category, related }: { category: string; related: { slug: string; name: string }[] }) {
+export function ToolSidebar({ category, related }: { category: string; related: Tool[] }) {
+  const { lang } = useLang();
   return (
     <aside className="hidden lg:block">
       <div className="sticky top-16 space-y-6">
@@ -78,11 +82,14 @@ export function ToolSidebar({ category, related }: { category: string; related: 
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{category}</p>
           </div>
           <div className="mt-2 space-y-0.5">
-            {related.slice(0, 6).map((r) => (
-              <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="block truncate rounded-md px-2 py-1.5 text-[13px] text-[var(--fg-secondary)] transition-default hover:bg-[var(--bg-recessed)] hover:text-[var(--fg)]">
-                {r.name}
-              </Link>
-            ))}
+            {related.slice(0, 6).map((r) => {
+              const d = getToolDisplay(r, lang);
+              return (
+                <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="block truncate rounded-md px-2 py-1.5 text-[13px] text-[var(--fg-secondary)] transition-default hover:bg-[var(--bg-recessed)] hover:text-[var(--fg)]">
+                  {d.name}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

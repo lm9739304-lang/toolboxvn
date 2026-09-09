@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import ToolCard from "./ToolCard";
 import AdSlot from "./AdSlot";
-import { CATEGORIES, type Tool } from "@/lib/tools";
+import { CATEGORIES, type Tool, getToolDisplay } from "@/lib/tools";
 import { useSite } from "@/lib/site-config";
 import Icon, { CATEGORY_ICONS } from "./Icon";
 import { useLang } from "@/lib/language-context";
@@ -105,13 +105,16 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
     return enabledTools.filter((tool) => {
       if (cat && tool.category !== cat) return false;
       if (!s) return true;
+      const d = getToolDisplay(tool, lang);
       return (
         tool.name.toLowerCase().includes(s) ||
+        d.name.toLowerCase().includes(s) ||
         tool.description.toLowerCase().includes(s) ||
+        d.description.toLowerCase().includes(s) ||
         tool.keywords.some((k) => k.toLowerCase().includes(s))
       );
     });
-  }, [q, cat, enabledTools]);
+  }, [q, cat, enabledTools, lang]);
 
   const grouped = useMemo(() => {
     if (cat || q.trim()) return null;
@@ -208,7 +211,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
                       <Icon name={tool.icon} className="h-4 w-4" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <h3 className="truncate text-[13px] font-medium text-[var(--fg)]">{tool.name}</h3>
+                      <h3 className="truncate text-[13px] font-medium text-[var(--fg)]">{getToolDisplay(tool, lang).name}</h3>
                     </div>
                     <span className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--fg-muted)]">{count}x</span>
                   </Link>
