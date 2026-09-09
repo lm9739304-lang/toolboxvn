@@ -6,12 +6,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TOOLS } from "@/lib/tools";
 import ThemeToggle from "./ThemeToggle";
 import Icon from "./Icon";
+import { useLang } from "@/lib/language-context";
 
 export default function Header() {
   const [cmdOpen, setCmdOpen] = useState(false);
   const [cmdQ, setCmdQ] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { lang, t, setLang } = useLang();
 
   const results = useMemo(() => {
     const s = cmdQ.trim().toLowerCase();
@@ -58,14 +60,24 @@ export default function Header() {
             className="ml-auto flex h-8 items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] px-3 text-[13px] text-[var(--fg-muted)] transition-default hover:border-[var(--border)] hover:text-[var(--fg-secondary)] md:w-56"
           >
             <svg className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
-            <span className="hidden sm:inline">Search tools...</span>
+            <span className="hidden sm:inline">{t("searchPlaceholder")}</span>
             <kbd className="ml-auto hidden rounded border border-[var(--border)] bg-[var(--bg-recessed)] px-1 py-px text-[10px] font-medium text-[var(--fg-muted)] sm:inline">/</kbd>
           </button>
 
           <nav className="flex items-center gap-1 text-[13px] font-medium">
-            <Link href="/?cat=Tiện%20 ích" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">Tools</Link>
-            <Link href="/?q=" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">Popular</Link>
-            <Link href="/admin" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">Admin</Link>
+            <Link href="/?cat=Tiện%20 ích" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">{t("navTools")}</Link>
+            <Link href="/?q=" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">{t("navPopular")}</Link>
+            <Link href="/admin" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">{t("navAdmin")}</Link>
+
+            {/* Language toggle */}
+            <button
+              onClick={() => setLang(lang === "en" ? "vi" : "en")}
+              className="inline-flex h-7 items-center gap-1 rounded-md border border-[var(--border)] px-1.5 text-[11px] font-medium text-[var(--fg-muted)] transition-default hover:bg-[var(--bg-recessed)] hover:text-[var(--fg)]"
+              title={lang === "en" ? "Chuyển tiếng Việt" : "Switch to English"}
+            >
+              {lang === "en" ? "EN" : "VI"}
+            </button>
+
             <ThemeToggle />
           </nav>
         </div>
@@ -83,7 +95,7 @@ export default function Header() {
                 ref={inputRef}
                 value={cmdQ}
                 onChange={(e) => setCmdQ(e.target.value)}
-                placeholder="Search tools..."
+                placeholder={t("searchPlaceholder")}
                 className="h-11 w-full bg-transparent text-[14px] text-[var(--fg)] outline-none placeholder:text-[var(--fg-muted)]"
               />
               <kbd className="rounded border border-[var(--border)] bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] text-[var(--fg-muted)]">ESC</kbd>
@@ -92,20 +104,20 @@ export default function Header() {
               {results.length === 0 && (
                 <p className="px-3 py-8 text-center text-[13px] text-[var(--fg-muted)]">No tools found.</p>
               )}
-              {results.map((t) => (
+              {results.map((tool) => (
                 <button
-                  key={t.slug}
-                  onClick={() => { router.push(`/cong-cu/${t.slug}`); closeCmd(); }}
+                  key={tool.slug}
+                  onClick={() => { router.push(`/cong-cu/${tool.slug}`); closeCmd(); }}
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-default hover:bg-[var(--bg-recessed)]"
                 >
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
-                    <Icon name={t.icon} className="h-4 w-4" />
+                    <Icon name={tool.icon} className="h-4 w-4" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium text-[var(--fg)]">{t.name}</p>
-                    <p className="truncate text-[12px] text-[var(--fg-muted)]">{t.description}</p>
+                    <p className="truncate text-[13px] font-medium text-[var(--fg)]">{tool.name}</p>
+                    <p className="truncate text-[12px] text-[var(--fg-muted)]">{tool.description}</p>
                   </div>
-                  <span className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--fg-muted)]">{t.category}</span>
+                  <span className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--fg-muted)]">{tool.category}</span>
                 </button>
               ))}
             </div>

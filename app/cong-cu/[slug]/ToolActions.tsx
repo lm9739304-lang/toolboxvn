@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLang } from "@/lib/language-context";
 
 const FAV_KEY = "toolboxvn:favorites";
 const RECENT_KEY = "toolboxvn:recent";
@@ -33,6 +34,7 @@ export default function ToolActions({ slug }: { slug: string }) {
   const [favs, setFavs] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
   const mounted = useRef(false);
+  const { t } = useLang();
 
   useEffect(() => {
     if (mounted.current) return;
@@ -71,14 +73,14 @@ export default function ToolActions({ slug }: { slug: string }) {
         ) : (
           <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
         )}
-        {isFav ? "Saved" : "Save"}
+        {isFav ? t("saved") : t("save")}
       </button>
       <button
         onClick={share}
         className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-recessed)] px-2.5 py-1 text-[12px] font-medium text-[var(--fg-secondary)] transition-default hover:bg-[var(--bg)]"
       >
         <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.282-3.068a4.5 4.5 0 00-6.364 0l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
-        {copied ? "Copied!" : "Share"}
+        {copied ? t("copied") : t("share")}
       </button>
     </div>
   );

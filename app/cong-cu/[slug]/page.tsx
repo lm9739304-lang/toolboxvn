@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TOOLS, getTool, getRelated } from "@/lib/tools";
 import ToolClient from "./ToolClient";
 import ToolActions from "./ToolActions";
 import AdSlot from "@/components/AdSlot";
 import Icon from "@/components/Icon";
-import { CATEGORY_ICONS } from "@/components/Icon";
+import ToolDetailText, { ToolGuide, ToolRelated, ToolSidebar } from "./ToolDetailText";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://toolbox.vn";
 
@@ -65,18 +64,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 py-4 text-[12px] text-[var(--fg-muted)]" aria-label="Breadcrumb">
-        <Link href="/" className="transition-default hover:text-[var(--fg)]">Home</Link>
-        <span>/</span>
-        <Link href={`/?cat=${encodeURIComponent(tool.category)}`} className="transition-default hover:text-[var(--fg)]">{tool.category}</Link>
-        <span>/</span>
-        <span className="font-medium text-[var(--fg)]">{tool.name}</span>
-      </nav>
+      <ToolDetailText slug={tool.name} category={tool.category} />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_260px]">
         <article>
-          {/* Tool header */}
           <header>
             <div className="flex items-center gap-4">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
@@ -90,71 +81,18 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             <ToolActions slug={tool.slug} />
           </header>
 
-          {/* Tool workspace */}
           <section className="tool-action-area mt-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 sm:p-6" aria-label={`Use ${tool.name}`}>
             <ToolClient tool={tool} />
           </section>
 
           <AdSlot zone="tool-mid" />
 
-          {/* Guide */}
-          <section className="mt-6">
-            <h2 className="text-[14px] font-semibold text-[var(--fg)]">How to use</h2>
-            <ol className="mt-2 list-decimal space-y-1 pl-5 text-[13px] text-[var(--fg-secondary)]">
-              {(tool.guide.length ? tool.guide : ["Enter your data in the field above.", "Results update in real time.", "Copy or download the output."]).map((g, i) => (
-                <li key={i}>{g}</li>
-              ))}
-            </ol>
+          <ToolGuide guide={tool.guide} />
 
-            <h3 className="mt-6 text-[14px] font-semibold text-[var(--fg)]">FAQ</h3>
-            <div className="mt-2 space-y-1 text-[13px]">
-              <details className="rounded-lg bg-[var(--bg-recessed)] p-3"><summary className="cursor-pointer font-medium text-[var(--fg)]">Is it free?</summary><p className="mt-1 text-[var(--fg-secondary)]">Yes, 100% free. No limits, no account needed.</p></details>
-              <details className="rounded-lg bg-[var(--bg-recessed)] p-3"><summary className="cursor-pointer font-medium text-[var(--fg)]">Is my data safe?</summary><p className="mt-1 text-[var(--fg-secondary)]">Everything runs on your browser (client-side). Nothing is sent to any server.</p></details>
-              <details className="rounded-lg bg-[var(--bg-recessed)] p-3"><summary className="cursor-pointer font-medium text-[var(--fg)]">Does it work on mobile?</summary><p className="mt-1 text-[var(--fg-secondary)]">Yes. Responsive layout, ads resize to avoid blocking content.</p></details>
-            </div>
-          </section>
-
-          {/* Related */}
-          <section className="mt-8">
-            <h2 className="text-[14px] font-semibold text-[var(--fg)]">Related tools</h2>
-            <div className="mt-3 space-y-1">
-              {related.map((r) => (
-                <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="tool-row">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
-                    <Icon name={r.icon} className="h-4 w-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <span className="block truncate text-[13px] font-medium">{r.name}</span>
-                    <span className="block text-[11px] text-[var(--fg-muted)]">{r.category}</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
+          <ToolRelated related={related} />
         </article>
 
-        {/* Sidebar */}
-        <aside className="hidden lg:block">
-          <div className="sticky top-16 space-y-6">
-            <div>
-              <div className="flex items-center gap-2">
-                {CATEGORY_ICONS[tool.category] && (() => {
-                  const CatIcon = CATEGORY_ICONS[tool.category];
-                  return <CatIcon className="h-3.5 w-3.5 text-[var(--fg-muted)]" strokeWidth={1.5} />;
-                })()}
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{tool.category}</p>
-              </div>
-              <div className="mt-2 space-y-0.5">
-                {related.slice(0, 6).map((r) => (
-                  <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="block truncate rounded-md px-2 py-1.5 text-[13px] text-[var(--fg-secondary)] transition-default hover:bg-[var(--bg-recessed)] hover:text-[var(--fg)]">
-                    {r.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <AdSlot zone="sidebar" />
-          </div>
-        </aside>
+        <ToolSidebar category={tool.category} related={related} />
       </div>
     </div>
   );

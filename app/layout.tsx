@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AdSlot from "@/components/AdSlot";
 import { SiteProvider } from "@/lib/site-config";
+import { LanguageProvider } from "@/lib/language-context";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://toolbox.vn";
 
@@ -72,10 +73,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-[var(--bg)] text-[var(--fg)]" suppressHydrationWarning>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <SiteProvider>
-          <Header />
-          <AdSlot zone="header-top" />
-          <main className="mx-auto w-full max-w-7xl flex-1 px-4">{children}</main>
-          <Footer />
+          <LanguageProvider>
+            <Header />
+            <AdSlot zone="header-top" />
+            <main className="mx-auto w-full max-w-6xl flex-1 px-4">{children}</main>
+            <Footer />
+          </LanguageProvider>
         </SiteProvider>
       </body>
     </html>
