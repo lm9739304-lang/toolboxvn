@@ -8,17 +8,16 @@ import { CATEGORIES, TOOLS, type Tool, type ToolCategory } from "@/lib/tools";
 import { useSite } from "@/lib/site-config";
 
 const RECENT_KEY = "toolboxvn:recent";
+const USAGE_KEY = "toolboxvn:usage";
 
 function getRecent(): string[] {
   if (typeof window === "undefined") return [];
   try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"); } catch { return []; }
 }
 
-function addRecent(slug: string): string[] {
-  const recents = getRecent().filter((s) => s !== slug);
-  const next = [slug, ...recents].slice(0, 6);
-  localStorage.setItem(RECENT_KEY, JSON.stringify(next));
-  return next;
+function getUsage(): Record<string, number> {
+  if (typeof window === "undefined") return {};
+  try { return JSON.parse(localStorage.getItem(USAGE_KEY) || "{}"); } catch { return {}; }
 }
 
 const TRENDING = [
@@ -78,9 +77,13 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
   const [q, setQ] = useState(q0);
   const [cat, setCat] = useState(cat0);
   const [recentSlugs, setRecentSlugs] = useState<string[]>([]);
+  const [usage, setUsage] = useState<Record<string, number>>({});
   const { enabledTools } = useSite();
 
-  useEffect(() => { setRecentSlugs(getRecent()); }, []);
+  useEffect(() => {
+    setRecentSlugs(getRecent());
+    setUsage(getUsage());
+  }, []);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -114,6 +117,14 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
     () => TRENDING.map((s) => enabledTools.find((t) => t.slug === s)).filter(Boolean) as Tool[],
     [enabledTools]
   );
+
+  const mostUsedTools = useMemo(() => {
+    const entries = Object.entries(usage).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    return entries.map(([slug, count]) => {
+      const tool = enabledTools.find((t) => t.slug === slug);
+      return tool ? { tool, count } : null;
+    }).filter(Boolean) as { tool: Tool; count: number }[];
+  }, [usage, enabledTools]);
 
   const isSearching = q.trim() || cat;
 
@@ -176,6 +187,26 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {recentTools.map((t, i) => (
                   <ToolCard key={t.slug} tool={t} index={i} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Most used */}
+          {!isSearching && mostUsedTools.length > 0 && (
+            <section className="mb-8 animate-fade-in">
+              <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">📊 Nhiều người dùng</h2>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {mostUsedTools.map(({ tool, count }, i) => (
+                  <div key={tool.slug} className="tool-card group relative flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/50" style={{ animationDelay: `${i * 30}ms` }}>
+                    <Link href={`/cong-cu/${tool.slug}`} className="absolute inset-0 z-0" />
+                    <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-2xl transition group-hover:scale-110 group-hover:bg-blue-100 dark:bg-blue-900/20 dark:group-hover:bg-blue-900/30">{tool.icon}</span>
+                    <div className="relative z-10 min-w-0 flex-1">
+                      <h3 className="truncate text-sm font-bold text-slate-900 group-hover:text-blue-600 dark:text-slate-100 dark:group-hover:text-blue-400">{tool.name}</h3>
+                      <p className="mt-0.5 line-clamp-1 text-xs text-slate-500 dark:text-slate-400">{tool.description}</p>
+                    </div>
+                    <span className="relative z-10 shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">{count}×</span>
+                  </div>
                 ))}
               </div>
             </section>

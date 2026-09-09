@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const FAV_KEY = "toolboxvn:favorites";
 const RECENT_KEY = "toolboxvn:recent";
+const USAGE_KEY = "toolboxvn:usage";
 
 function getFavs(): string[] {
   if (typeof window === "undefined") return [];
@@ -19,6 +20,17 @@ function addRecent(slug: string) {
   } catch {}
 }
 
+function bumpUsage(slug: string) {
+  if (typeof window === "undefined") return;
+  try {
+    const usage: Record<string, number> = JSON.parse(localStorage.getItem(USAGE_KEY) || "{}");
+    usage[slug] = (usage[slug] || 0) + 1;
+    localStorage.setItem(USAGE_KEY, JSON.stringify(usage));
+  } catch {}
+}
+
+export { getFavs, USAGE_KEY };
+
 export default function ToolActions({ slug }: { slug: string }) {
   const [favs, setFavs] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
@@ -29,6 +41,7 @@ export default function ToolActions({ slug }: { slug: string }) {
     mounted.current = true;
     setFavs(getFavs());
     addRecent(slug);
+    bumpUsage(slug);
   }, [slug]);
 
   const isFav = favs.includes(slug);
