@@ -14,7 +14,7 @@ const RECENT_KEY = "toolboxvn:recent";
 const USAGE_KEY = "toolboxvn:usage";
 
 const FEATURED_MAIN = "tao-ma-qr";
-const FEATURED_SUBS = ["json-formatter", "tinh-bmi"];
+const FEATURED_SUBS = ["json-formatter", "tinh-bmi", "may-tinh"];
 
 const FALLBACK_POPULAR = [
   "tinh-bmi",
@@ -112,14 +112,23 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
     if (entries.length > 0) {
       const list = entries
         .slice(0, 8)
-        .map(([slug]) => enabledTools.find((x) => x.slug === slug))
-        .filter(Boolean) as Tool[];
+        .map(([slug, count]) => {
+          const tool = enabledTools.find((x) => x.slug === slug);
+          return tool ? { tool, count: count as number } : null;
+        })
+        .filter(Boolean) as { tool: Tool; count: number }[];
       if (list.length > 0) return list;
     }
-    return FALLBACK_POPULAR.map((s) => enabledTools.find((x) => x.slug === s)).filter(
-      Boolean
-    ) as Tool[];
+    return FALLBACK_POPULAR.map((s) => {
+      const tool = enabledTools.find((x) => x.slug === s);
+      return tool ? { tool, count: null as number | null } : null;
+    }).filter(Boolean) as { tool: Tool; count: number | null }[];
   }, [usage, enabledTools]);
+
+  const popularMax = useMemo(
+    () => Math.max(1, ...popularTools.map((p) => p.count ?? 0)),
+    [popularTools]
+  );
 
   const isFiltering = q.trim() !== "" || cat !== "";
 
@@ -139,7 +148,15 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
     <div className="tb-home pb-24 md:pb-0">
       {/* ── HERO : editorial, no card ─────────────────────────── */}
       <section aria-labelledby="tb-hero-title" className="pb-10 pt-10 sm:pt-16">
-        <p className="tb-kicker tb-rise">{t("brandKicker")}</p>
+        <div className="tb-rise">
+          <p className="text-[12px] font-black uppercase tracking-[0.28em] text-[var(--fg)]">
+            {t("heroEyebrowTop")}
+          </p>
+          <p className="mt-1.5 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--fg-muted)]">
+            <span className="inline-block h-px w-8 bg-[var(--accent)]" aria-hidden="true" />
+            {t("heroEyebrowSub")}
+          </p>
+        </div>
         <h1
           id="tb-hero-title"
           className="tb-headline tb-rise tb-rise-1 mt-5 text-[clamp(2.6rem,7vw,4.9rem)] text-[var(--fg)]"
@@ -160,17 +177,9 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
         {/* Command-center search */}
         <div className="tb-rise tb-rise-3 mt-8">
           <div className="tb-cmd" role="search">
-            <svg
-              className="h-5 w-5 shrink-0 text-[var(--fg-muted)]"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.75}
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
+            <span className="shrink-0 font-mono text-[20px] text-[var(--fg-muted)]" aria-hidden="true">
+              /
+            </span>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -202,12 +211,14 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
               </button>
             )}
           </div>
-          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] text-[var(--fg-muted)]">
-            <span>{t("metaPrivate")}</span>
+          <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-1 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--fg-muted)]">
+            <span className="text-[var(--fg)]">{t("metaTools", enabledTools.length)}</span>
             <span aria-hidden="true">·</span>
-            <span>{t("metaNoSignup")}</span>
+            <span>{t("metaNoLogin")}</span>
             <span aria-hidden="true">·</span>
-            <span>{t("metaLocal")}</span>
+            <span>{t("metaFree")}</span>
+            <span aria-hidden="true">·</span>
+            <span>{t("metaFast")}</span>
           </div>
         </div>
       </section>
@@ -292,16 +303,36 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
             </span>
           </div>
           <div className="tb-hscroll" role="list">
-            {popularTools.map((tool, i) => {
+            {popularTools.map(({ tool, count }, i) => {
               const d = getToolDisplay(tool, lang);
+              const pct = count !== null ? Math.max(10, Math.round((count / popularMax) * 100)) : 0;
               return (
                 <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} role="listitem" className="tb-hitem group">
-                  <span className="font-mono text-[11px] text-[var(--fg-muted)]">{pad(i + 1)}</span>
-                  <span className="mt-2 flex items-center gap-2">
-                    <Icon name={tool.icon} className="h-4 w-4 text-[var(--fg-secondary)]" />
-                    <span className="truncate text-[14px] font-semibold tracking-[-0.01em]">{d.name}</span>
+                  <span className="flex items-center justify-between">
+                    <span className="font-mono text-[11px] text-[var(--fg-muted)]">{pad(i + 1)}</span>
+                    <span className="tb-arrow text-[13px] text-[var(--fg-muted)]" aria-hidden="true">↗</span>
                   </span>
-                  <span className="mt-1 block truncate text-[12px] text-[var(--fg-muted)]">{catLabel(tool.category)}</span>
+                  <span className="mt-3 flex items-center gap-2">
+                    <Icon name={tool.icon} className="h-4 w-4 shrink-0 text-[var(--fg-secondary)]" />
+                    <span className="truncate text-[15px] font-bold tracking-[-0.01em]">{d.name}</span>
+                  </span>
+                  <span className="mt-1.5 block line-clamp-2 min-h-[2.4em] text-[12px] leading-snug text-[var(--fg-muted)]">
+                    {d.description}
+                  </span>
+                  {count !== null ? (
+                    <span className="mt-3 block">
+                      <span className="block h-[3px] w-full overflow-hidden rounded-full bg-[var(--border-subtle)]" aria-hidden="true">
+                        <span className="block h-full rounded-full bg-[var(--accent)]" style={{ width: `${pct}%` }} />
+                      </span>
+                      <span className="mt-1.5 block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fg-muted)]">
+                        {count}× — {catLabel(tool.category)}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fg-muted)]">
+                      {catLabel(tool.category)}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -311,7 +342,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
 
       {/* ── RECENTLY USED : app feature ───────────────────────── */}
       {!isFiltering && (
-        <section aria-labelledby="tb-recent-title" className="py-10">
+        <section id="recent" aria-labelledby="tb-recent-title" className="scroll-mt-24 py-10">
           <div className="mb-1 flex items-end justify-between">
             <div>
               <p className="tb-kicker">{t("recentKicker")}</p>
@@ -367,6 +398,9 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
           {/* Desktop vertical typographic nav */}
           <nav aria-label={t("navCategories")} className="hidden lg:block">
             <div className="sticky top-24">
+              <p className="mb-1 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+                Explore
+              </p>
               <button
                 onClick={() => setCat("")}
                 className={`tb-cat ${!cat ? "active" : ""}`}
@@ -437,7 +471,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
                       <span className="tb-num">{pad(i + 1)}</span>
                       <Icon name={tool.icon} className="h-[18px] w-[18px] text-[var(--fg-secondary)]" />
                       <span className="min-w-0">
-                        <span className="block truncate text-[14px] font-semibold tracking-[-0.01em] text-[var(--fg)]">
+                        <span className="block truncate text-[15px] font-bold tracking-[-0.015em] text-[var(--fg)]">
                           {d.name}
                         </span>
                         <span className="mt-0.5 block truncate text-[12px] text-[var(--fg-muted)]">

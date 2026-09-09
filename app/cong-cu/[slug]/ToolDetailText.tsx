@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Icon, { CATEGORY_ICONS } from "@/components/Icon";
+import Icon from "@/components/Icon";
 import { useLang } from "@/lib/language-context";
 import { getToolDisplay } from "@/lib/tools";
 import type { Tool } from "@/lib/tools";
@@ -11,12 +11,12 @@ export default function ToolDetailText({ tool }: { tool: Tool }) {
   const display = getToolDisplay(tool, lang);
   return (
     <>
-      <nav className="flex items-center gap-1.5 py-5 text-[12px] text-[var(--fg-muted)]" aria-label="Breadcrumb">
+      <nav className="flex items-center gap-2 py-6 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--fg-muted)]" aria-label="Breadcrumb">
         <Link href="/" className="tg hover:text-[var(--fg)]">{t("breadcrumbHome")}</Link>
-        <span className="text-[var(--border)]">/</span>
+        <span aria-hidden="true">/</span>
         <Link href={`/?cat=${encodeURIComponent(tool.category)}`} className="tg hover:text-[var(--fg)]">{tool.category}</Link>
-        <span className="text-[var(--border)]">/</span>
-        <span className="font-medium text-[var(--fg)]">{display.name}</span>
+        <span aria-hidden="true">/</span>
+        <span className="text-[var(--fg)]">{display.name}</span>
       </nav>
     </>
   );
@@ -24,20 +24,49 @@ export default function ToolDetailText({ tool }: { tool: Tool }) {
 
 export function ToolGuide({ guide }: { guide: string[] }) {
   const { t } = useLang();
+  const steps = guide.length ? guide : (t("defaultGuide") as unknown as string[]);
+  const faqs: [string, string][] = [
+    [t("faqFree"), t("faqFreeAnswer")],
+    [t("faqSafe"), t("faqSafeAnswer")],
+    [t("faqMobile"), t("faqMobileAnswer")],
+  ];
   return (
-    <section className="mt-8">
-      <h2 className="text-[14px] font-semibold text-[var(--fg)]">{t("howToUse")}</h2>
-      <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-[13px] text-[var(--fg-secondary)] leading-relaxed">
-        {(guide.length ? guide : (t("defaultGuide") as unknown as string[])).map((g: string, i: number) => (
-          <li key={i}>{g}</li>
+    <section className="mt-12">
+      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+        {t("howToUse")}
+      </p>
+      <ol className="mt-1 border-t border-[var(--border-subtle)]">
+        {steps.map((g: string, i: number) => (
+          <li
+            key={i}
+            className="flex gap-5 border-b border-[var(--border-subtle)] py-3.5 text-[13px] leading-relaxed text-[var(--fg-secondary)]"
+          >
+            <span className="shrink-0 font-mono text-[11px] text-[var(--fg-muted)]">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <span>{g}</span>
+          </li>
         ))}
       </ol>
 
-      <h3 className="mt-8 text-[14px] font-semibold text-[var(--fg)]">{t("faqTitle")}</h3>
-      <div className="mt-3 space-y-1.5 text-[13px]">
-        <details className="rounded-[8px] bg-[var(--bg-recessed)] p-3.5"><summary className="cursor-pointer font-medium text-[var(--fg)]">{t("faqFree")}</summary><p className="mt-1.5 text-[var(--fg-secondary)] leading-relaxed">{t("faqFreeAnswer")}</p></details>
-        <details className="rounded-[8px] bg-[var(--bg-recessed)] p-3.5"><summary className="cursor-pointer font-medium text-[var(--fg)]">{t("faqSafe")}</summary><p className="mt-1.5 text-[var(--fg-secondary)] leading-relaxed">{t("faqSafeAnswer")}</p></details>
-        <details className="rounded-[8px] bg-[var(--bg-recessed)] p-3.5"><summary className="cursor-pointer font-medium text-[var(--fg)]">{t("faqMobile")}</summary><p className="mt-1.5 text-[var(--fg-secondary)] leading-relaxed">{t("faqMobileAnswer")}</p></details>
+      <p className="mb-1 mt-10 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+        {t("faqTitle")}
+      </p>
+      <div className="border-t border-[var(--border-subtle)]">
+        {faqs.map(([q, a]) => (
+          <details key={q} className="group border-b border-[var(--border-subtle)] py-3.5">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[13px] font-semibold text-[var(--fg)] [&::-webkit-details-marker]:hidden">
+              {q}
+              <span
+                className="shrink-0 text-[15px] font-normal text-[var(--fg-muted)] transition-transform duration-200 group-open:rotate-45"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </summary>
+            <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-[var(--fg-secondary)]">{a}</p>
+          </details>
+        ))}
       </div>
     </section>
   );
@@ -46,20 +75,22 @@ export function ToolGuide({ guide }: { guide: string[] }) {
 export function ToolRelated({ related }: { related: Tool[] }) {
   const { t, lang } = useLang();
   return (
-    <section className="mt-10">
-      <h2 className="text-[14px] font-semibold text-[var(--fg)]">{t("relatedTools")}</h2>
-      <div className="mt-3 space-y-1">
-        {related.map((r) => {
+    <section className="mt-12">
+      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+        {t("relatedTools")}
+      </p>
+      <div className="mt-2" role="list">
+        {related.map((r, i) => {
           const d = getToolDisplay(r, lang);
           return (
-            <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="tool-row">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7px] bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
-                <Icon name={r.icon} className="h-4 w-4" />
+            <Link key={r.slug} href={`/cong-cu/${r.slug}`} role="listitem" className="tb-entry group">
+              <span className="tb-num">{String(i + 1).padStart(2, "0")}</span>
+              <Icon name={r.icon} className="h-[18px] w-[18px] text-[var(--fg-secondary)]" />
+              <span className="min-w-0">
+                <span className="block truncate text-[14px] font-semibold tracking-[-0.01em]">{d.name}</span>
+                <span className="mt-0.5 block truncate text-[12px] text-[var(--fg-muted)]">{r.category}</span>
               </span>
-              <div className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-medium">{d.name}</span>
-                <span className="block text-[11px] text-[var(--fg-muted)]">{r.category}</span>
-              </div>
+              <span className="tb-arrow" aria-hidden="true">↗</span>
             </Link>
           );
         })}
@@ -72,25 +103,24 @@ export function ToolSidebar({ category, related }: { category: string; related: 
   const { lang } = useLang();
   return (
     <aside className="hidden lg:block">
-      <div className="sticky top-16 space-y-6">
-        <div>
-          <div className="flex items-center gap-2">
-            {CATEGORY_ICONS[category] && (() => {
-              const CatIcon = CATEGORY_ICONS[category];
-              return <CatIcon className="h-3.5 w-3.5 text-[var(--fg-muted)]" strokeWidth={1.5} />;
-            })()}
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{category}</p>
-          </div>
-          <div className="mt-2.5 space-y-0.5">
-            {related.slice(0, 6).map((r) => {
-              const d = getToolDisplay(r, lang);
-              return (
-                <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="block truncate rounded-[6px] px-2.5 py-1.5 text-[13px] text-[var(--fg-secondary)] tg hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]">
-                  {d.name}
-                </Link>
-              );
-            })}
-          </div>
+      <div className="sticky top-24">
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+          {category}
+        </p>
+        <div className="mt-2 border-t border-[var(--border-subtle)]">
+          {related.slice(0, 6).map((r) => {
+            const d = getToolDisplay(r, lang);
+            return (
+              <Link
+                key={r.slug}
+                href={`/cong-cu/${r.slug}`}
+                className="tg flex items-center justify-between gap-3 border-b border-[var(--border-subtle)] py-2.5 text-[13px] text-[var(--fg-secondary)] hover:pl-1 hover:text-[var(--fg)]"
+              >
+                <span className="truncate">{d.name}</span>
+                <span aria-hidden="true" className="text-[11px] text-[var(--fg-muted)]">→</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </aside>

@@ -44,7 +44,7 @@ export default function Footer() {
             {t("footerStatement")}
           </p>
 
-          <div className="mt-10 grid gap-10 border-t border-[var(--border-subtle)] pt-8 sm:grid-cols-3">
+          <div className="mt-10 grid gap-10 border-t border-[var(--border-subtle)] pt-8 sm:grid-cols-2 lg:grid-cols-4">
             <nav aria-label={t("footerExplore")}>
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--fg-muted)]">
                 {t("footerExplore")}
@@ -66,9 +66,9 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <Link href="/" className="tb-link text-[var(--fg-secondary)] hover:text-[var(--fg)]">
-                    {t("footerAllTools")}
-                  </Link>
+                  <a href="#recent" className="tb-link text-[var(--fg-secondary)] hover:text-[var(--fg)]">
+                    {t("recentTitle")}
+                  </a>
                 </li>
               </ul>
             </nav>
@@ -78,7 +78,7 @@ export default function Footer() {
                 {t("footerCategories")}
               </p>
               <ul className="mt-3 space-y-2 text-[13px]">
-                {CATEGORIES.slice(0, 6).map((c) => {
+                {CATEGORIES.slice(0, 5).map((c) => {
                   const key = CAT_KEY_MAP[c.name];
                   return (
                     <li key={c.name}>
@@ -99,7 +99,7 @@ export default function Footer() {
                 {t("footerCompany")}
               </p>
               <ul className="mt-3 space-y-2 text-[13px]">
-                {popularTools.slice(0, 4).map((tool) => (
+                {popularTools.slice(0, 3).map((tool) => (
                   <li key={tool.slug}>
                     <Link
                       href={`/cong-cu/${tool.slug}`}
@@ -110,12 +110,40 @@ export default function Footer() {
                   </li>
                 ))}
                 <li>
+                  <Link href="/" className="tb-link text-[var(--fg-secondary)] hover:text-[var(--fg)]">
+                    {t("footerAllTools")}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <nav aria-label={t("footerLegal")}>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--fg-muted)]">
+                {t("footerLegal")}
+              </p>
+              <ul className="mt-3 space-y-2 text-[13px]">
+                <li>
+                  <Link href="/about" className="tb-link text-[var(--fg-secondary)] hover:text-[var(--fg)]">
+                    {t("aboutTitle")}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="tb-link text-[var(--fg-secondary)] hover:text-[var(--fg)]">
+                    {t("privacyTitle")}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="tb-link text-[var(--fg-secondary)] hover:text-[var(--fg)]">
+                    {t("termsTitle")}
+                  </Link>
+                </li>
+                <li>
                   <Link href="/admin" className="tb-link text-[var(--fg-secondary)] hover:text-[var(--fg)]">
                     {t("navAdmin")}
                   </Link>
                 </li>
               </ul>
-            </div>
+            </nav>
           </div>
         </div>
 

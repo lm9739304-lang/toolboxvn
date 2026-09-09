@@ -157,26 +157,26 @@ body {
   transform: scaleX(1);
 }
 
-/* Command-center search */
+/* Command-center search — boxed console */
 .tb-cmd {
   display: flex;
   align-items: center;
   gap: 14px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 18px 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  padding: 18px 20px;
   transition: border-color 200ms ease;
 }
 .tb-cmd:focus-within {
-  border-top-color: var(--fg);
-  border-bottom-color: var(--fg);
+  border-color: var(--fg);
 }
 .tb-cmd input {
   background: transparent;
   border: none;
   outline: none;
   width: 100%;
-  font-size: 20px;
+  font-size: clamp(16px, 2.4vw, 20px);
   letter-spacing: -0.01em;
   color: var(--fg);
 }
@@ -234,7 +234,7 @@ body {
   grid-template-columns: 44px 36px 1fr auto;
   align-items: center;
   gap: 12px;
-  padding: 14px 6px;
+  padding: 17px 8px;
   border-top: 1px solid var(--border-subtle);
   text-decoration: none;
   color: inherit;

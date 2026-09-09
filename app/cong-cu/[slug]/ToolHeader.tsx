@@ -1,6 +1,5 @@
 "use client";
 
-import Icon from "@/components/Icon";
 import { useLang } from "@/lib/language-context";
 import { getToolDisplay } from "@/lib/tools";
 import type { Tool } from "@/lib/tools";
@@ -10,15 +9,15 @@ export default function ToolHeader({ tool }: { tool: Tool }) {
   const display = getToolDisplay(tool, lang);
   return (
     <header>
-      <div className="flex items-center gap-4">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[9px] bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
-          <Icon name={tool.icon} className="h-5 w-5" />
-        </span>
-        <div className="flex-1">
-          <h1 className="text-[20px] font-bold tracking-[-0.02em] sm:text-[24px]">{display.name}</h1>
-          <p className="mt-0.5 text-[13px] text-[var(--fg-secondary)]">{display.description}</p>
-        </div>
-      </div>
+      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+        {tool.category}
+      </p>
+      <h1 className="mt-2 max-w-2xl text-[clamp(1.7rem,4.5vw,2.5rem)] font-extrabold leading-[1.05] tracking-[-0.03em] text-[var(--fg)]">
+        {display.name}
+      </h1>
+      <p className="mt-2.5 max-w-xl text-[14px] leading-relaxed text-[var(--fg-secondary)]">
+        {display.description}
+      </p>
     </header>
   );
 }

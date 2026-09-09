@@ -40,7 +40,46 @@ export const translations = {
     footerStatement: "A small, independent set of utilities. Built to be fast, private, and out of your way.",
     footerExplore: "Explore",
     footerCompany: "Product",
+    footerLegal: "Legal",
     footerRights: "All processing happens in your browser.",
+
+    // Spec hero + meta
+    heroEyebrowTop: "TOOLBOXVN",
+    heroEyebrowSub: "DIGITAL UTILITIES",
+    metaTools: (n: number) => `${n}+ TOOLS`,
+    metaNoLogin: "NO LOGIN",
+    metaFree: "FREE",
+    metaFast: "FAST",
+
+    // Palette
+    paletteCategories: "Categories",
+    paletteTools: "Tools",
+
+    // Tool detail workspace
+    workspace: "Workspace",
+
+    // Info pages
+    aboutTitle: "About",
+    aboutLead: "ToolboxVN is a small workshop for everyday digital tasks.",
+    aboutBody: [
+      "Every utility on this site does one job, opens instantly, and runs entirely in your browser. There are no accounts, no uploads, and no tracking of what you type.",
+      "The project is maintained independently. New tools are added slowly and deliberately — only when they earn their place.",
+    ],
+    privacyTitle: "Privacy",
+    privacyLead: "Your data never leaves your device.",
+    privacyBody: [
+      "All tools process your input locally in the browser using JavaScript, Web Crypto, or Canvas. Nothing you type, paste, or upload is sent to any server by ToolboxVN.",
+      "Preferences such as theme, language, favorites, and recently used tools are stored only in your browser's localStorage. Clearing your browser data removes them completely.",
+      "Third-party scripts on this site are limited to advertising (Google AdSense) and anonymous analytics, each governed by its provider's own policy.",
+    ],
+    termsTitle: "Terms",
+    termsLead: "Simple rules for a simple product.",
+    termsBody: [
+      "ToolboxVN provides every tool free of charge, as-is, without warranty of any kind. Results — from currency conversions to health estimates — are references, not professional advice.",
+      "Do not use the tools for anything unlawful, and do not attempt to disrupt the site. Automated bulk scraping that degrades the service for others is not welcome.",
+      "These terms may be updated occasionally. Continued use of the site means you accept the current version.",
+    ],
+    backHome: "Back to home",
 
     // Hero
     heroTitle1: "100+ tools for",
@@ -166,7 +205,40 @@ export const translations = {
     footerStatement: "Bộ tiện ích nhỏ, độc lập. Nhanh, riêng tư và không làm phiền bạn.",
     footerExplore: "Khám phá",
     footerCompany: "Sản phẩm",
+    footerLegal: "Pháp lý",
     footerRights: "Mọi xử lý diễn ra trên trình duyệt của bạn.",
+
+    // Spec hero + meta
+    heroEyebrowTop: "TOOLBOXVN",
+    heroEyebrowSub: "TIỆN ÍCH SỐ",
+    metaTools: (n: number) => `${n}+ CÔNG CỤ`,
+    metaNoLogin: "KHÔNG ĐĂNG NHẬP",
+    metaFree: "MIỄN PHÍ",
+    metaFast: "NHANH",
+    paletteCategories: "Danh mục",
+    paletteTools: "Công cụ",
+    workspace: "Không gian làm việc",
+    aboutTitle: "Giới thiệu",
+    aboutLead: "ToolboxVN là một xưởng nhỏ cho những tác vụ số hằng ngày.",
+    aboutBody: [
+      "Mỗi tiện ích làm đúng một việc, mở ngay lập tức và chạy hoàn toàn trên trình duyệt. Không tài khoản, không tải lên, không theo dõi những gì bạn nhập.",
+      "Dự án được duy trì độc lập. Công cụ mới được thêm chậm rãi và có chọn lọc — chỉ khi thực sự xứng đáng.",
+    ],
+    privacyTitle: "Riêng tư",
+    privacyLead: "Dữ liệu của bạn không bao giờ rời khỏi thiết bị.",
+    privacyBody: [
+      "Mọi công cụ xử lý dữ liệu ngay trên trình duyệt bằng JavaScript, Web Crypto hoặc Canvas. Không có gì bạn nhập, dán hay tải lên được gửi tới máy chủ của ToolboxVN.",
+      "Các tuỳ chọn như giao diện, ngôn ngữ, yêu thích và công cụ mới dùng chỉ lưu trong localStorage của trình duyệt. Xoá dữ liệu trình duyệt là xoá sạch.",
+      "Script bên thứ ba trên trang chỉ gồm quảng cáo (Google AdSense) và thống kê ẩn danh, mỗi bên tuân theo chính sách riêng của họ.",
+    ],
+    termsTitle: "Điều khoản",
+    termsLead: "Quy tắc đơn giản cho một sản phẩm đơn giản.",
+    termsBody: [
+      "ToolboxVN cung cấp mọi công cụ miễn phí, nguyên trạng, không bảo đảm dưới bất kỳ hình thức nào. Mọi kết quả — từ đổi tiền tới ước tính sức khoẻ — chỉ mang tính tham khảo, không phải tư vấn chuyên môn.",
+      "Không dùng công cụ cho việc vi phạm pháp luật, không phá hoại trang web. Việc thu thập dữ liệu tự động hàng loạt gây ảnh hưởng tới người khác là không được chào đón.",
+      "Điều khoản có thể được cập nhật thỉnh thoảng. Tiếp tục sử dụng trang nghĩa là bạn chấp nhận phiên bản hiện hành.",
+    ],
+    backHome: "Về trang chủ",
 
     // Hero
     heroTitle1: "100+ công cụ cho",

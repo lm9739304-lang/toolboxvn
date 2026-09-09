@@ -63,24 +63,25 @@ export default function ToolActions({ slug }: { slug: string }) {
   };
 
   return (
-    <div className="mt-3 flex items-center gap-2 border-t border-[var(--border-subtle)] pt-3">
+    <div className="mt-4 flex items-center gap-6 border-t border-[var(--border-subtle)] pt-3">
       <button
         onClick={toggleFav}
-        className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-default ${isFav ? "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-900/20 dark:text-amber-400" : "border-[var(--border)] bg-[var(--bg-recessed)] text-[var(--fg-secondary)] hover:bg-[var(--bg)]"}`}
+        aria-pressed={isFav}
+        className="tg inline-flex items-center gap-1.5 text-[13px] font-medium text-[var(--fg-secondary)] hover:text-[var(--fg)]"
       >
         {isFav ? (
-          <svg className="h-3 w-3 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+          <svg className="h-3.5 w-3.5 fill-[var(--accent)] text-[var(--accent)]" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
         ) : (
-          <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
         )}
-        {isFav ? t("saved") : t("save")}
+        <span className="tb-link">{isFav ? t("saved") : t("save")}</span>
       </button>
       <button
         onClick={share}
-        className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border)] bg-[var(--bg-recessed)] px-2.5 py-1 text-[12px] font-medium text-[var(--fg-secondary)] transition-default hover:bg-[var(--bg)]"
+        className="tg inline-flex items-center gap-1.5 text-[13px] font-medium text-[var(--fg-secondary)] hover:text-[var(--fg)]"
       >
-        <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.282-3.068a4.5 4.5 0 00-6.364 0l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
-        {copied ? t("copied") : t("share")}
+        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.282-3.068a4.5 4.5 0 00-6.364 0l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+        <span className="tb-link">{copied ? t("copied") : t("share")}</span>
       </button>
     </div>
   );

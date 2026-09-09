@@ -66,12 +66,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
       <ToolDetailText tool={tool} />
 
-      <div className="grid gap-10 lg:grid-cols-[1fr_260px]">
-        <article>
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">
+        <article className="min-w-0">
           <ToolHeader tool={tool} />
           <ToolActions slug={tool.slug} />
 
-          <section className="tool-action-area mt-6 rounded-[10px] border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 sm:p-6" aria-label={`Use ${tool.name}`}>
+          <section className="tool-action-area mt-8 border-t-2 border-[var(--fg)] pt-6" aria-label={`Use ${tool.name}`}>
             <ToolClient tool={tool} />
           </section>
 

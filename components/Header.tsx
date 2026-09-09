@@ -59,21 +59,54 @@ export default function Header() {
     if (cmdOpen) setTimeout(() => inputRef.current?.focus(), 40);
   }, [cmdOpen]);
 
+  function fuzzyScore(hay: string, needle: string): number {
+    if (!needle) return 0;
+    if (hay.includes(needle)) return 200 + needle.length * 4;
+    let score = 0;
+    let hi = 0;
+    for (let ni = 0; ni < needle.length; ni++) {
+      const idx = hay.indexOf(needle[ni], hi);
+      if (idx === -1) return 0;
+      score += idx === hi ? 3 : 1;
+      hi = idx + 1;
+    }
+    return Math.max(1, score - hi * 0.05);
+  }
+
   const results = useMemo(() => {
+    const spaced = cmdQ.trim().toLowerCase();
+    if (!spaced) return [];
+    const compact = spaced.replace(/\s+/g, "");
+    return TOOLS.map((tool) => {
+      const d = getToolDisplay(tool, lang);
+      const fields = [
+        tool.name.toLowerCase(),
+        d.name.toLowerCase(),
+        tool.description.toLowerCase(),
+        d.description.toLowerCase(),
+        tool.slug,
+        ...tool.keywords.map((k) => k.toLowerCase()),
+      ];
+      let best = 0;
+      for (const f of fields) {
+        const sc = f.includes(spaced)
+          ? 300 + spaced.length * 4
+          : fuzzyScore(f.replace(/\s+/g, ""), compact);
+        if (sc > best) best = sc;
+      }
+      return { tool, best };
+    })
+      .filter((x) => x.best > 0)
+      .sort((a, b) => b.best - a.best)
+      .slice(0, 8)
+      .map((x) => x.tool);
+  }, [cmdQ, lang]);
+
+  const catMatches = useMemo(() => {
     const s = cmdQ.trim().toLowerCase();
     if (!s) return [];
-    return TOOLS.filter((tool) => {
-      const d = getToolDisplay(tool, lang);
-      return (
-        tool.name.toLowerCase().includes(s) ||
-        d.name.toLowerCase().includes(s) ||
-        tool.description.toLowerCase().includes(s) ||
-        d.description.toLowerCase().includes(s) ||
-        tool.slug.includes(s.replace(/\s+/g, "-")) ||
-        tool.keywords.some((k) => k.toLowerCase().includes(s))
-      );
-    }).slice(0, 10);
-  }, [cmdQ, lang]);
+    return CATEGORIES.filter((c) => c.name.toLowerCase().includes(s)).slice(0, 3);
+  }, [cmdQ]);
 
   const recentTools = useMemo(
     () =>
@@ -86,13 +119,33 @@ export default function Header() {
 
   const suggested = useMemo(() => TOOLS.slice(0, 4), []);
 
-  const flatList = cmdQ.trim() ? results : [...recentTools, ...suggested].slice(0, 8);
+  const suggestedUnique = useMemo(
+    () => suggested.filter((s) => !recentTools.some((r) => r.slug === s.slug)).slice(0, 4),
+    [suggested, recentTools]
+  );
+
+  type NavItem = { kind: "tool"; slug: string } | { kind: "cat"; name: string };
+
+  const toolRows = cmdQ.trim() ? results : [...recentTools, ...suggestedUnique].slice(0, 8);
+
+  const navItems: NavItem[] = useMemo(
+    () =>
+      cmdQ.trim()
+        ? [
+            ...results.map((x) => ({ kind: "tool" as const, slug: x.slug })),
+            ...catMatches.map((c) => ({ kind: "cat" as const, name: c.name })),
+          ]
+        : [...recentTools, ...suggestedUnique]
+            .slice(0, 8)
+            .map((x) => ({ kind: "tool" as const, slug: x.slug })),
+    [cmdQ, results, catMatches, recentTools, suggestedUnique]
+  );
 
   useEffect(() => {
     setActiveIdx(0);
   }, [cmdQ, cmdOpen]);
 
-  const go = useCallback(
+  const goTool = useCallback(
     (slug: string) => {
       closeCmd();
       setMenuOpen(false);
@@ -101,17 +154,40 @@ export default function Header() {
     [closeCmd, router]
   );
 
+  const goCat = useCallback(
+    (name: string) => {
+      closeCmd();
+      setMenuOpen(false);
+      router.push(`/?cat=${encodeURIComponent(name)}`);
+    },
+    [closeCmd, router]
+  );
+
+  const goItem = useCallback(
+    (item: NavItem) => {
+      if (item.kind === "tool") goTool(item.slug);
+      else goCat(item.name);
+    },
+    [goTool, goCat]
+  );
+
+  const activeId = navItems[activeIdx]
+    ? navItems[activeIdx].kind === "tool"
+      ? `cmd-${(navItems[activeIdx] as { slug: string }).slug}`
+      : `cmd-cat-${(navItems[activeIdx] as { name: string }).name}`
+    : undefined;
+
   const handleKeyNav = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActiveIdx((i) => Math.min(i + 1, Math.max(flatList.length - 1, 0)));
+      setActiveIdx((i) => Math.min(i + 1, Math.max(navItems.length - 1, 0)));
     }
     if (e.key === "ArrowUp") {
       e.preventDefault();
       setActiveIdx((i) => Math.max(i - 1, 0));
     }
-    if (e.key === "Enter" && flatList[activeIdx]) {
-      go(flatList[activeIdx].slug);
+    if (e.key === "Enter" && navItems[activeIdx]) {
+      goItem(navItems[activeIdx]);
     }
   };
 
@@ -262,7 +338,7 @@ export default function Header() {
                 role="combobox"
                 aria-expanded={cmdOpen}
                 aria-controls="cmd-list"
-                aria-activedescendant={flatList[activeIdx] ? `cmd-${flatList[activeIdx].slug}` : undefined}
+                aria-activedescendant={activeId}
               />
               <kbd className="tb-kbd">ESC</kbd>
             </div>
@@ -273,7 +349,9 @@ export default function Header() {
                     {t("recentTitle")}
                   </p>
                   {recentTools.map((tool) => {
-                    const idx = flatList.findIndex((x) => x.slug === tool.slug);
+                    const idx = navItems.findIndex(
+                      (x) => x.kind === "tool" && (x as { slug: string }).slug === tool.slug
+                    );
                     const d = getToolDisplay(tool, lang);
                     return (
                       <button
@@ -282,7 +360,7 @@ export default function Header() {
                         data-idx={idx}
                         role="option"
                         aria-selected={idx === activeIdx}
-                        onClick={() => go(tool.slug)}
+                        onClick={() => goTool(tool.slug)}
                         onMouseEnter={() => setActiveIdx(idx)}
                         className={`tg-fast flex w-full items-center gap-3 rounded-[7px] px-3 py-2.5 text-left ${
                           idx === activeIdx ? "bg-[var(--bg-hover)]" : ""
@@ -301,12 +379,12 @@ export default function Header() {
               )}
 
               <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">
-                {cmdQ.trim() ? t("navTools") : t("featuredTitle")}
+                {cmdQ.trim() ? t("paletteTools") : t("featuredTitle")}
               </p>
-              {(cmdQ.trim() ? results : suggested).map((tool) => {
-                const idx = flatList.findIndex((x) => x.slug === tool.slug);
-                // When query present, flatList === results so idx is correct.
-                // When empty, suggested items follow recents in flatList.
+              {(cmdQ.trim() ? toolRows : suggestedUnique).map((tool) => {
+                const idx = navItems.findIndex(
+                  (x) => x.kind === "tool" && (x as { slug: string }).slug === tool.slug
+                );
                 const d = getToolDisplay(tool, lang);
                 return (
                   <button
@@ -315,7 +393,7 @@ export default function Header() {
                     data-idx={idx}
                     role="option"
                     aria-selected={idx === activeIdx}
-                    onClick={() => go(tool.slug)}
+                    onClick={() => goTool(tool.slug)}
                     onMouseEnter={() => setActiveIdx(idx)}
                     className={`tg-fast flex w-full items-center gap-3 rounded-[7px] px-3 py-2.5 text-left ${
                       idx === activeIdx ? "bg-[var(--bg-hover)]" : ""
@@ -324,13 +402,50 @@ export default function Header() {
                     <Icon name={tool.icon} className="h-4 w-4 shrink-0 text-[var(--fg-muted)]" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-[13px] font-medium text-[var(--fg)]">{d.name}</span>
-                      <span className="block truncate text-[11px] text-[var(--fg-muted)]">{d.description}</span>
+                      <span className="block truncate text-[11px] text-[var(--fg-muted)]">
+                        {cmdQ.trim() ? d.description : tool.category}
+                      </span>
                     </span>
                     <span aria-hidden="true" className="text-[13px] text-[var(--fg-muted)]">↵</span>
                   </button>
                 );
               })}
-              {cmdQ.trim() && results.length === 0 && (
+
+              {cmdQ.trim() && catMatches.length > 0 && (
+                <>
+                  <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">
+                    {t("paletteCategories")}
+                  </p>
+                  {catMatches.map((c) => {
+                    const idx = navItems.findIndex(
+                      (x) => x.kind === "cat" && (x as { name: string }).name === c.name
+                    );
+                    return (
+                      <button
+                        key={c.name}
+                        id={`cmd-cat-${c.name}`}
+                        data-idx={idx}
+                        role="option"
+                        aria-selected={idx === activeIdx}
+                        onClick={() => goCat(c.name)}
+                        onMouseEnter={() => setActiveIdx(idx)}
+                        className={`tg-fast flex w-full items-center gap-3 rounded-[7px] px-3 py-2.5 text-left ${
+                          idx === activeIdx ? "bg-[var(--bg-hover)]" : ""
+                        }`}
+                      >
+                        <span className="h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--accent)]" aria-hidden="true" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[13px] font-medium text-[var(--fg)]">{c.name}</span>
+                          <span className="block truncate text-[11px] text-[var(--fg-muted)]">{c.desc}</span>
+                        </span>
+                        <span aria-hidden="true" className="text-[13px] text-[var(--fg-muted)]">↵</span>
+                      </button>
+                    );
+                  })}
+                </>
+              )}
+
+              {cmdQ.trim() && results.length === 0 && catMatches.length === 0 && (
                 <p className="px-3 py-8 text-center text-[13px] text-[var(--fg-muted)]">{t("noResults")}</p>
               )}
             </div>
