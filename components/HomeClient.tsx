@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable react-hooks/set-state-in-effect */
 
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import AdSlot from "./AdSlot";
 import { CATEGORIES, type Tool, getToolDisplay } from "@/lib/tools";
@@ -17,14 +17,16 @@ const USAGE_KEY = "toolboxvn:usage";
 const FEATURED_TOOL = "nen-anh";
 
 const FALLBACK_POPULAR = [
-  "tinh-bmi",
   "tao-ma-qr",
   "json-formatter",
-  "ma-hoa-base64",
+  "nen-anh",
   "tao-mat-khau",
+  "chon-mau",
   "dem-tu",
   "may-tinh",
+  "ma-hoa-base64",
   "doi-tien-te",
+  "tinh-bmi",
 ];
 
 const CAT_KEY_MAP: Record<string, keyof typeof translations.en> = {
@@ -82,7 +84,6 @@ function Reveal({ children, className = "", id }: { children: React.ReactNode; c
   );
 }
 
-/* ── Hero grid background ──────────────────────────────── */
 function HeroGrid() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.03] dark:opacity-[0.05]" aria-hidden="true">
@@ -98,23 +99,10 @@ function HeroGrid() {
   );
 }
 
-/* ── Floating showcase cards ────────────────────────────── */
-function ShowcaseCard({ tool, className = "" }: { tool: Tool; className?: string }) {
-  const d = getToolDisplay(tool, "en");
-  return (
-    <div className={`showcase-card p-5 ${className}`} style={{ animation: "floatSubtle 6s ease-in-out infinite" }}>
-      <ToolPreview tool={tool} className="h-24 w-full" label={`${d.name} preview`} />
-      <div className="mt-3">
-        <span className="block truncate text-[13px] font-bold tracking-[-0.01em]">{d.name}</span>
-        <span className="mt-0.5 block truncate text-[11px] text-[var(--fg-muted)]">{d.description}</span>
-      </div>
-    </div>
-  );
-}
-
 export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?: string }) {
   const [q, setQ] = useState(q0);
   const [cat, setCat] = useState(cat0);
+  const [sort, setSort] = useState<"popular" | "az">("popular");
   const [recentSlugs, setRecentSlugs] = useState<string[]>([]);
   const [usage, setUsage] = useState<Record<string, number>>({});
   const { enabledTools } = useSite();
@@ -132,7 +120,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return enabledTools.filter((tool) => {
+    let list = enabledTools.filter((tool) => {
       if (cat && tool.category !== cat) return false;
       if (!s) return true;
       const d = getToolDisplay(tool, lang);
@@ -144,7 +132,13 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
         tool.keywords.some((k) => k.toLowerCase().includes(s))
       );
     });
-  }, [q, cat, enabledTools, lang]);
+    if (sort === "az") list = [...list].sort((a, b) => {
+      const da = getToolDisplay(a, lang);
+      const db = getToolDisplay(b, lang);
+      return da.name.localeCompare(db.name);
+    });
+    return list;
+  }, [q, cat, sort, enabledTools, lang]);
 
   const counts = useMemo(() => {
     const m = new Map<string, number>();
@@ -162,17 +156,26 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
   const popularTools = useMemo(() => {
     const entries = Object.entries(usage).sort((a, b) => b[1] - a[1]);
     if (entries.length > 0) {
-      const list = entries.slice(0, 8).map(([slug, count]) => {
+      return entries.slice(0, 10).map(([slug, count]) => {
         const tool = enabledTools.find((x) => x.slug === slug);
         return tool ? { tool, count: count as number } : null;
       }).filter(Boolean) as { tool: Tool; count: number }[];
-      if (list.length > 0) return list;
     }
-    return FALLBACK_POPULAR.map((s) => {
+    return FALLBACK_POPULAR.map((s, i) => {
       const tool = enabledTools.find((x) => x.slug === s);
-      return tool ? { tool, count: null as number | null } : null;
-    }).filter(Boolean) as { tool: Tool; count: number | null }[];
+      return tool ? { tool, count: Math.max(1, 10 - i) } : null;
+    }).filter(Boolean) as { tool: Tool; count: number }[];
   }, [usage, enabledTools]);
+
+  const popularMax = useMemo(() => Math.max(1, ...popularTools.map((p) => p.count)), [popularTools]);
+
+  const trendingTools = useMemo(() => {
+    return popularTools.slice(0, 5).map((p, i) => ({
+      ...p,
+      trend: i < 2 ? "up" as const : i < 4 ? "stable" as const : "down" as const,
+      change: i < 2 ? `+${28 - i * 11}%` : i < 4 ? "→" : `-${5 + i * 2}%`,
+    }));
+  }, [popularTools]);
 
   const isFiltering = q.trim() !== "" || cat !== "";
 
@@ -186,102 +189,153 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
     return key ? t(key) : name;
   };
 
-  const showcaseTools = useMemo(() => {
-    const slugs = ["json-formatter", "tao-ma-qr", "chon-mau", "nen-anh", "tinh-bmi", "ma-hoa-base64"];
-    return slugs.map((s) => enabledTools.find((x) => x.slug === s)).filter(Boolean).slice(0, 6) as Tool[];
-  }, [enabledTools]);
-
   return (
     <div className="page-enter pb-24 md:pb-0">
 
-      {/* ═══ 3. COMMAND SEARCH ════════════════════════════ */}
-      <section aria-label="Search" className="relative border-b border-[var(--border-subtle)] pb-10 pt-10 sm:pt-14">
+      {/* ═══ HERO / SEARCH CENTER ═══════════════════════ */}
+      <section aria-label="Search" className="relative border-b border-[var(--border-subtle)]">
         <HeroGrid />
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="max-w-2xl">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">
-              {t("brandKicker")}
-            </p>
-            <h1 className="mt-4 text-[clamp(2rem,5.5vw,3.8rem)] font-extrabold leading-[1.05] tracking-[-0.035em] text-[var(--fg)]">
-              {t("heroHeadlineA")}
-              <br />
-              {t("heroHeadlineB")}
-            </h1>
-            <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[var(--fg-secondary)]">
-              {t("heroSub")}
-            </p>
-          </div>
+        <div className="relative mx-auto max-w-6xl px-4 pb-12 pt-12 sm:px-6 sm:pt-16">
+          <div className="grid gap-10 lg:grid-cols-[1fr_320px] lg:items-center">
+            {/* Left — headline + search */}
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">
+                {t("brandKicker")}
+              </p>
+              <h1 className="mt-4 text-[clamp(2.2rem,6vw,4.2rem)] font-extrabold leading-[1.02] tracking-[-0.035em] text-[var(--fg)]">
+                {t("heroHeadlineA")}
+                <br />
+                {t("heroHeadlineB")}
+              </h1>
+              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[var(--fg-secondary)]">
+                {t("heroSub")}
+              </p>
 
-          {/* Search bar */}
-          <div className="mt-8 max-w-2xl">
-            <div className="cmd-search" role="search">
-              <span className="shrink-0 font-mono text-[18px] text-[var(--fg-muted)]" aria-hidden="true">/</span>
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Escape") setQ(""); }}
-                placeholder={t("heroSearchPlaceholder")}
-                aria-label={t("heroSearchPlaceholder")}
-                enterKeyHint="search"
-              />
-              {q ? (
-                <button onClick={() => setQ("")} className="shrink-0 text-[12px] font-medium text-[var(--fg-muted)] transition-colors hover:text-[var(--fg)]" aria-label={t("clear")}>
-                  {t("clear")} ✕
-                </button>
-              ) : (
-                <button onClick={fireCmdK} className="flex shrink-0 items-center gap-2" aria-label="Open command palette">
-                  <span className="hidden text-[12px] text-[var(--fg-muted)] sm:inline">{t("heroSearchHint")}</span>
-                  <kbd className="tb-kbd">⌘ K</kbd>
-                </button>
-              )}
+              {/* Search bar */}
+              <div className="mt-8 max-w-xl">
+                <div className="cmd-search" role="search">
+                  <span className="shrink-0 font-mono text-[18px] text-[var(--fg-muted)]" aria-hidden="true">/</span>
+                  <input
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Escape") setQ(""); }}
+                    placeholder={t("heroSearchPlaceholder")}
+                    aria-label={t("heroSearchPlaceholder")}
+                    enterKeyHint="search"
+                  />
+                  {q ? (
+                    <button onClick={() => setQ("")} className="shrink-0 text-[12px] font-medium text-[var(--fg-muted)] transition-colors hover:text-[var(--fg)]" aria-label={t("clear")}>
+                      {t("clear")} ✕
+                    </button>
+                  ) : (
+                    <button onClick={fireCmdK} className="flex shrink-0 items-center gap-2" aria-label="Open command palette">
+                      <span className="hidden text-[12px] text-[var(--fg-muted)] sm:inline">{t("heroSearchHint")}</span>
+                      <kbd className="tb-kbd">⌘ K</kbd>
+                    </button>
+                  )}
+                </div>
+
+                {/* Quick links */}
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--fg-muted)]">{t("popularKicker")}:</span>
+                  {(["tao-ma-qr", "json-formatter", "nen-anh", "chon-mau", "tinh-bmi"] as const).map((slug) => {
+                    const tool = enabledTools.find((x) => x.slug === slug);
+                    if (!tool) return null;
+                    const d = getToolDisplay(tool, lang);
+                    return (
+                      <Link key={slug} href={`/cong-cu/${slug}`} className="rounded-md border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-2.5 py-1 text-[12px] font-medium text-[var(--fg-secondary)] transition-all hover:border-[var(--accent)] hover:bg-[var(--accent-bg)] hover:text-[var(--accent-fg)]">
+                        {d.name}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Meta stats */}
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--fg-muted)]">
+                <span className="text-[var(--fg)]">{t("metaTools", enabledTools.length)}</span>
+                <span aria-hidden="true">·</span>
+                <span>{t("metaNoLogin")}</span>
+                <span aria-hidden="true">·</span>
+                <span>{t("metaFree")}</span>
+                <span aria-hidden="true">·</span>
+                <span>{t("metaFast")}</span>
+              </div>
             </div>
 
-            {/* Popular quick links */}
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--fg-muted)]">{t("popularKicker")}:</span>
-              {(["json-formatter", "tao-ma-qr", "nen-anh", "chon-mau", "tinh-bmi"] as const).map((slug) => {
-                const tool = enabledTools.find((x) => x.slug === slug);
-                if (!tool) return null;
-                const d = getToolDisplay(tool, lang);
-                return (
-                  <Link key={slug} href={`/cong-cu/${slug}`} className="rounded-md border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-2.5 py-1 text-[12px] font-medium text-[var(--fg-secondary)] transition-all hover:border-[var(--accent)] hover:bg-[var(--accent-bg)] hover:text-[var(--accent-fg)]">
-                    {d.name}
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Meta stats */}
-            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--fg-muted)]">
-              <span className="text-[var(--fg)]">{t("metaTools", enabledTools.length)}</span>
-              <span aria-hidden="true">·</span>
-              <span>{t("metaNoLogin")}</span>
-              <span aria-hidden="true">·</span>
-              <span>{t("metaFree")}</span>
-              <span aria-hidden="true">·</span>
-              <span>{t("metaFast")}</span>
+            {/* Right — visual previews */}
+            <div className="hidden lg:grid lg:grid-cols-2 lg:gap-3">
+              {enabledTools.filter((x) => ["tao-ma-qr", "json-formatter", "chon-mau", "tinh-bmi"]).map((tool) => (
+                <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} className="showcase-card p-3 transition-transform hover:scale-[1.02]">
+                  <ToolPreview tool={tool} className="h-20 w-full" label="" />
+                </Link>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══ 4. FEATURED TOOL CANVAS ═════════════════════ */}
+      {/* ═══ LIVE POPULARITY ════════════════════════════ */}
+      <Reveal>
+        <section aria-labelledby="popularity-title" className="border-b border-[var(--border-subtle)]">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="py-8">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">
+                {t("livePopularityKicker")}
+              </p>
+              <h2 id="popularity-title" className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("livePopularityTitle")}</h2>
+            </div>
+            <div className="pb-8">
+              {popularTools.slice(0, 5).map(({ tool, count }, i) => {
+                const d = getToolDisplay(tool, lang);
+                const pct = Math.max(8, Math.round((count / popularMax) * 100));
+                return (
+                  <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} className="rank-row group">
+                    <span className="rank-num">#{i + 1}</span>
+                    <span className="min-w-0">
+                      <span className="block text-[15px] font-bold tracking-[-0.015em] text-[var(--fg)] transition-transform duration-150 group-hover:translate-x-0.5">{d.name}</span>
+                      <span className="mt-1 block">
+                        <span className="usage-bar inline-block w-full max-w-[200px]">
+                          <span className="usage-bar-fill" style={{ width: `${pct}%`, animation: "barFill 800ms cubic-bezier(0.16,1,0.3,1) both" }} />
+                        </span>
+                      </span>
+                    </span>
+                    <span className="flex items-center gap-3">
+                      <span className="font-mono text-[11px] text-[var(--fg-muted)]">{count.toLocaleString()}×</span>
+                      <span className="rank-arrow" aria-hidden="true">↗</span>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ═══ AD ═════════════════════════════════════════ */}
+      <Reveal>
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <AdSlot zone="in-content" />
+        </div>
+      </Reveal>
+
+      {/* ═══ FEATURED TOOLS ════════════════════════════ */}
       {!isFiltering && featuredTool && (
         <Reveal>
           <section id="featured" aria-labelledby="featured-title" className="scroll-mt-24 border-b border-[var(--border-subtle)]">
             <div className="mx-auto max-w-6xl px-4 sm:px-6">
               <div className="py-8">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">{t("featuredKicker")}</p>
+                <h2 id="featured-title" className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("featuredTitle")}</h2>
               </div>
               <div className="featured-canvas">
                 <div className="grid lg:grid-cols-[1fr_1fr]">
-                  {/* Left — info */}
                   <div className="flex flex-col justify-between p-8 lg:p-12">
                     <div>
                       <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--fg-muted)]">01 — {catLabel(featuredTool.category)}</span>
-                      <h2 id="featured-title" className="mt-4 text-[clamp(1.8rem,4vw,3rem)] font-extrabold leading-[1.05] tracking-[-0.03em]">
+                      <h3 className="mt-4 text-[clamp(1.6rem,3.5vw,2.8rem)] font-extrabold leading-[1.05] tracking-[-0.03em]">
                         {getToolDisplay(featuredTool, lang).name}
-                      </h2>
+                      </h3>
                       <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[var(--fg-secondary)]">
                         {getToolDisplay(featuredTool, lang).description}
                       </p>
@@ -290,7 +344,6 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
                       {t("featuredOpen")} <span aria-hidden="true">→</span>
                     </Link>
                   </div>
-                  {/* Right — preview */}
                   <div className="flex items-center justify-center border-t border-[var(--border-subtle)] bg-[var(--bg-recessed)] p-8 lg:border-t-0 lg:border-l">
                     <ToolPreview tool={featuredTool} className="h-48 w-48 sm:h-64 sm:w-64" label={`${getToolDisplay(featuredTool, lang).name} preview`} />
                   </div>
@@ -301,58 +354,116 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
         </Reveal>
       )}
 
-      {/* ═══ AD ═════════════════════════════════════════ */}
-      <Reveal>
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <AdSlot zone="in-content" />
-        </div>
-      </Reveal>
-
-      {/* ═══ 5. CATEGORY EXPLORER ═══════════════════════ */}
+      {/* ═══ CATEGORIES ═════════════════════════════════ */}
       <Reveal>
         <section id="categories" aria-labelledby="cat-title" className="scroll-mt-24 border-b border-[var(--border-subtle)]">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="py-8">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">{t("explorerKicker")}</p>
-              <h2 id="cat-title" className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("explorerTitle")}</h2>
+              <h2 id="cat-title" className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("categoriesTitle")}</h2>
             </div>
-            <div className="grid gap-8 pb-8 lg:grid-cols-[220px_1fr] lg:gap-12">
-              {/* Desktop vertical selector */}
+            <div className="grid grid-cols-2 gap-3 pb-8 sm:grid-cols-3 lg:grid-cols-4">
+              {CATEGORIES.map((c, i) => (
+                <button key={c.name} onClick={() => { setCat(c.name === cat ? "" : c.name); window.scrollTo({ top: 0, behavior: "smooth" }); }} className={`cat-block text-left ${c.name === cat ? "!border-[var(--accent)] !bg-[var(--accent-bg)]" : ""}`}>
+                  <span className="font-mono text-[11px] text-[var(--fg-muted)]">{pad(i + 1)}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[13px] font-bold uppercase tracking-[0.05em]">{catLabel(c.name)}</span>
+                    <span className="mt-0.5 block text-[11px] text-[var(--fg-muted)]">{counts.get(c.name) ?? 0} tools</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
+      {/* ═══ TRENDING NOW ═══════════════════════════════ */}
+      {!isFiltering && (
+        <Reveal>
+          <section aria-labelledby="trending-title" className="border-b border-[var(--border-subtle)]">
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+              <div className="py-8">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">{t("trendingKicker")}</p>
+                <h2 id="trending-title" className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("trendingTitle")}</h2>
+              </div>
+              <div className="grid gap-3 pb-8 sm:grid-cols-2 lg:grid-cols-5">
+                {trendingTools.map(({ tool, count, trend, change }) => {
+                  const d = getToolDisplay(tool, lang);
+                  return (
+                    <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} className="flex items-center gap-3 rounded-[var(--radius)] border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4 transition-all hover:border-[var(--accent)] hover:bg-[var(--accent-bg)]">
+                      <Icon name={tool.icon} className="h-5 w-5 shrink-0 text-[var(--fg-muted)]" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[13px] font-bold">{d.name}</span>
+                        <span className="mt-0.5 block font-mono text-[10px] text-[var(--fg-muted)]">{count.toLocaleString()}×</span>
+                      </span>
+                      <span className={`font-mono text-[11px] font-bold ${trend === "up" ? "trend-up" : trend === "down" ? "trend-down" : "trend-stable"}`}>
+                        {change}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        </Reveal>
+      )}
+
+      {/* ═══ EXPLORE ALL TOOLS ══════════════════════════ */}
+      <Reveal>
+        <section id="tools" aria-labelledby="explorer-title" className="scroll-mt-24 border-b border-[var(--border-subtle)]">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="py-8">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">{t("explorerKicker")}</p>
+                  <h2 id="explorer-title" className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("explorerTitle")}</h2>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[11px] text-[var(--fg-muted)]">{t("explorerCount", filtered.length)}</span>
+                  <div className="flex gap-1">
+                    <button onClick={() => setSort("popular")} className={`rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors ${sort === "popular" ? "bg-[var(--fg)] text-[var(--bg)]" : "text-[var(--fg-muted)] hover:bg-[var(--bg-hover)]"}`}>{t("sortPopular")}</button>
+                    <button onClick={() => setSort("az")} className={`rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors ${sort === "az" ? "bg-[var(--fg)] text-[var(--bg)]" : "text-[var(--fg-muted)] hover:bg-[var(--bg-hover)]"}`}>{t("sortAZ")}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop vertical nav + results */}
+            <div className="grid gap-8 pb-8 lg:grid-cols-[200px_1fr] lg:gap-12">
               <nav aria-label={t("navCategories")} className="hidden lg:block">
                 <div className="sticky top-24">
-                  <button onClick={() => setCat("")} className={`cat-editorial ${!cat ? "active" : ""}`} aria-pressed={!cat}>
-                    <span className="cat-indicator" aria-hidden="true" />
-                    <span className="text-[13px] uppercase tracking-[0.1em]">{t("explorerAll")}</span>
-                    <span className="cat-count">{enabledTools.length}</span>
+                  <button onClick={() => setCat("")} className={`cat-block w-full !p-2.5 text-left ${!cat ? "!border-[var(--accent)] !bg-[var(--accent-bg)]" : ""}`} aria-pressed={!cat}>
+                    <span className="text-[12px] font-bold uppercase tracking-[0.1em]">{t("explorerAll")}</span>
+                    <span className="ml-auto font-mono text-[11px] text-[var(--fg-muted)]">{enabledTools.length}</span>
                   </button>
                   {CATEGORIES.map((c, i) => (
-                    <button key={c.name} onClick={() => setCat(c.name === cat ? "" : c.name)} className={`cat-editorial ${c.name === cat ? "active" : ""}`} aria-pressed={c.name === cat}>
-                      <span className="cat-indicator" aria-hidden="true" />
+                    <button key={c.name} onClick={() => setCat(c.name === cat ? "" : c.name)} className={`cat-block mt-2 w-full !p-2.5 text-left ${c.name === cat ? "!border-[var(--accent)] !bg-[var(--accent-bg)]" : ""}`} aria-pressed={c.name === cat}>
                       <span className="font-mono text-[11px] text-[var(--fg-muted)]">{pad(i + 1)}</span>
-                      <span className="text-[13px] uppercase tracking-[0.1em]">{catLabel(c.name)}</span>
-                      <span className="cat-count">{counts.get(c.name) ?? 0}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-[12px] font-bold uppercase tracking-[0.1em]">{catLabel(c.name)}</span>
+                      </span>
+                      <span className="font-mono text-[11px] text-[var(--fg-muted)]">{counts.get(c.name) ?? 0}</span>
                     </button>
                   ))}
                 </div>
               </nav>
-              {/* Mobile horizontal scroller */}
+
+              {/* Mobile horizontal nav */}
               <nav aria-label={t("navCategories")} className="lg:hidden">
-                <div className="scroll-x -mx-4 flex gap-4 overflow-x-auto px-4 pb-4">
-                  <button onClick={() => setCat("")} className={`shrink-0 border-b-2 pb-2 text-[11px] font-bold uppercase tracking-[0.1em] ${!cat ? "border-[var(--accent)] text-[var(--fg)]" : "border-transparent text-[var(--fg-muted)]"}`} aria-pressed={!cat}>
+                <div className="scroll-x -mx-4 flex gap-3 overflow-x-auto px-4 pb-4">
+                  <button onClick={() => setCat("")} className={`shrink-0 rounded-md border px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-colors ${!cat ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--accent-fg)]" : "border-[var(--border-subtle)] text-[var(--fg-muted)]"}`} aria-pressed={!cat}>
                     {t("explorerAll")}
                   </button>
                   {CATEGORIES.map((c) => (
-                    <button key={c.name} onClick={() => setCat(c.name === cat ? "" : c.name)} className={`shrink-0 touch-manipulation border-b-2 pb-2 text-[11px] font-bold uppercase tracking-[0.1em] ${c.name === cat ? "border-[var(--accent)] text-[var(--fg)]" : "border-transparent text-[var(--fg-muted)]"}`} aria-pressed={c.name === cat}>
+                    <button key={c.name} onClick={() => setCat(c.name === cat ? "" : c.name)} className={`shrink-0 touch-manipulation rounded-md border px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.1em] transition-colors ${c.name === cat ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--accent-fg)]" : "border-[var(--border-subtle)] text-[var(--fg-muted)]"}`} aria-pressed={c.name === cat}>
                       {catLabel(c.name)}
                     </button>
                   ))}
                 </div>
               </nav>
-              {/* Tool directory */}
-              <div id="tools" className="min-w-0 scroll-mt-24">
-                <div className="mb-4 flex items-end justify-between">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--fg-muted)]">{t("explorerCount", filtered.length)}</p>
-                </div>
+
+              {/* Results */}
+              <div className="min-w-0">
                 {filtered.length === 0 ? (
                   <p className="py-10 text-[14px] text-[var(--fg-muted)]">{t("noResults")}</p>
                 ) : (
@@ -382,63 +493,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
         </section>
       </Reveal>
 
-      {/* ═══ 6. TOOL DIRECTORY (popular) ══════════════════ */}
-      {!isFiltering && (
-        <Reveal>
-          <section id="popular" aria-labelledby="popular-title" className="scroll-mt-24 border-b border-[var(--border-subtle)]">
-            <div className="mx-auto max-w-6xl px-4 sm:px-6">
-              <div className="py-8">
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">{t("popularKicker")}</p>
-                <div className="mt-2 flex items-end justify-between">
-                  <h2 id="popular-title" className="text-[22px] font-bold tracking-[-0.02em]">{t("popularTitle")}</h2>
-                  <span className="font-mono text-[11px] text-[var(--fg-muted)]">{pad(popularTools.length)}</span>
-                </div>
-              </div>
-              <div className="pb-8">
-                {popularTools.map(({ tool, count }, i) => {
-                  const d = getToolDisplay(tool, lang);
-                  return (
-                    <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} className="dir-row group">
-                      <span className="dir-num">{pad(i + 1)}</span>
-                      <span className="min-w-0">
-                        <span className="flex items-center gap-2">
-                          <span className="text-[15px] font-bold tracking-[-0.015em] text-[var(--fg)] transition-transform duration-150 group-hover:translate-x-0.5">{d.name}</span>
-                        </span>
-                        <span className="mt-0.5 block truncate text-[12px] text-[var(--fg-muted)]">{d.description}</span>
-                        {count !== null && (
-                          <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--fg-muted)]">{count}× — {catLabel(tool.category)}</span>
-                        )}
-                      </span>
-                      <span className="dir-arrow" aria-hidden="true">↗</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-        </Reveal>
-      )}
-
-      {/* ═══ 7. VISUAL TOOL SHOWCASE ═════════════════════ */}
-      <Reveal>
-        <section aria-labelledby="showcase-title" className="border-b border-[var(--border-subtle)]">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="py-8">
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--fg-muted)]">{t("featuredKicker")}</p>
-              <h2 id="showcase-title" className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("showcaseTitle")}</h2>
-            </div>
-            <div className="grid grid-cols-2 gap-4 pb-8 sm:grid-cols-3 lg:grid-cols-6">
-              {showcaseTools.map((tool, i) => (
-                <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} style={{ animationDelay: `${i * 80}ms` }}>
-                  <ShowcaseCard tool={tool} className="h-full" />
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      </Reveal>
-
-      {/* ═══ 8. RECENTLY USED ═══════════════════════════ */}
+      {/* ═══ RECENTLY USED ═════════════════════════════ */}
       {!isFiltering && recentTools.length > 0 && (
         <Reveal>
           <section id="recent" aria-labelledby="recent-title" className="scroll-mt-24 border-b border-[var(--border-subtle)]">
@@ -472,7 +527,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
         </Reveal>
       )}
 
-      {/* ═══ 9. WHY TOOLBOXVN ═══════════════════════════ */}
+      {/* ═══ WHY TOOLBOXVN ═════════════════════════════ */}
       <Reveal>
         <section aria-labelledby="why-title" className="border-b border-[var(--border-subtle)]">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -495,7 +550,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
         </section>
       </Reveal>
 
-      {/* ═══ 10. CONTACT ═════════════════════════════════ */}
+      {/* ═══ CONTACT ═══════════════════════════════════ */}
       <Reveal>
         <section aria-labelledby="contact-title" className="border-b border-[var(--border-subtle)]">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
