@@ -11,32 +11,125 @@
   --muted-foreground: #64748b;
   --border: #e2e8f0;
   --ring: #3b82f6;
+  --glow: rgba(59, 130, 246, 0.15);
 }
 
 .dark {
-  --background: #0f172a;
+  --background: #0a0e1a;
   --foreground: #e2e8f0;
-  --card: #1e293b;
+  --card: #111827;
   --card-foreground: #e2e8f0;
   --muted: #1e293b;
   --muted-foreground: #94a3b8;
-  --border: #334155;
+  --border: #1e293b;
   --ring: #60a5fa;
+  --glow: rgba(96, 165, 250, 0.08);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.2s, color 0.2s;
 }
 
-/* Ad slots */
+/* ── Animations ── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-scale {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
+}
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.3s ease-out both;
+}
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out both;
+}
+.animate-glow {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Staggered children */
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 40ms; }
+.stagger > *:nth-child(3) { animation-delay: 80ms; }
+.stagger > *:nth-child(4) { animation-delay: 120ms; }
+.stagger > *:nth-child(5) { animation-delay: 160ms; }
+.stagger > *:nth-child(6) { animation-delay: 200ms; }
+.stagger > *:nth-child(7) { animation-delay: 240ms; }
+.stagger > *:nth-child(8) { animation-delay: 280ms; }
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 25%, var(--border) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ── Tool card SaaS style ── */
+.tool-card {
+  transition: all 0.2s ease;
+}
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px -8px rgba(0,0,0,0.12);
+  border-color: var(--ring);
+}
+.tool-card:hover .tool-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+.tool-arrow {
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all 0.2s ease;
+}
+
+/* ── Sidebar category ── */
+.cat-item {
+  transition: all 0.15s ease;
+}
+.cat-item:hover {
+  background: var(--muted);
+}
+.cat-item.active {
+  background: var(--ring);
+  color: white;
+  font-weight: 700;
+}
+
+/* ── Command search ── */
+.cmd-overlay {
+  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.5);
+}
+.dark .cmd-overlay {
+  background: rgba(0,0,0,0.7);
+}
+
+/* ── Ad slots ── */
 .ad-slot {
   margin-top: 2rem;
   margin-bottom: 2rem;
@@ -47,7 +140,7 @@ body {
   height: auto;
 }
 
-/* Tool content spacing */
+/* ── Tool content spacing ── */
 .tool-action-area button,
 .tool-action-area a {
   margin: 0.25rem;
@@ -57,27 +150,21 @@ body {
   margin-top: 2.5rem;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 8px;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: #475569;
-}
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+.dark ::-webkit-scrollbar-thumb { background: #334155; }
 
-/* Print: hide ads */
+/* ── Horizontal scroll for mobile categories ── */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar { display: none; }
+
+/* ── Print ── */
 @media print {
-  .ad-slot,
-  .site-header,
-  .site-footer-ads {
-    display: none !important;
-  }
+  .ad-slot, .site-header, .site-footer-ads { display: none !important; }
 }

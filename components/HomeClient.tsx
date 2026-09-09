@@ -1,90 +1,86 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ToolCard from "./ToolCard";
 import AdSlot from "./AdSlot";
-import { CATEGORIES, TOOLS, type Tool } from "@/lib/tools";
+import { CATEGORIES, TOOLS, type Tool, type ToolCategory } from "@/lib/tools";
 import { useSite } from "@/lib/site-config";
 
-const TRENDING_SLUGS = [
-  "tinh-bmi", "tao-ma-qr", "json-formatter", "ma-hoa-base64",
-  "tao-mat-khau", "dem-tu", "tinh-phan-tram", "may-tinh",
-  "doi-tien-te", "luong-gross-net", "tinh-diem-gpa", "tinh-tuoi",
-  "doi-timestamp", "kiem-tra-regex", "giai-ma-jwt", "tao-lorem",
-  "nen-anh", "doi-size-anh", "kiem-tra-mat-khau", "bam-sha256",
-];
+const RECENT_KEY = "toolboxvn:recent";
 
-const HOT_SLUGS = [
-  "tao-ma-qr", "tinh-bmi", "json-formatter", "tao-mat-khau",
-  "dem-tu", "may-tinh", "doi-tien-te", "luong-gross-net",
-];
-
-const NEW_SLUGS = [
-  "tinh-diem-gpa", "luyen-go-phim", "tao-chu-ky", "quay-so",
-  "doi-don-vi-van-ban", "lich-van-nien-mini", "tao-ma-vach-qr-wifi",
-];
-
-const FAV_KEY = "toolboxvn:favorites";
-
-function getFavorites(): string[] {
+function getRecent(): string[] {
   if (typeof window === "undefined") return [];
-  try { return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"); } catch { return []; }
 }
 
-function toggleFavorite(slug: string): string[] {
-  const favs = getFavorites();
-  const next = favs.includes(slug) ? favs.filter((s) => s !== slug) : [...favs, slug];
-  localStorage.setItem(FAV_KEY, JSON.stringify(next));
+function addRecent(slug: string): string[] {
+  const recents = getRecent().filter((s) => s !== slug);
+  const next = [slug, ...recents].slice(0, 6);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(next));
   return next;
 }
 
-function QuickLinks({ title, icon, slugs, favorites, onToggleFav }: {
-  title: string; icon: string; slugs: string[];
-  favorites: string[]; onToggleFav: (s: string) => void;
-}) {
-  const tools = slugs.map((s) => TOOLS.find((t) => t.slug === s)).filter(Boolean) as Tool[];
+const TRENDING = [
+  "tinh-bmi", "tao-ma-qr", "json-formatter", "ma-hoa-base64",
+  "tao-mat-khau", "dem-tu", "tinh-phan-tram", "may-tinh",
+  "doi-tien-te", "luong-gross-net", "tinh-diem-gpa", "tinh-tuoi",
+];
+
+function Sidebar({ active, onSelect }: { active: string; onSelect: (c: string) => void }) {
   return (
-    <section className="mt-6">
-      <h2 className="text-lg font-extrabold">{icon} {title}</h2>
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-        {tools.map((t) => (
-          <Link
-            key={t.slug}
-            href={`/cong-cu/${t.slug}`}
-            className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-500"
+    <nav className="hidden w-48 shrink-0 lg:block">
+      <div className="sticky top-20 space-y-0.5">
+        <button
+          onClick={() => onSelect("")}
+          className={`cat-item w-full rounded-xl px-3 py-2 text-left text-sm font-medium ${!active ? "active" : "text-slate-600 dark:text-slate-400"}`}
+        >
+          Tất cả
+        </button>
+        <div className="my-2 h-px bg-slate-200 dark:bg-slate-800" />
+        {CATEGORIES.map((c) => (
+          <button
+            key={c.name}
+            onClick={() => onSelect(c.name === active ? "" : c.name)}
+            className={`cat-item w-full rounded-xl px-3 py-2 text-left text-sm ${c.name === active ? "active" : "text-slate-600 dark:text-slate-400"}`}
           >
-            <span className="text-2xl">{t.icon}</span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold text-slate-900 group-hover:text-blue-700 dark:text-slate-100 dark:group-hover:text-blue-400">{t.name}</p>
-              <p className="truncate text-xs text-slate-500 dark:text-slate-400">{t.category}</p>
-            </div>
-            <button
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFav(t.slug); }}
-              className="shrink-0 text-lg opacity-40 transition hover:opacity-100"
-              title={favorites.includes(t.slug) ? "Bỏ yêu thích" : "Yêu thích"}
-            >
-              {favorites.includes(t.slug) ? "⭐" : "☆"}
-            </button>
-          </Link>
+            <span className="mr-2">{c.icon}</span>{c.name}
+          </button>
         ))}
       </div>
-    </section>
+    </nav>
+  );
+}
+
+function MobileCatBar({ active, onSelect }: { active: string; onSelect: (c: string) => void }) {
+  return (
+    <div className="scroll-x flex gap-1.5 pb-2 lg:hidden">
+      <button
+        onClick={() => onSelect("")}
+        className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition ${!active ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"}`}
+      >
+        Tất cả
+      </button>
+      {CATEGORIES.map((c) => (
+        <button
+          key={c.name}
+          onClick={() => onSelect(c.name === active ? "" : c.name)}
+          className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition ${c.name === active ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"}`}
+        >
+          {c.icon} {c.name}
+        </button>
+      ))}
+    </div>
   );
 }
 
 export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?: string }) {
   const [q, setQ] = useState(q0);
   const [cat, setCat] = useState(cat0);
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [recentSlugs, setRecentSlugs] = useState<string[]>([]);
   const { enabledTools } = useSite();
 
-  useEffect(() => { setFavorites(getFavorites()); }, []);
-
-  const handleToggleFav = useCallback((slug: string) => {
-    const next = toggleFavorite(slug);
-    setFavorites([...next]);
-  }, []);
+  useEffect(() => { setRecentSlugs(getRecent()); }, []);
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
@@ -109,150 +105,132 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
     return [...m.entries()];
   }, [filtered, cat, q]);
 
-  const favTools = useMemo(
-    () => enabledTools.filter((t) => favorites.includes(t.slug)).slice(0, 8),
-    [enabledTools, favorites]
+  const recentTools = useMemo(
+    () => recentSlugs.map((s) => enabledTools.find((t) => t.slug === s)).filter(Boolean) as Tool[],
+    [recentSlugs, enabledTools]
+  );
+
+  const trendingTools = useMemo(
+    () => TRENDING.map((s) => enabledTools.find((t) => t.slug === s)).filter(Boolean) as Tool[],
+    [enabledTools]
   );
 
   const isSearching = q.trim() || cat;
 
   return (
-    <div>
-      {/* Hero — compact */}
-      <section className="rounded-3xl bg-gradient-to-br from-blue-700 via-blue-600 to-violet-600 px-5 py-8 text-white sm:px-8 sm:py-10">
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-2xl font-extrabold leading-tight sm:text-4xl">
-            ⚡ 100+ công cụ online miễn phí
+    <div className="animate-fade-in">
+      {/* Hero */}
+      <section className="relative overflow-hidden py-12 text-center sm:py-16">
+        {/* Glow background */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="h-[300px] w-[500px] rounded-full bg-blue-500/10 blur-[100px] animate-glow dark:bg-blue-400/5" />
+        </div>
+        <div className="relative">
+          <h1 className="text-3xl font-extrabold tracking-tight sm:text-5xl">
+            Mọi công cụ bạn cần.
+            <br />
+            <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">Nhanh. Miễn phí.</span>
           </h1>
-          <p className="mt-2 text-sm text-blue-100 sm:text-base">
-            Học tập, công việc & developer — chạy ngay trên trình duyệt, không cần đăng nhập.
+          <p className="mx-auto mt-3 max-w-md text-sm text-slate-500 dark:text-slate-400">
+            Không cần đăng nhập. Chạy 100% trên trình duyệt.
           </p>
 
-          {/* Search */}
-          <div className="mx-auto mt-5 flex max-w-xl items-center gap-2 rounded-2xl bg-white p-1.5 shadow-lg">
-            <span className="pl-2 text-lg">🔍</span>
+          {/* Big search */}
+          <div className="mx-auto mt-6 flex max-w-xl items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 shadow-lg shadow-slate-200/50 transition focus-within:border-blue-400 focus-within:shadow-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:shadow-none dark:focus-within:border-blue-500">
+            <svg className="h-5 w-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder={`Tìm trong ${enabledTools.length} công cụ... (vd: qr, bmi, json)`}
-              className="h-10 w-full bg-transparent text-sm text-slate-900 outline-none"
+              placeholder={`Tìm trong ${enabledTools.length} công cụ...`}
+              className="h-12 w-full bg-transparent text-sm text-slate-900 outline-none dark:text-slate-100"
               aria-label="Tìm công cụ"
             />
             {q && (
-              <button onClick={() => setQ("")} className="shrink-0 rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">
-                Xoá
-              </button>
+              <button onClick={() => setQ("")} className="shrink-0 rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-500 dark:bg-slate-800">Xoá</button>
             )}
           </div>
 
           {/* Stats */}
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-blue-200">
-            <span>🔧 100+ Tools</span>
-            <span>•</span>
-            <span>🆓 Miễn phí 100%</span>
-            <span>•</span>
-            <span>🔒 Không cần đăng nhập</span>
-            <span>•</span>
-            <span>⚡ Chạy trên trình duyệt</span>
-          </div>
-
-          {/* Category pills */}
-          <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-            <button
-              onClick={() => setCat("")}
-              className={`rounded-full px-3 py-1 text-xs font-bold transition ${!cat ? "bg-white text-blue-700" : "bg-white/20 text-white hover:bg-white/30"}`}
-            >
-              Tất cả
-            </button>
-            {CATEGORIES.map((c) => (
-              <button
-                key={c.name}
-                onClick={() => setCat(cat === c.name ? "" : c.name)}
-                className={`rounded-full px-3 py-1 text-xs font-bold transition ${cat === c.name ? "bg-white text-blue-700" : "bg-white/20 text-white hover:bg-white/30"}`}
-              >
-                {c.icon} {c.name}
-              </button>
-            ))}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slate-400 dark:text-slate-500">
+            <span>100+ Tools</span>
+            <span>⚡ Instant</span>
+            <span>🔒 Private</span>
+            <span>💯 Free</span>
           </div>
         </div>
       </section>
 
-      {/* Search results */}
-      {isSearching ? (
-        <section className="mt-6">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Tìm thấy <b className="text-slate-900 dark:text-slate-100">{filtered.length}</b> công cụ {q && <>cho &ldquo;{q}&rdquo;</>} {cat && <>• {cat}</>}
-          </p>
-          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {filtered.map((t) => (
-              <ToolCard key={t.slug} tool={t} />
-            ))}
-          </div>
-          {filtered.length === 0 && (
-            <div className="mt-6 rounded-2xl border border-dashed p-10 text-center text-slate-500">
-              Không tìm thấy. Thử từ khoá khác như &ldquo;qr&rdquo;, &ldquo;bmi&rdquo;, &ldquo;json&rdquo;.
-            </div>
-          )}
-        </section>
-      ) : (
-        <>
-          {/* Favorites */}
-          {favTools.length > 0 && (
-            <section className="mt-6">
-              <h2 className="text-lg font-extrabold">❤️ Công cụ bạn thường dùng</h2>
-              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                {favTools.map((t) => (
-                  <ToolCard key={t.slug} tool={t} />
+      {/* Mobile category bar */}
+      <MobileCatBar active={cat} onSelect={setCat} />
+
+      <div className="flex gap-8">
+        {/* Sidebar */}
+        <Sidebar active={cat} onSelect={setCat} />
+
+        {/* Main content */}
+        <div className="min-w-0 flex-1">
+          {/* Recently used */}
+          {!isSearching && recentTools.length > 0 && (
+            <section className="mb-8 animate-fade-in">
+              <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Tiếp tục sử dụng</h2>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {recentTools.map((t, i) => (
+                  <ToolCard key={t.slug} tool={t} index={i} />
                 ))}
               </div>
             </section>
           )}
 
-          {/* Hot */}
-          <QuickLinks title="Đang hot" icon="🔥" slugs={HOT_SLUGS} favorites={favorites} onToggleFav={handleToggleFav} />
-
-          {/* Trending */}
-          <QuickLinks title="Công cụ được yêu thích" icon="⭐" slugs={TRENDING_SLUGS} favorites={favorites} onToggleFav={handleToggleFav} />
-
-          {/* New */}
-          <QuickLinks title="Mới thêm" icon="🆕" slugs={NEW_SLUGS} favorites={favorites} onToggleFav={handleToggleFav} />
-
-          {/* Ad */}
-          <AdSlot zone="in-content" />
-
-          {/* All categories */}
-          {grouped?.map(([cname, tools]) => {
-            const meta = CATEGORIES.find((c) => c.name === cname);
-            return (
-              <section key={cname} className="mt-8">
-                <h2 className="text-lg font-extrabold">{meta?.icon} {cname} <span className="ml-1 text-sm font-medium text-slate-400">({tools.length})</span></h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{meta?.desc}</p>
-                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                  {tools.map((t) => (
-                    <ToolCard key={t.slug} tool={t} />
+          {/* Search results */}
+          {isSearching ? (
+            <section className="animate-fade-in">
+              <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">
+                Tìm thấy <b className="text-slate-900 dark:text-slate-100">{filtered.length}</b> công cụ {q && <>cho &ldquo;{q}&rdquo;</>} {cat && <>• {cat}</>}
+              </p>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {filtered.map((t, i) => (
+                  <ToolCard key={t.slug} tool={t} index={i} />
+                ))}
+              </div>
+              {filtered.length === 0 && (
+                <div className="rounded-2xl border border-dashed p-10 text-center text-slate-400">
+                  Không tìm thấy. Thử &ldquo;qr&rdquo;, &ldquo;bmi&rdquo;, &ldquo;json&rdquo;...
+                </div>
+              )}
+            </section>
+          ) : (
+            <>
+              {/* Trending */}
+              <section className="mb-8 animate-fade-in">
+                <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">🔥 Phổ biến</h2>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {trendingTools.map((t, i) => (
+                    <ToolCard key={t.slug} tool={t} index={i} />
                   ))}
                 </div>
               </section>
-            );
-          })}
-        </>
-      )}
 
-      {/* SEO intro */}
-      <section className="mt-12 grid gap-4 rounded-3xl border border-slate-200 bg-white p-6 text-sm leading-relaxed text-slate-600 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-        <div>
-          <h3 className="font-bold text-slate-900 dark:text-slate-100">⚡ Tốc độ & riêng tư</h3>
-          <p className="mt-1">Mọi xử lý chạy client-side (Web Crypto, Canvas). Dữ liệu không gửi lên server, build tĩnh deploy Vercel/Cloudflare trong 1 phút.</p>
+              <AdSlot zone="in-content" />
+
+              {/* Categories */}
+              {grouped?.map(([cname, tools]) => {
+                const meta = CATEGORIES.find((c) => c.name === cname);
+                return (
+                  <section key={cname} className="mb-8 animate-fade-in">
+                    <h2 className="mb-1 text-base font-extrabold">{meta?.icon} {cname} <span className="ml-1 text-xs font-medium text-slate-400">({tools.length})</span></h2>
+                    <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">{meta?.desc}</p>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      {tools.map((t, i) => (
+                        <ToolCard key={t.slug} tool={t} index={i} />
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </>
+          )}
         </div>
-        <div>
-          <h3 className="font-bold text-slate-900 dark:text-slate-100">🔗 Mỗi tool 1 URL riêng</h3>
-          <p className="mt-1">Ví dụ /cong-cu/dem-tu, /cong-cu/tao-ma-qr... có sitemap.xml, metadata, JSON-LD chuẩn SEO, dễ chia sẻ.</p>
-        </div>
-        <div>
-          <h3 className="font-bold text-slate-900 dark:text-slate-100">📢 Quảng cáo văn minh</h3>
-          <p className="mt-1">Chỉ banner cố định đầu/giữa/cuối trang, có nhãn rõ ràng, cách xa nút chức năng, responsive mobile, tắt/mở trong Admin.</p>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

@@ -11,7 +11,7 @@ function getFavs(): string[] {
   try { return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); } catch { return []; }
 }
 
-export default function ToolCard({ tool }: { tool: Tool }) {
+export default function ToolCard({ tool, index = 0 }: { tool: Tool; index?: number }) {
   const [favs, setFavs] = useState<string[]>([]);
 
   useEffect(() => { setFavs(getFavs()); }, []);
@@ -28,27 +28,26 @@ export default function ToolCard({ tool }: { tool: Tool }) {
   return (
     <Link
       href={`/cong-cu/${tool.slug}`}
-      className="group relative flex flex-col rounded-2xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-500 dark:hover:shadow-blue-900/30"
+      className="tool-card group relative flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/50"
+      style={{ animationDelay: `${index * 30}ms` }}
     >
-      <button
-        onClick={toggle}
-        className="absolute right-2 top-2 z-10 text-sm opacity-40 transition hover:opacity-100"
-        title={isFav ? "Bỏ yêu thích" : "Yêu thích"}
-      >
-        {isFav ? "⭐" : "☆"}
-      </button>
-      <div className="flex items-center gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-2xl transition group-hover:bg-blue-50 dark:bg-slate-700 dark:group-hover:bg-blue-900/40">
-          {tool.icon}
-        </span>
-        <div className="min-w-0">
-          <h3 className="truncate font-bold text-[15px] text-slate-900 group-hover:text-blue-700 dark:text-slate-100 dark:group-hover:text-blue-400">{tool.name}</h3>
-          <span className="inline-block rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-400">
-            {tool.category}
-          </span>
-        </div>
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-2xl transition group-hover:scale-110 group-hover:bg-blue-50 dark:bg-slate-800 dark:group-hover:bg-blue-900/30">
+        {tool.icon}
+      </span>
+      <div className="min-w-0 flex-1">
+        <h3 className="truncate text-sm font-bold text-slate-900 group-hover:text-blue-600 dark:text-slate-100 dark:group-hover:text-blue-400">{tool.name}</h3>
+        <p className="mt-0.5 line-clamp-1 text-xs text-slate-500 dark:text-slate-400">{tool.description}</p>
       </div>
-      <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-slate-600 dark:text-slate-400">{tool.description}</p>
+      <div className="flex shrink-0 items-center gap-2">
+        <button
+          onClick={toggle}
+          className="text-sm opacity-30 transition hover:opacity-100"
+          title={isFav ? "Bỏ yêu thích" : "Yêu thích"}
+        >
+          {isFav ? "⭐" : "☆"}
+        </button>
+        <svg className="tool-arrow h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+      </div>
     </Link>
   );
 }
