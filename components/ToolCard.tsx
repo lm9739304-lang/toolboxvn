@@ -34,11 +34,11 @@ export default function ToolCard({ tool, featured = false }: { tool: Tool; featu
   if (featured) {
     return (
       <Link href={`/cong-cu/${tool.slug}`} className="tool-featured group">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[var(--bg-recessed)] text-[var(--fg-muted)] tg group-hover:text-[var(--accent)]">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] bg-[var(--bg-recessed)] text-[var(--fg-muted)] tg group-hover:text-[var(--accent)] group-hover:bg-[var(--accent-bg)]">
           <Icon name={tool.icon} className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <h3 className="text-[13px] font-semibold text-[var(--fg)]">{display.name}</h3>
+          <h3 className="text-[13px] font-semibold text-[var(--fg)] tg">{display.name}</h3>
           <p className="mt-0.5 truncate text-[12px] text-[var(--fg-secondary)]">{display.description}</p>
         </div>
         <div className="flex shrink-0 items-center gap-3">
@@ -57,7 +57,7 @@ export default function ToolCard({ tool, featured = false }: { tool: Tool; featu
 
   return (
     <Link href={`/cong-cu/${tool.slug}`} className="tool-row group">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7px] bg-[var(--bg-recessed)] text-[var(--fg-muted)] tg group-hover:text-[var(--accent)]">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7px] bg-[var(--bg-recessed)] text-[var(--fg-muted)] tg group-hover:text-[var(--accent)] group-hover:bg-[var(--accent-bg)]">
         <Icon name={tool.icon} className="h-4 w-4" />
       </span>
       <div className="min-w-0 flex-1">

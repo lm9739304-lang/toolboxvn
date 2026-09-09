@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSite } from "@/lib/site-config";
 import { sanitizeAdHtml } from "@/lib/ads";
 import type { AdZoneId } from "@/lib/ads";
@@ -10,6 +10,9 @@ declare global {
     adsbygoogle: unknown[];
   }
 }
+
+/* Dedup: track which zones are already mounted in this page */
+const mountedZones = new Set<string>();
 
 function loadAdSense(clientId: string): Promise<void> {
   return new Promise((resolve) => {
@@ -29,18 +32,34 @@ function loadAdSense(clientId: string): Promise<void> {
 export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; className?: string }) {
   const { isAdEnabled, getAdZone } = useSite();
   const ref = useRef<HTMLDivElement>(null);
+  const [hasContent, setHasContent] = useState(false);
+  const [isFailed, setIsFailed] = useState(false);
   const z = getAdZone(zone);
   const custom = z?.customHtml?.trim() ?? "";
   const enabled = isAdEnabled(zone);
 
   useEffect(() => {
-    if (!enabled || !custom || !ref.current) return;
+    if (!enabled || !ref.current) return;
+
+    // Dedup: if this zone key is already mounted, hide this duplicate
+    if (mountedZones.has(zone)) {
+      ref.current.style.display = "none";
+      return;
+    }
+    mountedZones.add(zone);
 
     let cancelled = false;
+    let timeout: ReturnType<typeof setTimeout>;
 
     const run = async () => {
       const ins = ref.current?.querySelectorAll("ins.adsbygoogle");
-      if (!ins || ins.length === 0) return;
+      if (!ins || ins.length === 0) {
+        if (!custom) {
+          // No content at all — mark as failed after delay
+          timeout = setTimeout(() => { if (!cancelled) setIsFailed(true); }, 2000);
+        }
+        return;
+      }
 
       const firstIns = ins[0] as HTMLElement;
       const clientId = firstIns.getAttribute("data-ad-client");
@@ -56,14 +75,31 @@ export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; class
           void _el;
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         }
-      } catch {}
+        // After push, check if ad actually rendered
+        timeout = setTimeout(() => {
+          if (cancelled) return;
+          const insEl = ref.current?.querySelector("ins.adsbygoogle");
+          const hasAd = insEl && insEl.getAttribute("data-ad-status") === "filled";
+          setHasContent(!!hasAd || !!custom);
+          if (!hasAd && !custom) setIsFailed(true);
+        }, 1500);
+      } catch {
+        setIsFailed(true);
+      }
     };
 
     run();
-    return () => { cancelled = true; };
-  }, [enabled, custom]);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+      mountedZones.delete(zone);
+    };
+  }, [enabled, custom, zone]);
 
   if (!enabled) return null;
+
+  // Graceful failure: collapse to nothing
+  if (isFailed && !custom) return null;
 
   return (
     <div
@@ -73,20 +109,16 @@ export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; class
       aria-label={`Ad: ${z?.name ?? zone}`}
       style={{ minHeight: 90 }}
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-full overflow-hidden">
         {custom ? (
           <div
             className="overflow-hidden rounded-[10px] border border-[var(--border-subtle)] bg-[var(--bg-elevated)]"
             dangerouslySetInnerHTML={{ __html: sanitizeAdHtml(custom) }}
           />
         ) : (
-          <div className="flex min-h-[90px] flex-col items-center justify-center gap-1 overflow-hidden rounded-[10px] border border-dashed border-[var(--border)] bg-[var(--bg-recessed)] px-4 py-6 text-center">
-            <span className="text-[12px] font-medium text-[var(--fg-muted)]">
-              {z?.name ?? zone}
-            </span>
-            <span className="max-w-xl text-[11px] text-[var(--fg-muted)] opacity-60">
-              Ad slot
-            </span>
+          <div className="ad-slot-fallback flex-col gap-1 px-4 py-6 text-center">
+            <span className="text-[12px] font-medium text-[var(--fg-muted)]">{z?.name ?? zone}</span>
+            <span className="max-w-xl text-[11px] text-[var(--fg-muted)] opacity-60">Ad slot</span>
           </div>
         )}
       </div>
