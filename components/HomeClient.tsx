@@ -7,6 +7,7 @@ import ToolCard from "./ToolCard";
 import AdSlot from "./AdSlot";
 import { CATEGORIES, type Tool } from "@/lib/tools";
 import { useSite } from "@/lib/site-config";
+import Icon, { CATEGORY_ICONS } from "./Icon";
 
 const RECENT_KEY = "toolboxvn:recent";
 const USAGE_KEY = "toolboxvn:usage";
@@ -30,12 +31,15 @@ function Sidebar({ active, onSelect }: { active: string; onSelect: (c: string) =
           All tools
         </button>
         <div className="my-2 h-px bg-[var(--border-subtle)]" />
-        {CATEGORIES.map((c) => (
-          <button key={c.name} onClick={() => onSelect(c.name === active ? "" : c.name)} className={`cat-link ${c.name === active ? "active" : ""}`}>
-            <span className="text-[var(--fg-muted)]">{c.icon}</span>
-            {c.name}
-          </button>
-        ))}
+        {CATEGORIES.map((c) => {
+          const CatIcon = CATEGORY_ICONS[c.name];
+          return (
+            <button key={c.name} onClick={() => onSelect(c.name === active ? "" : c.name)} className={`cat-link ${c.name === active ? "active" : ""}`}>
+              {CatIcon && <CatIcon className="h-3.5 w-3.5 text-[var(--fg-muted)]" strokeWidth={1.5} />}
+              {c.name}
+            </button>
+          );
+        })}
       </div>
     </nav>
   );
@@ -180,7 +184,9 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
               <div className="space-y-1">
                 {mostUsedTools.map(({ tool, count }) => (
                   <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} className="tool-row group">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-base">{tool.icon}</span>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
+                      <Icon name={tool.icon} className="h-4 w-4" />
+                    </span>
                     <div className="min-w-0 flex-1">
                       <h3 className="truncate text-[13px] font-medium text-[var(--fg)]">{tool.name}</h3>
                     </div>

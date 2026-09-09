@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/tools";
 import AdSlot from "./AdSlot";
+import { CATEGORY_ICONS } from "./Icon";
 
 export default function Footer() {
   return (
@@ -22,13 +23,17 @@ export default function Footer() {
           <div>
             <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">Categories</h3>
             <ul className="mt-2.5 space-y-1.5">
-              {CATEGORIES.slice(0, 6).map((c) => (
-                <li key={c.name}>
-                  <Link href={`/?cat=${encodeURIComponent(c.name)}`} className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]">
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
+              {CATEGORIES.slice(0, 6).map((c) => {
+                const CatIcon = CATEGORY_ICONS[c.name];
+                return (
+                  <li key={c.name}>
+                    <Link href={`/?cat=${encodeURIComponent(c.name)}`} className="flex items-center gap-2 text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]">
+                      {CatIcon && <CatIcon className="h-3.5 w-3.5" strokeWidth={1.5} />}
+                      {c.name}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div>

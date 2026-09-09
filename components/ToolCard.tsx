@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Tool } from "@/lib/tools";
+import Icon from "./Icon";
 
 const FAV_KEY = "toolboxvn:favorites";
 
@@ -29,7 +30,9 @@ export default function ToolCard({ tool, featured = false }: { tool: Tool; featu
   if (featured) {
     return (
       <Link href={`/cong-cu/${tool.slug}`} className="tool-featured">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-recessed)] text-xl">{tool.icon}</span>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
+          <Icon name={tool.icon} className="h-5 w-5" />
+        </span>
         <div className="min-w-0 flex-1">
           <h3 className="text-[14px] font-semibold text-[var(--fg)]">{tool.name}</h3>
           <p className="mt-0.5 truncate text-[12px] text-[var(--fg-secondary)]">{tool.description}</p>
@@ -50,7 +53,9 @@ export default function ToolCard({ tool, featured = false }: { tool: Tool; featu
 
   return (
     <Link href={`/cong-cu/${tool.slug}`} className="tool-row group">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-base">{tool.icon}</span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
+        <Icon name={tool.icon} className="h-4 w-4" />
+      </span>
       <div className="min-w-0 flex-1">
         <h3 className="truncate text-[13px] font-medium text-[var(--fg)]">{tool.name}</h3>
         <p className="truncate text-[11px] text-[var(--fg-muted)]">{tool.description}</p>

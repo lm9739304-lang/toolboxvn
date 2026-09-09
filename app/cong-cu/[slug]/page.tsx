@@ -5,6 +5,8 @@ import { TOOLS, getTool, getRelated } from "@/lib/tools";
 import ToolClient from "./ToolClient";
 import ToolActions from "./ToolActions";
 import AdSlot from "@/components/AdSlot";
+import Icon from "@/components/Icon";
+import { CATEGORY_ICONS } from "@/components/Icon";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://toolbox.vn";
 
@@ -77,7 +79,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           {/* Tool header */}
           <header>
             <div className="flex items-center gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-recessed)] text-2xl">{tool.icon}</span>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
+                <Icon name={tool.icon} className="h-5 w-5" />
+              </span>
               <div className="flex-1">
                 <h1 className="text-[20px] font-bold tracking-tight sm:text-[24px]">{tool.name}</h1>
                 <p className="mt-0.5 text-[13px] text-[var(--fg-secondary)]">{tool.description}</p>
@@ -116,7 +120,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             <div className="mt-3 space-y-1">
               {related.map((r) => (
                 <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="tool-row">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-base">{r.icon}</span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
+                    <Icon name={r.icon} className="h-4 w-4" />
+                  </span>
                   <div className="min-w-0 flex-1">
                     <span className="block truncate text-[13px] font-medium">{r.name}</span>
                     <span className="block text-[11px] text-[var(--fg-muted)]">{r.category}</span>
@@ -131,7 +137,13 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         <aside className="hidden lg:block">
           <div className="sticky top-16 space-y-6">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{tool.category}</p>
+              <div className="flex items-center gap-2">
+                {CATEGORY_ICONS[tool.category] && (() => {
+                  const CatIcon = CATEGORY_ICONS[tool.category];
+                  return <CatIcon className="h-3.5 w-3.5 text-[var(--fg-muted)]" strokeWidth={1.5} />;
+                })()}
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{tool.category}</p>
+              </div>
               <div className="mt-2 space-y-0.5">
                 {related.slice(0, 6).map((r) => (
                   <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="block truncate rounded-md px-2 py-1.5 text-[13px] text-[var(--fg-secondary)] transition-default hover:bg-[var(--bg-recessed)] hover:text-[var(--fg)]">
