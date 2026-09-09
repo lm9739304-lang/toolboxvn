@@ -7,6 +7,7 @@ export const translations = {
     navTools: "Tools",
     navCategories: "Categories",
     navPopular: "Popular",
+    navDiscover: "Discover",
     navAdmin: "Admin",
     menu: "Menu",
     close: "Close",
@@ -90,6 +91,7 @@ export const translations = {
 
     // Why section
     whyKicker: "Why ToolboxVN",
+    whyTitle: "Why ToolboxVN?",
     why1T: "Runs on your machine.",
     why1D: "Every tool works inside your browser. Nothing you type or paste leaves your device.",
     why2T: "Free. Really free.",
@@ -115,6 +117,9 @@ export const translations = {
     contactDesc: "Tell us what's broken, or what you wish existed. Suggestions, corrections and feature requests all get read.",
     contactCta: "Contact us",
     contactEmailLabel: "Email us at",
+
+    // Visual showcase
+    showcaseTitle: "Tool previews",
 
     // Tool page explanations
     toolWhat: "What does this tool do?",
@@ -218,6 +223,7 @@ export const translations = {
     navTools: "Công cụ",
     navCategories: "Danh mục",
     navPopular: "Phổ biến",
+    navDiscover: "Khám phá",
     navAdmin: "Admin",
     menu: "Menu",
     close: "Đóng",
@@ -295,6 +301,7 @@ export const translations = {
 
     // Why section
     whyKicker: "Vì sao chọn ToolboxVN",
+    whyTitle: "Vì sao chọn ToolboxVN?",
     why1T: "Chạy ngay trên máy bạn.",
     why1D: "Mọi công cụ hoạt động ngay trong trình duyệt. Những gì bạn nhập hoặc dán không rời khỏi thiết bị của bạn.",
     why2T: "Miễn phí. Thật sự miễn phí.",
@@ -320,6 +327,9 @@ export const translations = {
     contactDesc: "Kể cho chúng tôi chỗ nào hỏng, hoặc thứ bạn mong muốn có. Góp ý, báo lỗi và yêu cầu tính năng đều được đọc hết.",
     contactCta: "Liên hệ",
     contactEmailLabel: "Email cho chúng tôi tại",
+
+    // Visual showcase
+    showcaseTitle: "Xem trước công cụ",
 
     // Tool page explanations
     toolWhat: "Công cụ này làm gì?",

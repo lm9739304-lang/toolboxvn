@@ -26,9 +26,8 @@ export default function Header() {
   const router = useRouter();
   const { lang, t, setLang } = useLang();
 
-  // Track scroll for header background
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 10);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -127,27 +126,38 @@ export default function Header() {
 
   return (
     <>
-      {/* Floating nav */}
-      <div className="site-header sticky top-0 z-50 px-3 pt-3 sm:px-5">
-        <header
-          className={`mx-auto flex h-[52px] max-w-6xl items-center gap-2 rounded-[10px] border px-3 shadow-[var(--shadow-sm)] backdrop-blur-xl transition-all duration-300 sm:gap-4 sm:px-4 ${
-            scrolled
-              ? "border-[var(--border)] bg-[var(--bg-elevated)]/95 shadow-[var(--shadow-md)]"
-              : "border-[var(--border-subtle)] bg-[var(--bg-elevated)]/80"
-          }`}
-        >
-          <Link href="/" className="text-[13px] font-black tracking-[-0.02em] text-[var(--fg)]" aria-label="ToolboxVN home">
+      {/* ─── TOP MICRO BAR ─── */}
+      <div className="micro-bar bg-[var(--bg)]">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-1.5 sm:px-6">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--fg-muted)]">
+            TOOLBOXVN / {t("brandKicker").split(" / ")[1] || "DIGITAL UTILITIES"}
+          </span>
+          <span className="hidden items-center gap-4 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--fg-muted)] sm:flex">
+            <span>100+ {t("statTools")}</span>
+            <span className="text-[var(--border)]">·</span>
+            <span>2026</span>
+            <span className="text-[var(--border)]">·</span>
+            <span>{t("metaNoLogin")}</span>
+          </span>
+        </div>
+      </div>
+
+      {/* ─── MAIN NAVIGATION ─── */}
+      <div className={`main-nav sticky top-0 z-50 bg-[var(--bg)] ${scrolled ? "scrolled" : ""}`}>
+        <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4 sm:px-6">
+          <Link href="/" className="text-[15px] font-black tracking-[-0.03em] text-[var(--fg)]" aria-label="ToolboxVN home">
             TOOLBOX<span style={{ color: "var(--accent)" }}>VN</span>
           </Link>
 
-          <nav className="ml-4 hidden items-center gap-5 text-[13px] font-medium text-[var(--fg-secondary)] md:flex" aria-label="Primary">
-            <a href="#explorer" className="tb-link tg hover:text-[var(--fg)]">{t("navTools")}</a>
-            <a href="#explorer" className="tb-link tg hover:text-[var(--fg)]">{t("navCategories")}</a>
-            <a href="#popular" className="tb-link tg hover:text-[var(--fg)]">{t("navPopular")}</a>
+          <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
+            <a href="#featured" className="nav-link">{t("navDiscover")}</a>
+            <a href="#tools" className="nav-link">{t("navTools")}</a>
+            <a href="#popular" className="nav-link">{t("navPopular")}</a>
+            <a href="#categories" className="nav-link">{t("navCategories")}</a>
           </nav>
 
-          <div className="ml-auto flex items-center gap-1.5">
-            <button onClick={openCmd} className="tg flex h-8 items-center gap-2 rounded-[7px] px-2.5 text-[13px] text-[var(--fg-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]" aria-label="Search tools">
+          <div className="ml-auto flex items-center gap-1">
+            <button onClick={openCmd} className="flex h-8 items-center gap-2 rounded-md px-2.5 text-[12px] text-[var(--fg-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]" aria-label="Search tools">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
               </svg>
@@ -155,7 +165,7 @@ export default function Header() {
               <kbd className="tb-kbd hidden sm:inline-block">⌘K</kbd>
             </button>
             <ThemeToggle />
-            <button onClick={() => setMenuOpen((v) => !v)} className="tg flex h-8 items-center rounded-[7px] px-2.5 text-[13px] font-medium text-[var(--fg-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]" aria-expanded={menuOpen} aria-label={t("menu")}>
+            <button onClick={() => setMenuOpen((v) => !v)} className="flex h-8 items-center rounded-md px-2.5 text-[12px] font-medium text-[var(--fg-secondary)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]" aria-expanded={menuOpen} aria-label={t("menu")}>
               {menuOpen ? (
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" /></svg>
               ) : (
@@ -164,36 +174,36 @@ export default function Header() {
               <span className="ml-1.5 hidden sm:inline">{t("menu")}</span>
             </button>
           </div>
-        </header>
+        </div>
 
         {/* Menu drawer */}
         {menuOpen && (
-          <div className="mx-auto mt-2 max-w-6xl rounded-[10px] border border-[var(--border)] bg-[var(--bg-elevated)] p-4 shadow-[var(--shadow-lg)] animate-[revealUp_250ms_cubic-bezier(0.16,1,0.3,1)_both]">
-            <div className="grid gap-6 sm:grid-cols-3">
+          <div className="mx-auto max-w-6xl border-t border-[var(--border-subtle)] px-4 py-6 sm:px-6 animate-[sectionReveal_250ms_cubic-bezier(0.16,1,0.3,1)_both]">
+            <div className="grid gap-8 sm:grid-cols-3">
               <nav aria-label="Menu">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">{t("menu")}</p>
-                <div className="mt-2 flex flex-col">
-                  <a href="#explorer" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)] hover:pl-3">{t("navTools")}</a>
-                  <a href="#explorer" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)] hover:pl-3">{t("navCategories")}</a>
-                  <a href="#popular" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)] hover:pl-3">{t("navPopular")}</a>
-                  <Link href="/admin" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)] hover:pl-3">{t("navAdmin")}</Link>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">{t("menu")}</p>
+                <div className="mt-3 flex flex-col">
+                  <a href="#tools" onClick={() => setMenuOpen(false)} className="rounded-md px-2 py-2 text-[14px] text-[var(--fg-secondary)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]">{t("navTools")}</a>
+                  <a href="#categories" onClick={() => setMenuOpen(false)} className="rounded-md px-2 py-2 text-[14px] text-[var(--fg-secondary)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]">{t("navCategories")}</a>
+                  <a href="#popular" onClick={() => setMenuOpen(false)} className="rounded-md px-2 py-2 text-[14px] text-[var(--fg-secondary)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]">{t("navPopular")}</a>
+                  <Link href="/admin" onClick={() => setMenuOpen(false)} className="rounded-md px-2 py-2 text-[14px] text-[var(--fg-secondary)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]">{t("navAdmin")}</Link>
                 </div>
               </nav>
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">{t("language")}</p>
-                <div className="mt-2 flex gap-2">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">{t("language")}</p>
+                <div className="mt-3 flex gap-2">
                   {(["en", "vi"] as const).map((l) => (
-                    <button key={l} onClick={() => setLang(l)} className={`tg h-9 flex-1 rounded-[7px] border text-[13px] font-semibold ${lang === l ? "border-[var(--fg)] text-[var(--fg)]" : "border-[var(--border)] text-[var(--fg-muted)] hover:text-[var(--fg)]"}`} aria-pressed={lang === l}>
+                    <button key={l} onClick={() => setLang(l)} className={`h-9 flex-1 rounded-md border text-[13px] font-semibold transition-colors ${lang === l ? "border-[var(--fg)] text-[var(--fg)]" : "border-[var(--border)] text-[var(--fg-muted)] hover:text-[var(--fg)]"}`} aria-pressed={lang === l}>
                       {l === "en" ? "English" : "Tiếng Việt"}
                     </button>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">{t("navCategories")}</p>
-                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">{t("navCategories")}</p>
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
                   {CATEGORIES.slice(0, 8).map((c) => (
-                    <a key={c.name} href="#explorer" onClick={() => setMenuOpen(false)} className="tb-link text-[13px] text-[var(--fg-secondary)]">{c.name}</a>
+                    <a key={c.name} href="#categories" onClick={() => setMenuOpen(false)} className="tb-link text-[13px] text-[var(--fg-secondary)]">{c.name}</a>
                   ))}
                 </div>
               </div>
@@ -202,10 +212,10 @@ export default function Header() {
         )}
       </div>
 
-      {/* Command palette */}
+      {/* ─── COMMAND PALETTE ─── */}
       {cmdOpen && (
         <div className="cmd-overlay fixed inset-0 z-[100] flex items-start justify-center px-4 pt-[14vh]" onClick={closeCmd}>
-          <div className="cmd-panel w-full max-w-xl overflow-hidden rounded-[10px] border border-[var(--border)] bg-[var(--bg-elevated)] shadow-[var(--shadow-lg)]" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Search tools">
+          <div className="cmd-panel w-full max-w-xl overflow-hidden rounded-[10px] border border-[var(--border)] bg-[var(--bg-elevated)]" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Search tools">
             <div className="flex items-center gap-3 border-b border-[var(--border-subtle)] px-4">
               <svg className="h-4 w-4 shrink-0 text-[var(--fg-muted)]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
@@ -227,12 +237,12 @@ export default function Header() {
             <div ref={listRef} id="cmd-list" role="listbox" className="max-h-[46vh] overflow-y-auto p-2">
               {!cmdQ.trim() && recentTools.length > 0 && (
                 <>
-                  <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">{t("recentTitle")}</p>
+                  <p className="px-3 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">{t("recentTitle")}</p>
                   {recentTools.map((tool) => {
                     const idx = navItems.findIndex((x) => x.kind === "tool" && (x as { slug: string }).slug === tool.slug);
                     const d = getToolDisplay(tool, lang);
                     return (
-                      <button key={tool.slug} id={`cmd-${tool.slug}`} data-idx={idx} role="option" aria-selected={idx === activeIdx} onClick={() => goTool(tool.slug)} onMouseEnter={() => setActiveIdx(idx)} className={`tg-fast flex w-full items-center gap-3 rounded-[7px] px-3 py-2.5 text-left ${idx === activeIdx ? "bg-[var(--bg-hover)]" : ""}`}>
+                      <button key={tool.slug} id={`cmd-${tool.slug}`} data-idx={idx} role="option" aria-selected={idx === activeIdx} onClick={() => goTool(tool.slug)} onMouseEnter={() => setActiveIdx(idx)} className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left transition-colors ${idx === activeIdx ? "bg-[var(--bg-hover)]" : ""}`}>
                         <Icon name={tool.icon} className="h-4 w-4 shrink-0 text-[var(--fg-muted)]" />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[13px] font-medium text-[var(--fg)]">{d.name}</span>
@@ -244,12 +254,12 @@ export default function Header() {
                   })}
                 </>
               )}
-              <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">{cmdQ.trim() ? t("paletteTools") : t("featuredTitle")}</p>
+              <p className="px-3 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">{cmdQ.trim() ? t("paletteTools") : t("featuredTitle")}</p>
               {(cmdQ.trim() ? toolRows : suggestedUnique).map((tool) => {
                 const idx = navItems.findIndex((x) => x.kind === "tool" && (x as { slug: string }).slug === tool.slug);
                 const d = getToolDisplay(tool, lang);
                 return (
-                  <button key={tool.slug} id={`cmd-${tool.slug}`} data-idx={idx} role="option" aria-selected={idx === activeIdx} onClick={() => goTool(tool.slug)} onMouseEnter={() => setActiveIdx(idx)} className={`tg-fast flex w-full items-center gap-3 rounded-[7px] px-3 py-2.5 text-left ${idx === activeIdx ? "bg-[var(--bg-hover)]" : ""}`}>
+                  <button key={tool.slug} id={`cmd-${tool.slug}`} data-idx={idx} role="option" aria-selected={idx === activeIdx} onClick={() => goTool(tool.slug)} onMouseEnter={() => setActiveIdx(idx)} className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left transition-colors ${idx === activeIdx ? "bg-[var(--bg-hover)]" : ""}`}>
                     <Icon name={tool.icon} className="h-4 w-4 shrink-0 text-[var(--fg-muted)]" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-[13px] font-medium text-[var(--fg)]">{d.name}</span>
@@ -261,11 +271,11 @@ export default function Header() {
               })}
               {cmdQ.trim() && catMatches.length > 0 && (
                 <>
-                  <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">{t("paletteCategories")}</p>
+                  <p className="px-3 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">{t("paletteCategories")}</p>
                   {catMatches.map((c) => {
                     const idx = navItems.findIndex((x) => x.kind === "cat" && (x as { name: string }).name === c.name);
                     return (
-                      <button key={c.name} id={`cmd-cat-${c.name}`} data-idx={idx} role="option" aria-selected={idx === activeIdx} onClick={() => goCat(c.name)} onMouseEnter={() => setActiveIdx(idx)} className={`tg-fast flex w-full items-center gap-3 rounded-[7px] px-3 py-2.5 text-left ${idx === activeIdx ? "bg-[var(--bg-hover)]" : ""}`}>
+                      <button key={c.name} id={`cmd-cat-${c.name}`} data-idx={idx} role="option" aria-selected={idx === activeIdx} onClick={() => goCat(c.name)} onMouseEnter={() => setActiveIdx(idx)} className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left transition-colors ${idx === activeIdx ? "bg-[var(--bg-hover)]" : ""}`}>
                         <span className="h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--accent)]" aria-hidden="true" />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[13px] font-medium text-[var(--fg)]">{c.name}</span>
