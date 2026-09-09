@@ -4,7 +4,7 @@ import { TOOLS, getTool, getRelated } from "@/lib/tools";
 import ToolClient from "./ToolClient";
 import ToolActions from "./ToolActions";
 import AdSlot from "@/components/AdSlot";
-import ToolDetailText, { ToolGuide, ToolRelated, ToolSidebar } from "./ToolDetailText";
+import ToolDetailText, { ToolGuide, ToolRelated, ToolSidebar, ToolExplanation, ToolExampleBlock } from "./ToolDetailText";
 import ToolHeader from "./ToolHeader";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://toolbox.vn";
@@ -69,6 +69,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_240px]">
         <article className="min-w-0">
           <ToolHeader tool={tool} />
+          <ToolExplanation tool={tool} />
           <ToolActions slug={tool.slug} />
 
           <section className="tool-action-area mt-8 border-t-2 border-[var(--fg)] pt-6" aria-label={`Use ${tool.name}`}>
@@ -78,6 +79,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <AdSlot zone="tool-mid" />
 
           <ToolGuide guide={tool.guide} />
+          <ToolExampleBlock tool={tool} />
 
           <ToolRelated related={related} />
         </article>

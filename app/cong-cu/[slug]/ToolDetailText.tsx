@@ -4,6 +4,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import { useLang } from "@/lib/language-context";
 import { getToolDisplay } from "@/lib/tools";
+import { getToolContent } from "@/lib/tool-content";
 import type { Tool } from "@/lib/tools";
 
 export default function ToolDetailText({ tool }: { tool: Tool }) {
@@ -19,6 +20,50 @@ export default function ToolDetailText({ tool }: { tool: Tool }) {
         <span className="text-[var(--fg)]">{display.name}</span>
       </nav>
     </>
+  );
+}
+
+export function ToolExplanation({ tool }: { tool: Tool }) {
+  const { t, lang } = useLang();
+  const display = getToolDisplay(tool, lang);
+  const content = getToolContent(tool, lang, display.description);
+  if (!content.why) return null;
+  return (
+    <section className="mt-10 grid gap-8 sm:grid-cols-2">
+      <div>
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+          {t("toolWhat")}
+        </p>
+        <p className="mt-2 text-[14px] leading-relaxed text-[var(--fg-secondary)]">
+          {content.what}
+        </p>
+      </div>
+      <div>
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+          {t("toolWhy")}
+        </p>
+        <p className="mt-2 text-[14px] leading-relaxed text-[var(--fg-secondary)]">
+          {content.why}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export function ToolExampleBlock({ tool }: { tool: Tool }) {
+  const { t, lang } = useLang();
+  const display = getToolDisplay(tool, lang);
+  const content = getToolContent(tool, lang, display.description);
+  if (!content.example) return null;
+  return (
+    <section className="mt-8 border-t border-[var(--border-subtle)] pt-8">
+      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--fg-muted)]">
+        {t("toolExample")}
+      </p>
+      <p className="mt-3 text-[14px] leading-relaxed text-[var(--fg-secondary)]">
+        {content.example}
+      </p>
+    </section>
   );
 }
 

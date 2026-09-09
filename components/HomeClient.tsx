@@ -7,6 +7,7 @@ import AdSlot from "./AdSlot";
 import { CATEGORIES, type Tool, getToolDisplay } from "@/lib/tools";
 import { useSite } from "@/lib/site-config";
 import Icon from "./Icon";
+import ToolPreview from "./ToolPreview";
 import { useLang } from "@/lib/language-context";
 import { translations } from "@/lib/translations";
 
@@ -220,6 +221,31 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
             <span aria-hidden="true">·</span>
             <span>{t("metaFast")}</span>
           </div>
+
+          {/* Human phrase chips — quick answers, visual previews */}
+          <div className="mt-7 flex flex-wrap gap-2">
+            {([
+              ["tao-ma-qr", t("chipQr")],
+              ["json-formatter", t("chipJson")],
+              ["chon-mau", t("chipColor")],
+              ["nen-anh", t("chipCompress")],
+              ["tinh-bmi", t("chipBmi")],
+            ] as const).map(([slug, phrase]) => {
+              const tool = enabledTools.find((x) => x.slug === slug);
+              if (!tool) return null;
+              return (
+                <Link
+                  key={slug}
+                  href={`/cong-cu/${slug}`}
+                  className="tg group flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-elevated)] py-1.5 pl-2 pr-3.5 text-[13px] font-medium text-[var(--fg-secondary)] hover:border-[var(--fg-muted)] hover:text-[var(--fg)]"
+                >
+                  <ToolPreview tool={tool} className="h-7 w-7 rounded-full border-0 bg-[var(--bg-recessed)] p-1" label="" />
+                  <span>{phrase}</span>
+                  <span aria-hidden="true" className="text-[11px] text-[var(--fg-muted)] transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -247,16 +273,23 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
                 </span>
                 <Icon name={featuredMain.icon} className="h-8 w-8 text-[var(--fg-muted)]" />
               </div>
-              <div className="mt-10">
-                <h3 className="text-[clamp(1.6rem,3.4vw,2.4rem)] font-bold leading-[1.05] tracking-[-0.025em]">
-                  {getToolDisplay(featuredMain, lang).name}
-                </h3>
-                <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--fg-secondary)]">
-                  {getToolDisplay(featuredMain, lang).description}
-                </p>
-                <span className="tb-go mt-6">
-                  {t("featuredOpen")} <span aria-hidden="true">→</span>
-                </span>
+              <div className="mt-8 grid items-end gap-6 sm:grid-cols-[1fr_auto] sm:gap-8">
+                <div>
+                  <h3 className="text-[clamp(1.6rem,3.4vw,2.4rem)] font-bold leading-[1.05] tracking-[-0.025em]">
+                    {getToolDisplay(featuredMain, lang).name}
+                  </h3>
+                  <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--fg-secondary)]">
+                    {getToolDisplay(featuredMain, lang).description}
+                  </p>
+                  <span className="tb-go mt-6">
+                    {t("featuredOpen")} <span aria-hidden="true">→</span>
+                  </span>
+                </div>
+                <ToolPreview
+                  tool={featuredMain}
+                  className="hidden w-[150px] shrink-0 sm:flex"
+                  label={`${getToolDisplay(featuredMain, lang).name} sample output`}
+                />
               </div>
             </Link>
 
@@ -494,6 +527,65 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
             )}
           </div>
         </div>
+      </section>
+
+      {/* ── Why ToolBoxVN ─────────────────────────────────────── */}
+      <section className="tb-section border-t border-[var(--border-subtle)] pt-20 pb-0">
+        <p className="tb-kicker">{t("whyKicker")}</p>
+        <h2 className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("explorerTitle").split(" ").slice(0, 1)[0]} reasons</h2>
+        <div className="mt-10 grid gap-10 sm:grid-cols-3">
+          {(["1", "2", "3"] as const).map((n) => (
+            <div key={n} className="tb-rise">
+              <span className="block font-mono text-[36px] font-bold leading-none text-[var(--fg-muted)]">{n}</span>
+              <h3 className="mt-3 text-[15px] font-bold">{t(`why${n}T` as "why1T")}</h3>
+              <p className="mt-2 text-[14px] leading-relaxed text-[var(--fg-secondary)]">{t(`why${n}D` as "why1D")}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FAQ ───────────────────────────────────────────────── */}
+      <section id="faq" className="tb-section border-t border-[var(--border-subtle)] pt-20 pb-0">
+        <p className="tb-kicker">{t("homeFaqKicker")}</p>
+        <h2 className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("homeFaqTitle")}</h2>
+        <div className="mt-10 grid gap-0 sm:grid-cols-2">
+          {(["1", "2", "3", "4"] as const).map((n, i) => (
+            <details
+              key={n}
+              open={i === 0}
+              className="group border-t border-[var(--border-subtle)] py-5"
+            >
+              <summary className="flex cursor-pointer items-center justify-between gap-4 text-[14px] font-semibold tracking-[-0.01em] text-[var(--fg)] [&::-webkit-details-marker]:hidden">
+                {t(`faq${n}Q` as "faq1Q")}
+                <span aria-hidden="true" className="text-[16px] text-[var(--fg-muted)] transition-transform duration-200 group-open:rotate-45">+</span>
+              </summary>
+              <p className="mt-3 text-[13px] leading-relaxed text-[var(--fg-secondary)]">
+                {t(`faq${n}A` as "faq1A")}
+              </p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Contact ───────────────────────────────────────────── */}
+      <section className="tb-section border-t border-[var(--border-subtle)] pt-20 pb-24 text-center">
+        <p className="tb-kicker">{t("contactKicker")}</p>
+        <h2 className="mt-2 text-[22px] font-bold tracking-[-0.02em]">{t("contactTitle")}</h2>
+        <p className="mx-auto mt-3 max-w-md text-[14px] leading-relaxed text-[var(--fg-secondary)]">
+          {t("contactDesc")}
+        </p>
+        <a
+          href="mailto:lm9739304@gmail.com"
+          className="tg mt-8 inline-flex items-center gap-2 rounded-full border border-[var(--fg)] bg-[var(--fg)] px-6 py-2.5 text-[13px] font-bold tracking-[-0.01em] text-[var(--bg)] hover:opacity-90"
+        >
+          {t("contactCta")} <span aria-hidden="true">→</span>
+        </a>
+        <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--fg-muted)]">
+          {t("contactEmailLabel")}{" "}
+          <a href="mailto:lm9739304@gmail.com" className="underline decoration-[var(--border)] underline-offset-4 hover:text-[var(--fg)] hover:decoration-[var(--fg-muted)]">
+            lm9739304@gmail.com
+          </a>
+        </p>
       </section>
 
       {/* ── Mobile bottom nav ─────────────────────────────────── */}

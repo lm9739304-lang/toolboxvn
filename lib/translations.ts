@@ -81,6 +81,52 @@ export const translations = {
     ],
     backHome: "Back to home",
 
+    // Hero chips — human phrases
+    chipQr: "Generate a QR code.",
+    chipJson: "Format JSON.",
+    chipColor: "Pick a color.",
+    chipCompress: "Compress an image.",
+    chipBmi: "Check your BMI.",
+
+    // Why section
+    whyKicker: "Why ToolboxVN",
+    why1T: "Runs on your machine.",
+    why1D: "Every tool works inside your browser. Nothing you type or paste leaves your device.",
+    why2T: "Free. Really free.",
+    why2D: "No accounts, no paywalls, no usage caps. Open a tool and use it — that's the whole flow.",
+    why3T: "Fast by default.",
+    why3D: "Static pages and tiny assets. Most tools open in well under a second, even on mobile data.",
+
+    // Homepage FAQ
+    homeFaqKicker: "FAQ",
+    homeFaqTitle: "Fair questions.",
+    faq1Q: "Does it cost anything?",
+    faq1A: "No. All 110+ tools are free, with no accounts and no hidden limits.",
+    faq2Q: "Where does my data go?",
+    faq2A: "Nowhere. Processing happens locally in your browser — text, files and images stay on your device.",
+    faq3Q: "Can I use it offline?",
+    faq3A: "Largely, yes. Once a page has loaded, the tool itself works without a connection. Only ads need the network.",
+    faq4Q: "I have an idea for a tool.",
+    faq4A: "Great — we build from real requests. Email lm9739304@gmail.com and tell us what's missing.",
+
+    // Contact section
+    contactKicker: "Contact",
+    contactTitle: "Found a bug? Have an idea?",
+    contactDesc: "Tell us what's broken, or what you wish existed. Suggestions, corrections and feature requests all get read.",
+    contactCta: "Contact us",
+    contactEmailLabel: "Email us at",
+
+    // Tool page explanations
+    toolWhat: "What does this tool do?",
+    toolWhy: "Why use this tool?",
+    toolExample: "Example",
+    toolExampleHint: "A small preview of what you get.",
+
+    // Footer columns
+    footerToolsCol: "Tools",
+    footerResourcesCol: "Resources",
+    footerContactCol: "Contact",
+
     // Hero
     heroTitle1: "100+ tools for",
     heroTitle2: "developers & creators.",
@@ -239,6 +285,52 @@ export const translations = {
       "Điều khoản có thể được cập nhật thỉnh thoảng. Tiếp tục sử dụng trang nghĩa là bạn chấp nhận phiên bản hiện hành.",
     ],
     backHome: "Về trang chủ",
+
+    // Hero chips — human phrases
+    chipQr: "Tạo mã QR.",
+    chipJson: "Format JSON.",
+    chipColor: "Chọn một màu.",
+    chipCompress: "Nén ảnh.",
+    chipBmi: "Tính BMI.",
+
+    // Why section
+    whyKicker: "Vì sao chọn ToolboxVN",
+    why1T: "Chạy ngay trên máy bạn.",
+    why1D: "Mọi công cụ hoạt động ngay trong trình duyệt. Những gì bạn nhập hoặc dán không rời khỏi thiết bị của bạn.",
+    why2T: "Miễn phí. Thật sự miễn phí.",
+    why2D: "Không tài khoản, không bảng giá, không giới hạn lượt dùng. Mở công cụ và dùng luôn — đơn giản vậy thôi.",
+    why3T: "Nhanh là mặc định.",
+    why3D: "Trang tĩnh, tài nguyên siêu nhẹ. Hầu hết công cụ mở chưa tới một giây, kể cả trên 4G.",
+
+    // Homepage FAQ
+    homeFaqKicker: "Câu hỏi",
+    homeFaqTitle: "Những câu hỏi hợp lý.",
+    faq1Q: "Có mất phí không?",
+    faq1A: "Không. Toàn bộ 110+ công cụ đều miễn phí, không cần tài khoản, không có giới hạn ẩn.",
+    faq2Q: "Dữ liệu của tôi đi đâu?",
+    faq2A: "Không đi đâu cả. Mọi xử lý chạy cục bộ trong trình duyệt — văn bản, file và ảnh đều ở lại máy bạn.",
+    faq3Q: "Dùng offline được không?",
+    faq3A: "Gần như là có. Sau khi trang đã tải xong, công cụ vẫn dùng được mà không cần mạng. Chỉ quảng cáo là cần kết nối.",
+    faq4Q: "Tôi có ý tưởng cho một công cụ.",
+    faq4A: "Tuyệt — chúng tôi xây công cụ từ nhu cầu thật. Email lm9739304@gmail.com và cho chúng tôi biết còn thiếu gì.",
+
+    // Contact section
+    contactKicker: "Liên hệ",
+    contactTitle: "Gặp lỗi? Có ý tưởng?",
+    contactDesc: "Kể cho chúng tôi chỗ nào hỏng, hoặc thứ bạn mong muốn có. Góp ý, báo lỗi và yêu cầu tính năng đều được đọc hết.",
+    contactCta: "Liên hệ",
+    contactEmailLabel: "Email cho chúng tôi tại",
+
+    // Tool page explanations
+    toolWhat: "Công cụ này làm gì?",
+    toolWhy: "Vì sao nên dùng?",
+    toolExample: "Ví dụ",
+    toolExampleHint: "Xem trước nhanh về kết quả bạn nhận được.",
+
+    // Footer columns
+    footerToolsCol: "Công cụ",
+    footerResourcesCol: "Tài nguyên",
+    footerContactCol: "Liên hệ",
 
     // Hero
     heroTitle1: "100+ công cụ cho",
