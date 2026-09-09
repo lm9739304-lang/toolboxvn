@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TOOLS } from "@/lib/tools";
+import { getToolDisplay } from "@/lib/tools";
 import ThemeToggle from "./ThemeToggle";
 import Icon from "./Icon";
 import { useLang } from "@/lib/language-context";
@@ -104,7 +105,9 @@ export default function Header() {
               {results.length === 0 && (
                 <p className="px-3 py-8 text-center text-[13px] text-[var(--fg-muted)]">No tools found.</p>
               )}
-              {results.map((tool) => (
+              {results.map((tool) => {
+                const display = getToolDisplay(tool, lang);
+                return (
                 <button
                   key={tool.slug}
                   onClick={() => { router.push(`/cong-cu/${tool.slug}`); closeCmd(); }}
@@ -114,12 +117,13 @@ export default function Header() {
                     <Icon name={tool.icon} className="h-4 w-4" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium text-[var(--fg)]">{tool.name}</p>
-                    <p className="truncate text-[12px] text-[var(--fg-muted)]">{tool.description}</p>
+                    <p className="truncate text-[13px] font-medium text-[var(--fg)]">{display.name}</p>
+                    <p className="truncate text-[12px] text-[var(--fg-muted)]">{display.description}</p>
                   </div>
                   <span className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--fg-muted)]">{tool.category}</span>
                 </button>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

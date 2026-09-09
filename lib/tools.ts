@@ -183,6 +183,15 @@ export const TOOLS: Tool[] = [
   t("lich-van-nien-mini", "Ngày tốt / Can Chi", "Can-Chi năm, mệnh ngũ hành, giờ hoàng đạo (tham khảo).", "Tiện ích", "canchi", "canchi", ["can chi", "ngày tốt"]),
 ];
 
+import { TOOLS_EN } from "./tools-translations";
+import type { Lang } from "./translations";
+
+export function getToolDisplay(tool: Tool, lang: Lang): { name: string; description: string } {
+  if (lang === "vi") return { name: tool.name, description: tool.description };
+  const en = TOOLS_EN[tool.slug];
+  return en ?? { name: tool.name, description: tool.description };
+}
+
 export const TOOL_COUNT = TOOLS.length;
 
 export function getTool(slug: string): Tool | undefined {

@@ -3,18 +3,20 @@
 import Link from "next/link";
 import Icon, { CATEGORY_ICONS } from "@/components/Icon";
 import { useLang } from "@/lib/language-context";
+import { getToolDisplay } from "@/lib/tools";
+import type { Tool } from "@/lib/tools";
 
-export default function ToolDetailText({ slug, category }: { slug: string; category: string }) {
-  const { t } = useLang();
+export default function ToolDetailText({ tool }: { tool: Tool }) {
+  const { t, lang } = useLang();
+  const display = getToolDisplay(tool, lang);
   return (
     <>
-      {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 py-4 text-[12px] text-[var(--fg-muted)]" aria-label="Breadcrumb">
         <Link href="/" className="transition-default hover:text-[var(--fg)]">{t("breadcrumbHome")}</Link>
         <span>/</span>
-        <Link href={`/?cat=${encodeURIComponent(category)}`} className="transition-default hover:text-[var(--fg)]">{category}</Link>
+        <Link href={`/?cat=${encodeURIComponent(tool.category)}`} className="transition-default hover:text-[var(--fg)]">{tool.category}</Link>
         <span>/</span>
-        <span className="font-medium text-[var(--fg)]">{slug}</span>
+        <span className="font-medium text-[var(--fg)]">{display.name}</span>
       </nav>
     </>
   );

@@ -4,13 +4,17 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Tool } from "@/lib/tools";
+import { getToolDisplay } from "@/lib/tools";
 import Icon from "./Icon";
+import { useLang } from "@/lib/language-context";
 
 const FAV_KEY = "toolboxvn:favorites";
 
 export default function ToolCard({ tool, featured = false }: { tool: Tool; featured?: boolean }) {
   const [favs, setFavs] = useState<string[]>([]);
   const initRef = useRef(false);
+  const { lang, t } = useLang();
+  const display = getToolDisplay(tool, lang);
 
   useEffect(() => {
     if (initRef.current) return;
@@ -34,11 +38,11 @@ export default function ToolCard({ tool, featured = false }: { tool: Tool; featu
           <Icon name={tool.icon} className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
-          <h3 className="text-[14px] font-semibold text-[var(--fg)]">{tool.name}</h3>
-          <p className="mt-0.5 truncate text-[12px] text-[var(--fg-secondary)]">{tool.description}</p>
+          <h3 className="text-[14px] font-semibold text-[var(--fg)]">{display.name}</h3>
+          <p className="mt-0.5 truncate text-[12px] text-[var(--fg-secondary)]">{display.description}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <button onClick={toggle} className="text-[var(--fg-muted)] opacity-40 transition-default hover:opacity-100" title={isFav ? "Unfavorite" : "Favorite"}>
+          <button onClick={toggle} className="text-[var(--fg-muted)] opacity-40 transition-default hover:opacity-100" title={isFav ? t("unfavorite") : t("favorite")}>
             {isFav ? (
               <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
             ) : (
@@ -57,10 +61,10 @@ export default function ToolCard({ tool, featured = false }: { tool: Tool; featu
         <Icon name={tool.icon} className="h-4 w-4" />
       </span>
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-[13px] font-medium text-[var(--fg)]">{tool.name}</h3>
-        <p className="truncate text-[11px] text-[var(--fg-muted)]">{tool.description}</p>
+        <h3 className="truncate text-[13px] font-medium text-[var(--fg)]">{display.name}</h3>
+        <p className="truncate text-[11px] text-[var(--fg-muted)]">{display.description}</p>
       </div>
-      <button onClick={toggle} className="shrink-0 text-[var(--fg-muted)] opacity-30 transition-default hover:opacity-100" title={isFav ? "Unfavorite" : "Favorite"}>
+      <button onClick={toggle} className="shrink-0 text-[var(--fg-muted)] opacity-30 transition-default hover:opacity-100" title={isFav ? t("unfavorite") : t("favorite")}>
         {isFav ? (
           <svg className="h-3 w-3 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
         ) : (

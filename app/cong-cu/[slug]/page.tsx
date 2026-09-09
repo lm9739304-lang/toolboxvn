@@ -4,8 +4,8 @@ import { TOOLS, getTool, getRelated } from "@/lib/tools";
 import ToolClient from "./ToolClient";
 import ToolActions from "./ToolActions";
 import AdSlot from "@/components/AdSlot";
-import Icon from "@/components/Icon";
 import ToolDetailText, { ToolGuide, ToolRelated, ToolSidebar } from "./ToolDetailText";
+import ToolHeader from "./ToolHeader";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://toolbox.vn";
 
@@ -64,22 +64,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
-      <ToolDetailText slug={tool.name} category={tool.category} />
+      <ToolDetailText tool={tool} />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_260px]">
         <article>
-          <header>
-            <div className="flex items-center gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
-                <Icon name={tool.icon} className="h-5 w-5" />
-              </span>
-              <div className="flex-1">
-                <h1 className="text-[20px] font-bold tracking-tight sm:text-[24px]">{tool.name}</h1>
-                <p className="mt-0.5 text-[13px] text-[var(--fg-secondary)]">{tool.description}</p>
-              </div>
-            </div>
-            <ToolActions slug={tool.slug} />
-          </header>
+          <ToolHeader tool={tool} />
+          <ToolActions slug={tool.slug} />
 
           <section className="tool-action-area mt-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 sm:p-6" aria-label={`Use ${tool.name}`}>
             <ToolClient tool={tool} />
