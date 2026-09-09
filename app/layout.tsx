@@ -10,11 +10,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://toolbox.vn";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "toolboxvn – 100+ công cụ online miễn phí",
+    default: "toolboxvn – 100+ Công Cụ Online Miễn Phí",
     template: "%s | toolboxvn",
   },
   description:
-    "Tổng hợp 100+ công cụ online miễn phí: đếm từ, tạo QR, format JSON, tính BMI, đổi tiền tệ, SEO... Chạy 100% trên trình duyệt, nhanh, responsive, chuẩn SEO.",
+    "Hơn 100 công cụ online miễn phí: tạo QR, nén ảnh, chuyển đổi file, JSON Formatter, tính BMI, tạo mật khẩu và nhiều tiện ích khác. Không cần đăng nhập.",
   keywords: ["công cụ online", "toolbox vn", "đếm từ", "tạo qr", "format json", "tính bmi", "đổi tiền"],
   authors: [{ name: "toolboxvn" }],
   robots: { index: true, follow: true },
