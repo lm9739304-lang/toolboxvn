@@ -69,7 +69,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
       </head>
-      <body className="flex min-h-full flex-col bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100" suppressHydrationWarning>
+      <body className="flex min-h-full flex-col bg-[var(--bg)] text-[var(--fg)]" suppressHydrationWarning>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <SiteProvider>
           <Header />

@@ -41,72 +41,68 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-[#0a0e1a]/80">
-        <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 font-extrabold">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 text-sm text-white shadow-md shadow-blue-500/20">
+      <header className="site-header sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--bg)]">
+        <div className="mx-auto flex h-11 max-w-6xl items-center gap-6 px-4">
+          <Link href="/" className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-[var(--accent)] text-[11px] font-bold text-white">
               T
             </span>
-            <span className="text-base tracking-tight">
-              toolbox<span className="text-blue-600 dark:text-blue-400">vn</span>
+            <span>
+              toolbox<span className="text-[var(--accent)]">vn</span>
             </span>
           </Link>
 
-          {/* Search trigger */}
           <button
             onClick={openCmd}
-            className="ml-auto flex h-9 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-400 transition hover:border-slate-300 hover:bg-white dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600 md:w-64"
+            className="ml-auto flex h-8 items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] px-3 text-[13px] text-[var(--fg-muted)] transition-default hover:border-[var(--border)] hover:text-[var(--fg-secondary)] md:w-56"
           >
-            <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            <span className="hidden sm:inline">Tìm công cụ...</span>
-            <kbd className="ml-auto hidden rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-medium text-slate-400 sm:inline dark:border-slate-600 dark:bg-slate-700">⌘K</kbd>
+            <svg className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
+            <span className="hidden sm:inline">Search tools...</span>
+            <kbd className="ml-auto hidden rounded border border-[var(--border)] bg-[var(--bg-recessed)] px-1 py-px text-[10px] font-medium text-[var(--fg-muted)] sm:inline">/</kbd>
           </button>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-1 text-sm font-medium">
-            <Link href="/?cat=Tiện ích" className="hidden rounded-lg px-2.5 py-1.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 sm:block dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100">Tools</Link>
-            <Link href="/?q=" className="hidden rounded-lg px-2.5 py-1.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 sm:block dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100">Popular</Link>
-            <Link href="/admin" className="hidden rounded-lg px-2.5 py-1.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 sm:block dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100">Admin</Link>
+          <nav className="flex items-center gap-1 text-[13px] font-medium">
+            <Link href="/?cat=Tiện%20 ích" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">Tools</Link>
+            <Link href="/?q=" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">Popular</Link>
+            <Link href="/admin" className="hidden px-2 py-1 text-[var(--fg-muted)] transition-default hover:text-[var(--fg)] sm:block">Admin</Link>
             <ThemeToggle />
           </nav>
         </div>
       </header>
 
-      {/* Command palette */}
       {cmdOpen && (
-        <div className="cmd-overlay fixed inset-0 z-[100] flex items-start justify-center pt-[15vh]" onClick={closeCmd}>
+        <div className="cmd-overlay fixed inset-0 z-[100] flex items-start justify-center pt-[20vh]" onClick={closeCmd}>
           <div
-            className="w-full max-w-lg animate-fade-in-scale rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
+            className="w-full max-w-lg rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-3 border-b border-slate-100 px-4 dark:border-slate-800">
-              <svg className="h-5 w-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <div className="flex items-center gap-3 border-b border-[var(--border-subtle)] px-4">
+              <svg className="h-4 w-4 shrink-0 text-[var(--fg-muted)]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
               <input
                 ref={inputRef}
                 value={cmdQ}
                 onChange={(e) => setCmdQ(e.target.value)}
-                placeholder="Nhập tên tool, từ khoá..."
-                className="h-12 w-full bg-transparent text-sm text-slate-900 outline-none dark:text-slate-100"
+                placeholder="Search tools..."
+                className="h-11 w-full bg-transparent text-[14px] text-[var(--fg)] outline-none placeholder:text-[var(--fg-muted)]"
               />
-              <kbd className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] text-slate-400 dark:border-slate-600 dark:bg-slate-800">ESC</kbd>
+              <kbd className="rounded border border-[var(--border)] bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] text-[var(--fg-muted)]">ESC</kbd>
             </div>
-            <div className="max-h-80 overflow-y-auto p-2">
+            <div className="max-h-80 overflow-y-auto p-1">
               {results.length === 0 && (
-                <p className="px-3 py-6 text-center text-sm text-slate-400">Không tìm thấy công cụ nào.</p>
+                <p className="px-3 py-8 text-center text-[13px] text-[var(--fg-muted)]">No tools found.</p>
               )}
               {results.map((t) => (
                 <button
                   key={t.slug}
                   onClick={() => { router.push(`/cong-cu/${t.slug}`); closeCmd(); }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-default hover:bg-[var(--bg-recessed)]"
                 >
-                  <span className="text-xl">{t.icon}</span>
+                  <span className="text-base">{t.icon}</span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{t.name}</p>
-                    <p className="truncate text-xs text-slate-500 dark:text-slate-400">{t.description}</p>
+                    <p className="truncate text-[13px] font-medium text-[var(--fg)]">{t.name}</p>
+                    <p className="truncate text-[12px] text-[var(--fg-muted)]">{t.description}</p>
                   </div>
-                  <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">{t.category}</span>
+                  <span className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--fg-muted)]">{t.category}</span>
                 </button>
               ))}
             </div>

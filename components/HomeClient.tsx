@@ -1,24 +1,20 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import ToolCard from "./ToolCard";
 import AdSlot from "./AdSlot";
-import { CATEGORIES, TOOLS, type Tool, type ToolCategory } from "@/lib/tools";
+import { CATEGORIES, type Tool } from "@/lib/tools";
 import { useSite } from "@/lib/site-config";
 
 const RECENT_KEY = "toolboxvn:recent";
 const USAGE_KEY = "toolboxvn:usage";
 
-function getRecent(): string[] {
-  if (typeof window === "undefined") return [];
-  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"); } catch { return []; }
-}
-
-function getUsage(): Record<string, number> {
-  if (typeof window === "undefined") return {};
-  try { return JSON.parse(localStorage.getItem(USAGE_KEY) || "{}"); } catch { return {}; }
-}
+const FEATURED_SLUGS = [
+  "tao-ma-qr", "json-formatter", "tinh-bmi", "tao-mat-khau",
+  "dem-tu", "ma-hoa-base64", "may-tinh", "doi-tien-te",
+];
 
 const TRENDING = [
   "tinh-bmi", "tao-ma-qr", "json-formatter", "ma-hoa-base64",
@@ -28,22 +24,16 @@ const TRENDING = [
 
 function Sidebar({ active, onSelect }: { active: string; onSelect: (c: string) => void }) {
   return (
-    <nav className="hidden w-48 shrink-0 lg:block">
-      <div className="sticky top-20 space-y-0.5">
-        <button
-          onClick={() => onSelect("")}
-          className={`cat-item w-full rounded-xl px-3 py-2 text-left text-sm font-medium ${!active ? "active" : "text-slate-600 dark:text-slate-400"}`}
-        >
-          Tất cả
+    <nav className="hidden w-44 shrink-0 lg:block">
+      <div className="sticky top-16 space-y-0.5">
+        <button onClick={() => onSelect("")} className={`cat-link ${!active ? "active" : ""}`}>
+          All tools
         </button>
-        <div className="my-2 h-px bg-slate-200 dark:bg-slate-800" />
+        <div className="my-2 h-px bg-[var(--border-subtle)]" />
         {CATEGORIES.map((c) => (
-          <button
-            key={c.name}
-            onClick={() => onSelect(c.name === active ? "" : c.name)}
-            className={`cat-item w-full rounded-xl px-3 py-2 text-left text-sm ${c.name === active ? "active" : "text-slate-600 dark:text-slate-400"}`}
-          >
-            <span className="mr-2">{c.icon}</span>{c.name}
+          <button key={c.name} onClick={() => onSelect(c.name === active ? "" : c.name)} className={`cat-link ${c.name === active ? "active" : ""}`}>
+            <span className="text-[var(--fg-muted)]">{c.icon}</span>
+            {c.name}
           </button>
         ))}
       </div>
@@ -53,20 +43,13 @@ function Sidebar({ active, onSelect }: { active: string; onSelect: (c: string) =
 
 function MobileCatBar({ active, onSelect }: { active: string; onSelect: (c: string) => void }) {
   return (
-    <div className="scroll-x flex gap-1.5 pb-2 lg:hidden">
-      <button
-        onClick={() => onSelect("")}
-        className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition ${!active ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"}`}
-      >
-        Tất cả
+    <div className="scroll-x flex gap-1 pb-3 lg:hidden">
+      <button onClick={() => onSelect("")} className={`shrink-0 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-default ${!active ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--accent)]" : "border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--fg-secondary)]"}`}>
+        All
       </button>
       {CATEGORIES.map((c) => (
-        <button
-          key={c.name}
-          onClick={() => onSelect(c.name === active ? "" : c.name)}
-          className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition ${c.name === active ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"}`}
-        >
-          {c.icon} {c.name}
+        <button key={c.name} onClick={() => onSelect(c.name === active ? "" : c.name)} className={`shrink-0 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-default ${c.name === active ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--accent)]" : "border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--fg-secondary)]"}`}>
+          {c.name}
         </button>
       ))}
     </div>
@@ -80,9 +63,14 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
   const [usage, setUsage] = useState<Record<string, number>>({});
   const { enabledTools } = useSite();
 
+  const initRef = useRef(false);
   useEffect(() => {
-    setRecentSlugs(getRecent());
-    setUsage(getUsage());
+    if (initRef.current) return;
+    initRef.current = true;
+    try {
+      setRecentSlugs(JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"));
+      setUsage(JSON.parse(localStorage.getItem(USAGE_KEY) || "{}"));
+    } catch {}
   }, []);
 
   const filtered = useMemo(() => {
@@ -113,6 +101,11 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
     [recentSlugs, enabledTools]
   );
 
+  const featuredTools = useMemo(
+    () => FEATURED_SLUGS.map((s) => enabledTools.find((t) => t.slug === s)).filter(Boolean) as Tool[],
+    [enabledTools]
+  );
+
   const trendingTools = useMemo(
     () => TRENDING.map((s) => enabledTools.find((t) => t.slug === s)).filter(Boolean) as Tool[],
     [enabledTools]
@@ -129,64 +122,52 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
   const isSearching = q.trim() || cat;
 
   return (
-    <div className="animate-fade-in">
-      {/* Hero */}
-      <section className="relative overflow-hidden py-12 text-center sm:py-16">
-        {/* Glow background */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-[300px] w-[500px] rounded-full bg-blue-500/10 blur-[100px] animate-glow dark:bg-blue-400/5" />
+    <div>
+      {/* Hero — compact, text-forward */}
+      <section className="pt-10 pb-8 sm:pt-14 sm:pb-10">
+        <h1 className="text-[28px] font-bold tracking-tight text-[var(--fg)] sm:text-[36px]" style={{ lineHeight: 1.15 }}>
+          100+ tools for
+          <br />
+          developers & creators.
+        </h1>
+        <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--fg-secondary)]">
+          No login. No uploads. Everything runs in your browser.
+        </p>
+
+        <div className="mt-5 flex max-w-lg items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] px-3 transition-default focus-within:border-[var(--accent)]">
+          <svg className="h-4 w-4 shrink-0 text-[var(--fg-muted)]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={`Search ${enabledTools.length} tools...`}
+            className="h-10 w-full bg-transparent text-[14px] text-[var(--fg)] outline-none placeholder:text-[var(--fg-muted)]"
+            aria-label="Search tools"
+          />
+          {q && (
+            <button onClick={() => setQ("")} className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--fg-muted)]">Clear</button>
+          )}
         </div>
-        <div className="relative">
-          <h1 className="text-3xl font-extrabold tracking-tight sm:text-5xl">
-            Mọi công cụ bạn cần.
-            <br />
-            <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">Nhanh. Miễn phí.</span>
-          </h1>
-          <p className="mx-auto mt-3 max-w-md text-sm text-slate-500 dark:text-slate-400">
-            Không cần đăng nhập. Chạy 100% trên trình duyệt.
-          </p>
 
-          {/* Big search */}
-          <div className="mx-auto mt-6 flex max-w-xl items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 shadow-lg shadow-slate-200/50 transition focus-within:border-blue-400 focus-within:shadow-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:shadow-none dark:focus-within:border-blue-500">
-            <svg className="h-5 w-5 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder={`Tìm trong ${enabledTools.length} công cụ...`}
-              className="h-12 w-full bg-transparent text-sm text-slate-900 outline-none dark:text-slate-100"
-              aria-label="Tìm công cụ"
-            />
-            {q && (
-              <button onClick={() => setQ("")} className="shrink-0 rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-500 dark:bg-slate-800">Xoá</button>
-            )}
-          </div>
-
-          {/* Stats */}
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slate-400 dark:text-slate-500">
-            <span>100+ Tools</span>
-            <span>⚡ Instant</span>
-            <span>🔒 Private</span>
-            <span>💯 Free</span>
-          </div>
+        <div className="mt-3 flex gap-4 text-[12px] text-[var(--fg-muted)]">
+          <span>{enabledTools.length} tools</span>
+          <span>Client-side</span>
+          <span>Free forever</span>
         </div>
       </section>
 
-      {/* Mobile category bar */}
       <MobileCatBar active={cat} onSelect={setCat} />
 
       <div className="flex gap-8">
-        {/* Sidebar */}
         <Sidebar active={cat} onSelect={setCat} />
 
-        {/* Main content */}
         <div className="min-w-0 flex-1">
           {/* Recently used */}
           {!isSearching && recentTools.length > 0 && (
-            <section className="mb-8 animate-fade-in">
-              <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Tiếp tục sử dụng</h2>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {recentTools.map((t, i) => (
-                  <ToolCard key={t.slug} tool={t} index={i} />
+            <section className="mb-8">
+              <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">Continue</h2>
+              <div className="space-y-1">
+                {recentTools.slice(0, 4).map((t) => (
+                  <ToolCard key={t.slug} tool={t} />
                 ))}
               </div>
             </section>
@@ -194,70 +175,76 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
 
           {/* Most used */}
           {!isSearching && mostUsedTools.length > 0 && (
-            <section className="mb-8 animate-fade-in">
-              <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">📊 Nhiều người dùng</h2>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {mostUsedTools.map(({ tool, count }, i) => (
-                  <div key={tool.slug} className="tool-card group relative flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/50" style={{ animationDelay: `${i * 30}ms` }}>
-                    <Link href={`/cong-cu/${tool.slug}`} className="absolute inset-0 z-0" />
-                    <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-2xl transition group-hover:scale-110 group-hover:bg-blue-100 dark:bg-blue-900/20 dark:group-hover:bg-blue-900/30">{tool.icon}</span>
-                    <div className="relative z-10 min-w-0 flex-1">
-                      <h3 className="truncate text-sm font-bold text-slate-900 group-hover:text-blue-600 dark:text-slate-100 dark:group-hover:text-blue-400">{tool.name}</h3>
-                      <p className="mt-0.5 line-clamp-1 text-xs text-slate-500 dark:text-slate-400">{tool.description}</p>
+            <section className="mb-8">
+              <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">Most used</h2>
+              <div className="space-y-1">
+                {mostUsedTools.map(({ tool, count }) => (
+                  <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} className="tool-row group">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-base">{tool.icon}</span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="truncate text-[13px] font-medium text-[var(--fg)]">{tool.name}</h3>
                     </div>
-                    <span className="relative z-10 shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">{count}×</span>
-                  </div>
+                    <span className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--fg-muted)]">{count}x</span>
+                  </Link>
                 ))}
               </div>
             </section>
           )}
 
-          {/* Search results */}
           {isSearching ? (
-            <section className="animate-fade-in">
-              <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">
-                Tìm thấy <b className="text-slate-900 dark:text-slate-100">{filtered.length}</b> công cụ {q && <>cho &ldquo;{q}&rdquo;</>} {cat && <>• {cat}</>}
+            <section>
+              <p className="mb-3 text-[13px] text-[var(--fg-secondary)]">
+                {filtered.length} result{filtered.length !== 1 ? "s" : ""} {q && <>for &ldquo;{q}&rdquo;</>} {cat && <>in {cat}</>}
               </p>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                {filtered.map((t, i) => (
-                  <ToolCard key={t.slug} tool={t} index={i} />
+              <div className="space-y-1">
+                {filtered.map((t) => (
+                  <ToolCard key={t.slug} tool={t} />
                 ))}
               </div>
               {filtered.length === 0 && (
-                <div className="rounded-2xl border border-dashed p-10 text-center text-slate-400">
-                  Không tìm thấy. Thử &ldquo;qr&rdquo;, &ldquo;bmi&rdquo;, &ldquo;json&rdquo;...
+                <div className="rounded-lg border border-dashed border-[var(--border)] px-6 py-12 text-center text-[13px] text-[var(--fg-muted)]">
+                  No tools found. Try &ldquo;qr&rdquo;, &ldquo;bmi&rdquo;, &ldquo;json&rdquo;...
                 </div>
               )}
             </section>
           ) : (
             <>
-              {/* Trending */}
-              <section className="mb-8 animate-fade-in">
-                <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">🔥 Phổ biến</h2>
+              {/* Featured — large cards, 2-col grid */}
+              <section className="mb-8">
+                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">Featured</h2>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  {trendingTools.map((t, i) => (
-                    <ToolCard key={t.slug} tool={t} index={i} />
+                  {featuredTools.map((t) => (
+                    <ToolCard key={t.slug} tool={t} featured />
                   ))}
                 </div>
               </section>
 
               <AdSlot zone="in-content" />
 
+              {/* Trending */}
+              <section className="mb-8">
+                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">Trending</h2>
+                <div className="space-y-1">
+                  {trendingTools.map((t) => (
+                    <ToolCard key={t.slug} tool={t} />
+                  ))}
+                </div>
+              </section>
+
               {/* Categories */}
-              {grouped?.map(([cname, tools]) => {
-                const meta = CATEGORIES.find((c) => c.name === cname);
-                return (
-                  <section key={cname} className="mb-8 animate-fade-in">
-                    <h2 className="mb-1 text-base font-extrabold">{meta?.icon} {cname} <span className="ml-1 text-xs font-medium text-slate-400">({tools.length})</span></h2>
-                    <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">{meta?.desc}</p>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {tools.map((t, i) => (
-                        <ToolCard key={t.slug} tool={t} index={i} />
+              {grouped?.map(([cname, tools]) => (
+                  <section key={cname} className="mb-8">
+                    <div className="mb-3 flex items-baseline gap-2">
+                      <h2 className="text-[14px] font-semibold text-[var(--fg)]">{cname}</h2>
+                      <span className="text-[11px] text-[var(--fg-muted)]">{tools.length} tools</span>
+                    </div>
+                    <div className="space-y-1">
+                      {tools.map((t) => (
+                        <ToolCard key={t.slug} tool={t} />
                       ))}
                     </div>
                   </section>
-                );
-              })}
+              ))}
             </>
           )}
         </div>

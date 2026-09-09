@@ -19,9 +19,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const tool = getTool(slug);
-  if (!tool) return { title: "Không tìm thấy" };
-  const title = `${tool.name} miễn phí online`;
-  const description = `${tool.description} Dùng ngay trên toolboxvn — nhanh, miễn phí, không cần đăng nhập.`;
+  if (!tool) return { title: "Not found" };
+  const title = `${tool.name} — free online tool`;
+  const description = `${tool.description} Use it on toolboxvn — fast, free, no login required.`;
   return {
     title,
     description,
@@ -48,79 +48,79 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     mainEntity: [
       {
         "@type": "Question",
-        name: `${tool.name} có miễn phí không?`,
-        acceptedAnswer: { "@type": "Answer", text: "Có, hoàn toàn miễn phí, không cần đăng nhập, chạy trực tiếp trên trình duyệt." },
+        name: `Is ${tool.name} free?`,
+        acceptedAnswer: { "@type": "Answer", text: "Yes, completely free. No login, no limits, runs directly in your browser." },
       },
       {
         "@type": "Question",
-        name: "Dữ liệu của tôi có bị tải lên server?",
-        acceptedAnswer: { "@type": "Answer", text: "Không. Mọi xử lý chạy client-side bằng JavaScript/Web Crypto/Canvas." },
+        name: "Is my data uploaded to a server?",
+        acceptedAnswer: { "@type": "Answer", text: "No. All processing runs client-side using JavaScript, Web Crypto, or Canvas." },
       },
     ],
   };
 
   return (
-    <div className="animate-fade-in">
+    <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
-      {/* Back + header */}
-      <nav className="flex items-center gap-2 py-4 text-sm">
-        <Link href="/" className="flex items-center gap-1 text-slate-500 transition hover:text-blue-600 dark:text-slate-400">
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-          Quay lại
-        </Link>
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-1.5 py-4 text-[12px] text-[var(--fg-muted)]" aria-label="Breadcrumb">
+        <Link href="/" className="transition-default hover:text-[var(--fg)]">Home</Link>
+        <span>/</span>
+        <Link href={`/?cat=${encodeURIComponent(tool.category)}`} className="transition-default hover:text-[var(--fg)]">{tool.category}</Link>
+        <span>/</span>
+        <span className="font-medium text-[var(--fg)]">{tool.name}</span>
       </nav>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
+      <div className="grid gap-8 lg:grid-cols-[1fr_260px]">
         <article>
           {/* Tool header */}
-          <header className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900/50">
+          <header>
             <div className="flex items-center gap-4">
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-3xl dark:bg-blue-900/20">{tool.icon}</span>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-recessed)] text-2xl">{tool.icon}</span>
               <div className="flex-1">
-                <h1 className="text-xl font-extrabold sm:text-2xl">{tool.name}</h1>
-                <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{tool.description}</p>
+                <h1 className="text-[20px] font-bold tracking-tight sm:text-[24px]">{tool.name}</h1>
+                <p className="mt-0.5 text-[13px] text-[var(--fg-secondary)]">{tool.description}</p>
               </div>
             </div>
             <ToolActions slug={tool.slug} />
           </header>
 
           {/* Tool workspace */}
-          <section className="tool-action-area mt-4 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900/50 sm:p-6" aria-label={`Sử dụng ${tool.name}`}>
+          <section className="tool-action-area mt-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 sm:p-6" aria-label={`Use ${tool.name}`}>
             <ToolClient tool={tool} />
           </section>
 
           <AdSlot zone="tool-mid" />
 
           {/* Guide */}
-          <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900/50">
-            <h2 className="font-extrabold">📖 Cách dùng</h2>
-            <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm text-slate-700 dark:text-slate-300">
-              {(tool.guide.length ? tool.guide : ["Nhập dữ liệu vào ô phía trên.", "Kết quả hiện ngay theo thời gian thực.", "Bấm Sao chép / Tải về để sử dụng."]).map((g, i) => (
+          <section className="mt-6">
+            <h2 className="text-[14px] font-semibold text-[var(--fg)]">How to use</h2>
+            <ol className="mt-2 list-decimal space-y-1 pl-5 text-[13px] text-[var(--fg-secondary)]">
+              {(tool.guide.length ? tool.guide : ["Enter your data in the field above.", "Results update in real time.", "Copy or download the output."]).map((g, i) => (
                 <li key={i}>{g}</li>
               ))}
             </ol>
 
-            <h3 className="mt-5 font-bold">❓ Câu hỏi thường gặp</h3>
-            <div className="mt-2 space-y-2 text-sm">
-              <details className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><summary className="cursor-pointer font-semibold">Có miễn phí không?</summary><p className="mt-1 text-slate-600 dark:text-slate-400">Có, 100% miễn phí, không giới hạn, không cần tài khoản.</p></details>
-              <details className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><summary className="cursor-pointer font-semibold">Dữ liệu có an toàn?</summary><p className="mt-1 text-slate-600 dark:text-slate-400">Mọi xử lý chạy trên trình duyệt của bạn (client-side), không gửi lên máy chủ.</p></details>
-              <details className="rounded-xl bg-slate-50 p-3 dark:bg-slate-800"><summary className="cursor-pointer font-semibold">Dùng trên điện thoại được không?</summary><p className="mt-1 text-slate-600 dark:text-slate-400">Có, giao diện responsive, banner quảng cáo tự co giãn, không che nút.</p></details>
+            <h3 className="mt-6 text-[14px] font-semibold text-[var(--fg)]">FAQ</h3>
+            <div className="mt-2 space-y-1 text-[13px]">
+              <details className="rounded-lg bg-[var(--bg-recessed)] p-3"><summary className="cursor-pointer font-medium text-[var(--fg)]">Is it free?</summary><p className="mt-1 text-[var(--fg-secondary)]">Yes, 100% free. No limits, no account needed.</p></details>
+              <details className="rounded-lg bg-[var(--bg-recessed)] p-3"><summary className="cursor-pointer font-medium text-[var(--fg)]">Is my data safe?</summary><p className="mt-1 text-[var(--fg-secondary)]">Everything runs on your browser (client-side). Nothing is sent to any server.</p></details>
+              <details className="rounded-lg bg-[var(--bg-recessed)] p-3"><summary className="cursor-pointer font-medium text-[var(--fg)]">Does it work on mobile?</summary><p className="mt-1 text-[var(--fg-secondary)]">Yes. Responsive layout, ads resize to avoid blocking content.</p></details>
             </div>
           </section>
 
           {/* Related */}
-          <section className="mt-6">
-            <h2 className="font-extrabold">🧰 Công cụ liên quan</h2>
-            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <section className="mt-8">
+            <h2 className="text-[14px] font-semibold text-[var(--fg)]">Related tools</h2>
+            <div className="mt-3 space-y-1">
               {related.map((r) => (
-                <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="tool-card flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900/50">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xl dark:bg-slate-800">{r.icon}</span>
-                  <div className="min-w-0">
-                    <span className="block truncate text-sm font-bold">{r.name}</span>
-                    <span className="block text-xs text-slate-500">{r.category}</span>
+                <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="tool-row">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-base">{r.icon}</span>
+                  <div className="min-w-0 flex-1">
+                    <span className="block truncate text-[13px] font-medium">{r.name}</span>
+                    <span className="block text-[11px] text-[var(--fg-muted)]">{r.category}</span>
                   </div>
-                  <svg className="tool-arrow ml-auto h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                 </Link>
               ))}
             </div>
@@ -129,13 +129,13 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
         {/* Sidebar */}
         <aside className="hidden lg:block">
-          <div className="sticky top-20 space-y-4">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/50">
-              <p className="text-sm font-extrabold">📌 {tool.category}</p>
+          <div className="sticky top-16 space-y-6">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{tool.category}</p>
               <div className="mt-2 space-y-0.5">
                 {related.slice(0, 6).map((r) => (
-                  <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="block truncate rounded-lg px-2 py-1.5 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
-                    {r.icon} {r.name}
+                  <Link key={r.slug} href={`/cong-cu/${r.slug}`} className="block truncate rounded-md px-2 py-1.5 text-[13px] text-[var(--fg-secondary)] transition-default hover:bg-[var(--bg-recessed)] hover:text-[var(--fg)]">
+                    {r.name}
                   </Link>
                 ))}
               </div>

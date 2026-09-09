@@ -6,58 +6,55 @@ import AdSlot from "./AdSlot";
 
 export default function Footer() {
   return (
-    <footer className="mt-12 border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
-      <div className="mx-auto max-w-7xl px-4">
+    <footer className="mt-16 border-t border-[var(--border-subtle)]">
+      <div className="mx-auto max-w-6xl px-4">
         <AdSlot zone="footer-bottom" />
         <div className="grid gap-8 py-10 md:grid-cols-4">
           <div>
-            <div className="flex items-center gap-2 font-extrabold text-lg">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 text-white">
-                🧰
-              </span>
+            <div className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded bg-[var(--accent)] text-[10px] font-bold text-white">T</span>
               toolboxvn
             </div>
-            <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
-              100+ công cụ online miễn phí: văn bản, dev, chuyển đổi, tài chính, sức khoẻ, SEO... Chạy 100% trên
-              trình duyệt, không tải lên server, tốc độ cao.
+            <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-[var(--fg-secondary)]">
+              100+ free online tools. Everything runs in your browser. No data uploads. No accounts required.
             </p>
           </div>
           <div>
-            <h3 className="font-bold text-sm uppercase text-slate-500">Danh mục</h3>
-            <ul className="mt-3 space-y-2 text-sm">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">Categories</h3>
+            <ul className="mt-2.5 space-y-1.5">
               {CATEGORIES.slice(0, 6).map((c) => (
                 <li key={c.name}>
-                  <Link href={`/?cat=${encodeURIComponent(c.name)}`} className="text-slate-700 hover:text-blue-600 dark:text-slate-300">
-                    {c.icon} {c.name}
+                  <Link href={`/?cat=${encodeURIComponent(c.name)}`} className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]">
+                    {c.name}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h3 className="font-bold text-sm uppercase text-slate-500">Công cụ nổi bật</h3>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li><Link className="hover:text-blue-600" href="/cong-cu/dem-tu">Đếm từ online</Link></li>
-              <li><Link className="hover:text-blue-600" href="/cong-cu/tao-mat-khau">Tạo mật khẩu</Link></li>
-              <li><Link className="hover:text-blue-600" href="/cong-cu/json-formatter">Format JSON</Link></li>
-              <li><Link className="hover:text-blue-600" href="/cong-cu/tao-ma-qr">Tạo mã QR</Link></li>
-              <li><Link className="hover:text-blue-600" href="/cong-cu/tinh-bmi">Tính BMI</Link></li>
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">Popular tools</h3>
+            <ul className="mt-2.5 space-y-1.5">
+              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/dem-tu">Word counter</Link></li>
+              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/tao-mat-khau">Password generator</Link></li>
+              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/json-formatter">JSON formatter</Link></li>
+              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/tao-ma-qr">QR generator</Link></li>
+              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/cong-cu/tinh-bmi">BMI calculator</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="font-bold text-sm uppercase text-slate-500">Thông tin</h3>
-            <ul className="mt-3 space-y-2 text-sm">
-              <li><Link className="hover:text-blue-600" href="/admin">Quản trị (Admin)</Link></li>
-              <li><Link className="hover:text-blue-600" href="/">Tất cả công cụ</Link></li>
+            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">Info</h3>
+            <ul className="mt-2.5 space-y-1.5">
+              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/admin">Admin</Link></li>
+              <li><Link className="text-[13px] text-[var(--fg-secondary)] transition-default hover:text-[var(--fg)]" href="/">All tools</Link></li>
             </ul>
-            <p className="mt-3 text-xs text-slate-500">
-              Quảng cáo hiển thị ở vị trí cố định, có nhãn rõ ràng, không che nội dung, không đặt sát nút chức năng.
+            <p className="mt-3 text-[11px] text-[var(--fg-muted)]">
+              Ads are placed in fixed positions with clear labels. They never obscure content or functional buttons.
             </p>
           </div>
         </div>
-        <div className="flex flex-col items-center justify-between gap-2 border-t border-slate-100 py-5 text-xs text-slate-500 sm:flex-row">
-          <span>© 2026 toolboxvn — Made for speed. Deploy: Vercel / Cloudflare Pages.</span>
-          <span>Tốc độ • SEO • Responsive • 100% client-side</span>
+        <div className="flex items-center justify-between border-t border-[var(--border-subtle)] py-4 text-[11px] text-[var(--fg-muted)]">
+          <span>&copy; 2026 toolboxvn</span>
+          <span>Built for speed. Deployed on Cloudflare Pages.</span>
         </div>
       </div>
     </footer>

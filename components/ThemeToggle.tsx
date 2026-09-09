@@ -26,11 +26,15 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="grid h-9 w-9 place-items-center rounded-lg text-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-      aria-label={dark ? "Chế độ sáng" : "Chế độ tối"}
-      title={dark ? "Chế độ sáng" : "Chế độ tối"}
+      className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[var(--fg-muted)] transition-default hover:bg-[var(--bg-recessed)] hover:text-[var(--fg)]"
+      aria-label={dark ? "Switch to light" : "Switch to dark"}
+      title={dark ? "Switch to light" : "Switch to dark"}
     >
-      {dark ? "☀️" : "🌙"}
+      {dark ? (
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1.5M12 19.5V21M4.219 4.219l1.061 1.061M17.72 17.72l1.06 1.06M3 12h1.5M19.5 12H21M4.219 19.781l1.061-1.061M17.72 6.28l1.06-1.06M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z" /></svg>
+      ) : (
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+      )}
     </button>
   );
 }
