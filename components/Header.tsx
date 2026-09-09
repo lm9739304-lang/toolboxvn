@@ -173,10 +173,10 @@ export default function Header() {
               <nav aria-label="Menu">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--fg-muted)]">{t("menu")}</p>
                 <div className="mt-2 flex flex-col">
-                  <a href="#explorer" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)]">{t("navTools")}</a>
-                  <a href="#explorer" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)]">{t("navCategories")}</a>
-                  <a href="#popular" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)]">{t("navPopular")}</a>
-                  <Link href="/admin" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)]">{t("navAdmin")}</Link>
+                  <a href="#explorer" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)] hover:pl-3">{t("navTools")}</a>
+                  <a href="#explorer" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)] hover:pl-3">{t("navCategories")}</a>
+                  <a href="#popular" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)] hover:pl-3">{t("navPopular")}</a>
+                  <Link href="/admin" onClick={() => setMenuOpen(false)} className="tg rounded-[6px] px-2 py-2 text-[14px] hover:bg-[var(--bg-hover)] hover:pl-3">{t("navAdmin")}</Link>
                 </div>
               </nav>
               <div>

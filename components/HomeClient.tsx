@@ -100,6 +100,21 @@ function HeroGrid() {
   );
 }
 
+/* ── Subtle accent dot decoration ──────────────────────── */
+function AccentDots() {
+  return (
+    <div className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 opacity-[0.06] dark:opacity-[0.08]" aria-hidden="true">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        {[0,1,2,3,4].map((r) =>
+          [0,1,2,3,4].map((c) => (
+            <circle key={`${r}-${c}`} cx={12 + c * 24} cy={12 + r * 24} r="2" fill="var(--accent)" />
+          ))
+        )}
+      </svg>
+    </div>
+  );
+}
+
 export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?: string }) {
   const [q, setQ] = useState(q0);
   const [cat, setCat] = useState(cat0);
@@ -195,6 +210,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
       {/* ═══ HERO ═══════════════════════════════════════ */}
       <section aria-labelledby="tb-hero-title" className="relative pb-10 pt-10 sm:pt-16">
         <HeroGrid />
+        <AccentDots />
         <div className="relative">
           <div className="tb-rise">
             <p className="text-[12px] font-black uppercase tracking-[0.28em] text-[var(--fg)]">
@@ -274,11 +290,11 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
                   <Link
                     key={slug}
                     href={`/cong-cu/${slug}`}
-                    className="tg group flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-elevated)] py-1.5 pl-2 pr-3.5 text-[13px] font-medium text-[var(--fg-secondary)] hover:border-[var(--fg-muted)] hover:text-[var(--fg)] hover:shadow-sm"
+                    className="tg group flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-elevated)] py-1.5 pl-2 pr-3.5 text-[13px] font-medium text-[var(--fg-secondary)] hover:border-[var(--accent)] hover:bg-[var(--accent-bg)] hover:text-[var(--accent-fg)] hover:shadow-sm"
                   >
-                    <ToolPreview tool={tool} className="h-7 w-7 rounded-full border-0 bg-[var(--bg-recessed)] p-1" label="" />
+                    <ToolPreview tool={tool} className="h-7 w-7 rounded-full border-0 bg-[var(--bg-recessed)] p-1 transition-colors duration-200 group-hover:bg-[var(--accent-bg)]" label="" />
                     <span>{phrase}</span>
-                    <span aria-hidden="true" className="text-[11px] text-[var(--fg-muted)] transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+                    <span aria-hidden="true" className="text-[11px] text-[var(--fg-muted)] transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-[var(--accent)]">→</span>
                   </Link>
                 );
               })}

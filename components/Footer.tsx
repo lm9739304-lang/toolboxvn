@@ -30,7 +30,7 @@ export default function Footer() {
         <AdSlot zone="footer-bottom" />
 
         <div ref={revealRef} className="reveal py-12">
-          <Link href="/" className="tb-wordmark block text-[clamp(2.8rem,11vw,8rem)] text-[var(--fg)]" aria-label="ToolboxVN home">
+          <Link href="/" className="tb-wordmark block text-[clamp(2.8rem,11vw,8rem)] text-[var(--fg)] transition-colors duration-300 hover:text-[var(--accent)]" aria-label="ToolboxVN home">
             TOOLBOX<span style={{ color: "var(--accent)" }}>VN</span>
           </Link>
           <p className="mt-4 max-w-md text-[14px] leading-relaxed text-[var(--fg-secondary)]">
