@@ -14,8 +14,7 @@ declare global {
 function loadAdSense(clientId: string): Promise<void> {
   return new Promise((resolve) => {
     if (typeof window === "undefined") { resolve(); return; }
-    // Already loaded
-    if (window.adsbygoogle && document.querySelector(`script[src*="${clientId}"]`)) { resolve(); return; }
+    if (document.querySelector(`script[src*="${clientId}"]`)) { resolve(); return; }
     window.adsbygoogle = window.adsbygoogle || [];
     const s = document.createElement("script");
     s.async = true;
@@ -30,13 +29,12 @@ function loadAdSense(clientId: string): Promise<void> {
 export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; className?: string }) {
   const { isAdEnabled, getAdZone } = useSite();
   const ref = useRef<HTMLDivElement>(null);
-
-  if (!isAdEnabled(zone)) return null;
   const z = getAdZone(zone);
   const custom = z?.customHtml?.trim() ?? "";
+  const enabled = isAdEnabled(zone);
 
   useEffect(() => {
-    if (!custom || !ref.current) return;
+    if (!enabled || !custom || !ref.current) return;
 
     let cancelled = false;
 
@@ -49,14 +47,13 @@ export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; class
       if (!clientId) return;
 
       await loadAdSense(clientId);
-
-      // Wait a bit for script to initialize
       await new Promise((r) => setTimeout(r, 300));
 
       if (cancelled) return;
 
       try {
-        for (const el of Array.from(ins)) {
+        for (const _el of Array.from(ins)) {
+          void _el;
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         }
       } catch {}
@@ -64,7 +61,9 @@ export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; class
 
     run();
     return () => { cancelled = true; };
-  }, [custom]);
+  }, [enabled, custom]);
+
+  if (!enabled) return null;
 
   return (
     <div
@@ -76,22 +75,22 @@ export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; class
     >
       <div className="mx-auto max-w-7xl">
         <div className="mb-1 flex items-center justify-center gap-2">
-          <span className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          <span className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-500">
             Quảng cáo
           </span>
         </div>
         {custom ? (
           <div
-            className="overflow-hidden rounded-xl border border-slate-200 bg-white"
+            className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800"
             dangerouslySetInnerHTML={{ __html: sanitizeAdHtml(custom) }}
           />
         ) : (
-          <div className="flex min-h-[90px] flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border border-dashed border-slate-300 bg-gradient-to-r from-slate-50 to-blue-50/50 px-4 py-6 text-center">
-            <span className="text-sm font-semibold text-slate-500">
+          <div className="flex min-h-[90px] flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border border-dashed border-slate-300 bg-gradient-to-r from-slate-50 to-blue-50/50 px-4 py-6 text-center dark:border-slate-600 dark:from-slate-800 dark:to-blue-900/20">
+            <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">
               {z?.name ?? zone} — {z?.sizes ?? "Responsive"}
             </span>
-            <span className="max-w-xl text-xs text-slate-400">
-              Vị trí dành cho Google AdSense. Dán mã &lt;ins&gt; tag vào Trang Admin → Quảng cáo.
+            <span className="max-w-xl text-xs text-slate-400 dark:text-slate-500">
+              Vị trí dành cho Google AdSense. Dán mã ins tag vào Trang Admin → Quảng cáo.
             </span>
           </div>
         )}

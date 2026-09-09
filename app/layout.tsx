@@ -57,13 +57,19 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5166273745005497"
           crossOrigin="anonymous"
         />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZFNWSCQ9T" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-KZFNWSCQ9T');`,
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `!function(){if(typeof MutationObserver==="undefined")return;var badAttrs=["bis_skin_checked","data-adblock","data-abp","data-block","data-adblockrule"];new MutationObserver(function(muts){for(var i=0;i<muts.length;i++){var m=muts[i];if(m.type==="attributes"&&badAttrs.indexOf(m.attributeName)!==-1){m.target.removeAttribute(m.attributeName)}}}).observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:badAttrs})}();`,
           }}
         />
       </head>
-      <body className="flex min-h-full flex-col bg-slate-50 text-slate-900" suppressHydrationWarning>
+      <body className="flex min-h-full flex-col bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100" suppressHydrationWarning>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <SiteProvider>
           <Header />

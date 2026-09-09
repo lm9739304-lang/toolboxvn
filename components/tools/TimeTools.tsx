@@ -24,7 +24,7 @@ export function Countdown() {
     <div className="space-y-4">
       <Field label="Thời điểm đích"><input type="datetime-local" value={target} onChange={(e) => setTarget(e.target.value)} className={inputCls} /></Field>
       <div className="grid grid-cols-4 gap-3 text-center">
-        {[[d, "Ngày"], [h, "Giờ"], [m, "Phút"], [s, "Giây"]].map(([v, l]: any) => (
+        {[[d, "Ngày"] as const, [h, "Giờ"] as const, [m, "Phút"] as const, [s, "Giây"] as const].map(([v, l]) => (
           <div key={l} className="rounded-2xl bg-slate-900 p-4 text-white"><p className="font-mono text-4xl font-extrabold">{String(v).padStart(2, "0")}</p><p className="text-xs opacity-70">{l}</p></div>
         ))}
       </div>

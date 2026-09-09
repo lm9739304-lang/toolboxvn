@@ -31,7 +31,7 @@ export function PasswordGen() {
       <div className="rounded-2xl bg-slate-900 p-4 text-center font-mono text-xl text-emerald-300 break-all">{pwd || "..."}</div>
       <Field label={`Độ dài: ${len}`}><input type="range" min={4} max={64} value={len} onChange={(e) => setLen(+e.target.value)} className="w-full" /></Field>
       <div className="grid grid-cols-2 gap-2 text-sm">
-        {[["Chữ hoa", upper, setUpper], ["Chữ thường", lower, setLower], ["Số", nums, setNums], ["Ký hiệu", syms, setSyms]].map(([l, v, s]: any) => (
+        {[["Chữ hoa", upper, setUpper] as const, ["Chữ thường", lower, setLower] as const, ["Số", nums, setNums] as const, ["Ký hiệu", syms, setSyms] as const].map(([l, v, s]) => (
           <label key={l} className="flex items-center gap-2 rounded-lg border p-2"><input type="checkbox" checked={v} onChange={(e) => s(e.target.checked)} />{l}</label>
         ))}
       </div>

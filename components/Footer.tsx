@@ -6,7 +6,7 @@ import AdSlot from "./AdSlot";
 
 export default function Footer() {
   return (
-    <footer className="mt-12 border-t border-slate-200 bg-white">
+    <footer className="mt-12 border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
       <div className="mx-auto max-w-7xl px-4">
         <AdSlot zone="footer-bottom" />
         <div className="grid gap-8 py-10 md:grid-cols-4">
@@ -17,7 +17,7 @@ export default function Footer() {
               </span>
               toolboxvn
             </div>
-            <p className="mt-3 text-sm text-slate-600">
+            <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
               100+ công cụ online miễn phí: văn bản, dev, chuyển đổi, tài chính, sức khoẻ, SEO... Chạy 100% trên
               trình duyệt, không tải lên server, tốc độ cao.
             </p>
@@ -27,7 +27,7 @@ export default function Footer() {
             <ul className="mt-3 space-y-2 text-sm">
               {CATEGORIES.slice(0, 6).map((c) => (
                 <li key={c.name}>
-                  <Link href={`/?cat=${encodeURIComponent(c.name)}`} className="text-slate-700 hover:text-blue-600">
+                  <Link href={`/?cat=${encodeURIComponent(c.name)}`} className="text-slate-700 hover:text-blue-600 dark:text-slate-300">
                     {c.icon} {c.name}
                   </Link>
                 </li>

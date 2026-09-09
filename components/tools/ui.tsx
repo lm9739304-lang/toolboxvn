@@ -34,7 +34,7 @@ export function CopyBtn({ text, label = "Sao chép" }: { text: string; label?: s
         setOk(r);
         setTimeout(() => setOk(false), 1500);
       }}
-      className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-40"
+      className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:opacity-40 dark:bg-blue-600 dark:hover:bg-blue-500"
       disabled={!text}
     >
       {ok ? "✓ Đã copy" : label}
@@ -54,7 +54,7 @@ export function DownloadBtn({ text, filename, mime = "text/plain" }: { text: str
         setTimeout(() => URL.revokeObjectURL(a.href), 2000);
       }}
       disabled={!text}
-      className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50 disabled:opacity-40"
+      className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50 disabled:opacity-40 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
     >
       ⬇ Tải về
     </button>
@@ -64,22 +64,22 @@ export function DownloadBtn({ text, filename, mime = "text/plain" }: { text: str
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-semibold text-slate-700">{label}</span>
+      <span className="mb-1 block text-sm font-semibold text-slate-700 dark:text-slate-300">{label}</span>
       {children}
     </label>
   );
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-800";
 
 export const textareaCls =
-  "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 font-mono text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 font-mono text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:ring-blue-800";
 
 export function ResultBox({ children, mono = true }: { children: React.ReactNode; mono?: boolean }) {
   return (
     <div
-      className={`min-h-[80px] whitespace-pre-wrap break-words rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm ${
+      className={`min-h-[80px] whitespace-pre-wrap break-words rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 ${
         mono ? "font-mono" : ""
       }`}
     >
@@ -90,9 +90,9 @@ export function ResultBox({ children, mono = true }: { children: React.ReactNode
 
 export function Stat({ label, value }: { label: string; value: string | number | React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 text-center">
-      <div className="text-2xl font-extrabold text-slate-900" suppressHydrationWarning>{value}</div>
-      <div className="mt-1 text-xs font-medium text-slate-500">{label}</div>
+    <div className="rounded-xl border border-slate-200 bg-white p-3 text-center dark:border-slate-600 dark:bg-slate-800">
+      <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100" suppressHydrationWarning>{value}</div>
+      <div className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">{label}</div>
     </div>
   );
 }

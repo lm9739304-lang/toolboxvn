@@ -56,7 +56,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={`Tìm trong ${enabledTools.length} công cụ... (vd: qr, bmi, json)`}
-            className="h-11 w-full bg-transparent text-sm text-slate-900 outline-none"
+            className="h-11 w-full bg-transparent text-sm text-slate-900 outline-none dark:text-slate-100"
             aria-label="Tìm công cụ"
           />
           {q && (
@@ -138,7 +138,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
       )}
 
       {/* SEO intro */}
-      <section className="mt-12 grid gap-4 rounded-3xl border border-slate-200 bg-white p-6 text-sm leading-relaxed text-slate-600 md:grid-cols-3">
+      <section className="mt-12 grid gap-4 rounded-3xl border border-slate-200 bg-white p-6 text-sm leading-relaxed text-slate-600 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
         <div>
           <h3 className="font-bold text-slate-900">⚡ Tốc độ & riêng tư</h3>
           <p className="mt-1">Mọi xử lý chạy client-side (Web Crypto, Canvas). Dữ liệu không gửi lên server, build tĩnh deploy Vercel/Cloudflare trong 1 phút.</p>

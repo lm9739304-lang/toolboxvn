@@ -76,8 +76,8 @@ export default function AdminPage() {
     <div className="py-6">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-extrabold">⚙️ Admin — Quản lý toolboxvn</h1>
-        <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">{enabledCount}/{TOOL_COUNT} tools đang bật</span>
-        <button onClick={() => setAuthed(false)} className="ml-auto rounded-xl border px-3 py-1.5 text-sm font-bold">Đăng xuất</button>
+        <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">{enabledCount}/{TOOL_COUNT} tools đang bật</span>
+        <button onClick={() => setAuthed(false)} className="ml-auto rounded-xl border px-3 py-1.5 text-sm font-bold dark:border-slate-600 dark:text-slate-300">Đăng xuất</button>
       </div>
 
       <div className="mt-4 flex gap-2">
@@ -144,7 +144,7 @@ export default function AdminPage() {
                 placeholder='<ins class="adsbygoogle" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>'
                 className="mt-1 w-full rounded-xl border bg-slate-50 p-3 font-mono text-xs outline-none focus:border-blue-500"
               />
-              <p className="mt-1 text-[11px] text-slate-400">Chỉ dán thẻ <code>&lt;ins class="adsbygoogle"&gt;</code>, KHÔNG dán <code>&lt;script&gt;</code>. Script AdSense đã load tự động.</p>
+              <p className="mt-1 text-[11px] text-slate-400">Chỉ dán thẻ <code>&lt;ins class=&quot;adsbygoogle&quot;&gt;</code>, KHÔNG dán <code>&lt;script&gt;</code>. Script AdSense đã load tự động.</p>
             </div>
           ))}
         </div>
