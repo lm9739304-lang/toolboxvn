@@ -38,7 +38,7 @@ export default function Header() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Tìm công cụ: đếm từ, QR, BMI..."
-            className="h-10 w-full rounded-full border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-blue-500 focus:bg-white"
+            className="h-10 w-full rounded-full border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-blue-500 focus:bg-white dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-400 dark:focus:border-blue-400 dark:focus:bg-slate-700"
             aria-label="Tìm công cụ"
           />
         </form>
@@ -72,7 +72,7 @@ export default function Header() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Tìm công cụ..."
-              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm"
+              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-400"
               aria-label="Tìm công cụ"
             />
           </form>

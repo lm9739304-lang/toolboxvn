@@ -51,20 +51,20 @@ export default function AdminPage() {
   if (!authed) {
     return (
       <div className="mx-auto max-w-md py-16">
-        <div className="rounded-3xl border bg-white p-8 text-center">
+        <div className="rounded-3xl border bg-white p-8 text-center dark:border-slate-700 dark:bg-slate-800">
           <p className="text-4xl">🔐</p>
           <h1 className="mt-2 text-xl font-extrabold">Trang quản trị toolboxvn</h1>
-          <p className="mt-1 text-sm text-slate-500">Mặc định: <code className="rounded bg-slate-100 px-1 font-mono">admin123</code> (đổi trong tab Cài đặt)</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Mặc định: <code className="rounded bg-slate-100 px-1 font-mono dark:bg-slate-700">admin123</code> (đổi trong tab Cài đặt)</p>
           <input
             type="password"
             value={pass}
             onChange={(e) => setPass(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && login()}
             placeholder="Nhập mật khẩu admin"
-            className="mt-4 h-11 w-full rounded-xl border px-4 text-sm outline-none focus:border-blue-500"
+            className="mt-4 h-11 w-full rounded-xl border px-4 text-sm outline-none focus:border-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100"
           />
           {msg && <p className="mt-2 text-sm text-red-600">{msg}</p>}
-          <button onClick={login} className="mt-3 w-full rounded-xl bg-blue-600 py-2.5 font-bold text-white">Đăng nhập</button>
+          <button onClick={login} className="mt-3 w-full rounded-xl bg-blue-600 py-2.5 font-bold text-white hover:bg-blue-500">Đăng nhập</button>
         </div>
       </div>
     );
@@ -82,31 +82,31 @@ export default function AdminPage() {
 
       <div className="mt-4 flex gap-2">
         {([["tools", "🧰 Công cụ"], ["ads", "📢 Quảng cáo"], ["settings", "⚙️ Cài đặt"]] as const).map(([v, l]) => (
-          <button key={v} onClick={() => setTab(v)} className={`rounded-xl px-4 py-2 text-sm font-bold ${tab === v ? "bg-slate-900 text-white" : "bg-white border"}`}>{l}</button>
+          <button key={v} onClick={() => setTab(v)} className={`rounded-xl px-4 py-2 text-sm font-bold ${tab === v ? "bg-slate-900 text-white dark:bg-blue-600" : "bg-white border dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300"}`}>{l}</button>
         ))}
       </div>
 
       {tab === "tools" && (
-        <div className="mt-4 rounded-3xl border bg-white p-5">
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Lọc: qr, bmi, json..." className="h-11 w-full max-w-md rounded-xl border bg-slate-50 px-4 text-sm outline-none focus:border-blue-500" />
+        <div className="mt-4 rounded-3xl border bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Lọc: qr, bmi, json..." className="h-11 w-full max-w-md rounded-xl border bg-slate-50 px-4 text-sm outline-none focus:border-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100" />
           <div className="mt-2 flex gap-2 text-xs">
-            <button onClick={() => update({ disabledTools: [] })} className="rounded-lg bg-emerald-100 px-3 py-1.5 font-bold text-emerald-700">Bật tất cả</button>
-            <button onClick={() => { if (confirm("Tắt toàn bộ?")) update({ disabledTools: TOOLS.map((t) => t.slug) }); }} className="rounded-lg bg-red-100 px-3 py-1.5 font-bold text-red-700">Tắt tất cả</button>
+            <button onClick={() => update({ disabledTools: [] })} className="rounded-lg bg-emerald-100 px-3 py-1.5 font-bold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">Bật tất cả</button>
+            <button onClick={() => { if (confirm("Tắt toàn bộ?")) update({ disabledTools: TOOLS.map((t) => t.slug) }); }} className="rounded-lg bg-red-100 px-3 py-1.5 font-bold text-red-700 dark:bg-red-900/40 dark:text-red-400">Tắt tất cả</button>
           </div>
           <div className="mt-4 overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
-              <thead><tr className="border-b text-left text-xs uppercase text-slate-400"><th className="p-2">Công cụ</th><th className="p-2">Danh mục</th><th className="p-2">Nổi bật</th><th className="p-2">Hiển thị</th></tr></thead>
+              <thead><tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-400 dark:border-slate-600"><th className="p-2">Công cụ</th><th className="p-2">Danh mục</th><th className="p-2">Nổi bật</th><th className="p-2">Hiển thị</th></tr></thead>
               <tbody>
                 {filtered.map((t) => {
                   const off = config.disabledTools.includes(t.slug);
                   const feat = config.featuredTools.includes(t.slug);
                   return (
-                    <tr key={t.slug} className={`border-b last:border-0 ${off ? "opacity-50" : ""}`}>
+                    <tr key={t.slug} className={`border-b border-slate-100 last:border-0 dark:border-slate-700 ${off ? "opacity-50" : ""}`}>
                       <td className="p-2"><span className="mr-2">{t.icon}</span><b>{t.name}</b><br /><span className="font-mono text-xs text-slate-400">/cong-cu/{t.slug}</span></td>
                       <td className="p-2">{t.category}</td>
-                      <td className="p-2"><button onClick={() => toggleFeature(t.slug)} className={`rounded-lg px-2 py-1 text-xs font-bold ${feat ? "bg-amber-400 text-white" : "bg-slate-100"}`}>{feat ? "★" : "☆"}</button></td>
+                      <td className="p-2"><button onClick={() => toggleFeature(t.slug)} className={`rounded-lg px-2 py-1 text-xs font-bold ${feat ? "bg-amber-400 text-white" : "bg-slate-100 dark:bg-slate-700 dark:text-slate-300"}`}>{feat ? "★" : "☆"}</button></td>
                       <td className="p-2">
-                        <button onClick={() => toggleTool(t.slug)} className={`relative h-6 w-11 rounded-full transition ${off ? "bg-slate-300" : "bg-emerald-500"}`}>
+                        <button onClick={() => toggleTool(t.slug)} className={`relative h-6 w-11 rounded-full transition ${off ? "bg-slate-300 dark:bg-slate-600" : "bg-emerald-500"}`}>
                           <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${off ? "left-0.5" : "left-[22px]"}`} />
                         </button>
                       </td>
@@ -122,13 +122,13 @@ export default function AdminPage() {
 
       {tab === "ads" && (
         <div className="mt-4 space-y-4">
-          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
             <b>Chính sách an toàn:</b> chỉ banner cố định đầu/giữa/cuối trang, có nhãn “Quảng cáo”, cách nút chức năng ≥32px, không popup/không che nội dung/không giả nút. Mobile tự responsive.
           </div>
           {config.adZones.map((z) => (
-            <div key={z.id} className="rounded-3xl border bg-white p-5">
+            <div key={z.id} className="rounded-3xl border bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
               <div className="flex items-center gap-3">
-                <button onClick={() => setZone(z.id, { enabled: !z.enabled })} className={`relative h-6 w-11 rounded-full transition ${z.enabled ? "bg-emerald-500" : "bg-slate-300"}`}>
+                <button onClick={() => setZone(z.id, { enabled: !z.enabled })} className={`relative h-6 w-11 rounded-full transition ${z.enabled ? "bg-emerald-500" : "bg-slate-300 dark:bg-slate-600"}`}>
                   <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${z.enabled ? "left-[22px]" : "left-0.5"}`} />
                 </button>
                 <div>
@@ -142,7 +142,7 @@ export default function AdminPage() {
                 onChange={(e) => setZone(z.id, { customHtml: e.target.value })}
                 rows={3}
                 placeholder='<ins class="adsbygoogle" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>'
-                className="mt-1 w-full rounded-xl border bg-slate-50 p-3 font-mono text-xs outline-none focus:border-blue-500"
+                className="mt-1 w-full rounded-xl border bg-slate-50 p-3 font-mono text-xs outline-none focus:border-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
               />
               <p className="mt-1 text-[11px] text-slate-400">Chỉ dán thẻ <code>&lt;ins class=&quot;adsbygoogle&quot;&gt;</code>, KHÔNG dán <code>&lt;script&gt;</code>. Script AdSense đã load tự động.</p>
             </div>
@@ -152,27 +152,27 @@ export default function AdminPage() {
 
       {tab === "settings" && (
         <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <div className="rounded-3xl border bg-white p-5">
+          <div className="rounded-3xl border bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
             <h3 className="font-extrabold">Cấu hình chung</h3>
-            <label className="mt-3 block text-sm font-bold">Tên site<input value={config.siteName} onChange={(e) => update({ siteName: e.target.value })} className="mt-1 h-10 w-full rounded-xl border px-3 text-sm font-normal" /></label>
-            <label className="mt-3 block text-sm font-bold">Mật khẩu admin<input value={config.adminPass} onChange={(e) => update({ adminPass: e.target.value })} className="mt-1 h-10 w-full rounded-xl border px-3 font-mono text-sm font-normal" /></label>
+            <label className="mt-3 block text-sm font-bold">Tên site<input value={config.siteName} onChange={(e) => update({ siteName: e.target.value })} className="mt-1 h-10 w-full rounded-xl border px-3 text-sm font-normal dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100" /></label>
+            <label className="mt-3 block text-sm font-bold">Mật khẩu admin<input value={config.adminPass} onChange={(e) => update({ adminPass: e.target.value })} className="mt-1 h-10 w-full rounded-xl border px-3 font-mono text-sm font-normal dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100" /></label>
             <p className="mt-2 text-xs text-slate-400">Lưu trữ: localStorage key <code className="font-mono">{KEY}</code>. Deploy tĩnh nên mỗi trình duyệt lưu riêng.</p>
           </div>
-          <div className="rounded-3xl border bg-white p-5">
+          <div className="rounded-3xl border bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
             <h3 className="font-extrabold">Sao lưu & khôi phục</h3>
             <div className="mt-3 flex flex-wrap gap-2">
-              <button onClick={exportJson} className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white">⬇ Xuất JSON</button>
-              <label className="cursor-pointer rounded-xl border px-4 py-2 text-sm font-bold">⬆ Nhập JSON<input type="file" accept=".json" className="hidden" onChange={(e) => {
+              <button onClick={exportJson} className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white dark:bg-blue-600">⬇ Xuất JSON</button>
+              <label className="cursor-pointer rounded-xl border px-4 py-2 text-sm font-bold dark:border-slate-600 dark:text-slate-300">⬆ Nhập JSON<input type="file" accept=".json" className="hidden" onChange={(e) => {
                 const f = e.target.files?.[0];
                 if (!f) return;
                 const r = new FileReader();
                 r.onload = () => { try { setConfig({ ...DEFAULT_CONFIG, ...JSON.parse(String(r.result)) }); setMsg("Đã nhập cấu hình."); } catch { setMsg("File lỗi."); } };
                 r.readAsText(f);
               }} /></label>
-              <button onClick={() => { if (confirm("Reset về mặc định?")) reset(); }} className="rounded-xl bg-red-100 px-4 py-2 text-sm font-bold text-red-700">Reset mặc định</button>
+              <button onClick={() => { if (confirm("Reset về mặc định?")) reset(); }} className="rounded-xl bg-red-100 px-4 py-2 text-sm font-bold text-red-700 dark:bg-red-900/40 dark:text-red-400">Reset mặc định</button>
             </div>
             {msg && <p className="mt-2 text-sm text-emerald-600">{msg}</p>}
-            <div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs">
+            <div className="mt-4 rounded-xl bg-slate-50 p-3 text-xs dark:bg-slate-700">
               <p><b>Deploy Vercel:</b> <code className="font-mono">npm i && npm run build</code> → upload. Output tĩnh trong <code className="font-mono">out/</code>.</p>
               <p className="mt-1"><b>Cloudflare Pages:</b> Build command <code className="font-mono">npm run build</code>, output <code className="font-mono">out</code>.</p>
             </div>
