@@ -61,17 +61,17 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   };
 
   return (
-    <div>
+    <div className="page-enter">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
 
       <ToolDetailText tool={tool} />
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_260px]">
+      <div className="grid gap-10 lg:grid-cols-[1fr_260px]">
         <article>
           <ToolHeader tool={tool} />
           <ToolActions slug={tool.slug} />
 
-          <section className="tool-action-area mt-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 sm:p-6" aria-label={`Use ${tool.name}`}>
+          <section className="tool-action-area mt-6 rounded-[10px] border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 sm:p-6" aria-label={`Use ${tool.name}`}>
             <ToolClient tool={tool} />
           </section>
 

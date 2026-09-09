@@ -74,23 +74,18 @@ export default function AdSlot({ zone, className = "" }: { zone: AdZoneId; class
       style={{ minHeight: 90 }}
     >
       <div className="mx-auto max-w-6xl">
-        <div className="mb-1 flex items-center justify-center gap-2">
-          <span className="rounded border border-[var(--border)] bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">
-            Ad
-          </span>
-        </div>
         {custom ? (
           <div
-            className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)]"
+            className="overflow-hidden rounded-[10px] border border-[var(--border-subtle)] bg-[var(--bg-elevated)]"
             dangerouslySetInnerHTML={{ __html: sanitizeAdHtml(custom) }}
           />
         ) : (
-          <div className="flex min-h-[90px] flex-col items-center justify-center gap-1 overflow-hidden rounded-lg border border-dashed border-[var(--border)] bg-[var(--bg-recessed)] px-4 py-6 text-center">
-            <span className="text-[13px] font-semibold text-[var(--fg-secondary)]">
-              {z?.name ?? zone} — {z?.sizes ?? "Responsive"}
+          <div className="flex min-h-[90px] flex-col items-center justify-center gap-1 overflow-hidden rounded-[10px] border border-dashed border-[var(--border)] bg-[var(--bg-recessed)] px-4 py-6 text-center">
+            <span className="text-[12px] font-medium text-[var(--fg-muted)]">
+              {z?.name ?? zone}
             </span>
-            <span className="max-w-xl text-[11px] text-[var(--fg-muted)]">
-              Ad slot. Paste your AdSense ins tag in Admin → Ads.
+            <span className="max-w-xl text-[11px] text-[var(--fg-muted)] opacity-60">
+              Ad slot
             </span>
           </div>
         )}

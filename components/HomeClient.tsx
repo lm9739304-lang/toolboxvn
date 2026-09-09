@@ -39,7 +39,7 @@ const CAT_KEY_MAP: Record<string, keyof typeof translations.en> = {
   "Tiện ích": "catUtility",
 };
 
-function Sidebar({ active, onSelect, lang }: { active: string; onSelect: (c: string) => void; lang: Lang }) {
+function Sidebar({ active, onSelect }: { active: string; onSelect: (c: string) => void }) {
   const { t } = useLang();
   return (
     <nav className="hidden w-44 shrink-0 lg:block">
@@ -47,7 +47,7 @@ function Sidebar({ active, onSelect, lang }: { active: string; onSelect: (c: str
         <button onClick={() => onSelect("")} className={`cat-link ${!active ? "active" : ""}`}>
           {t("allTools")}
         </button>
-        <div className="my-2 h-px bg-[var(--border-subtle)]" />
+        <div className="my-2.5 h-px bg-[var(--border-subtle)]" />
         {CATEGORIES.map((c) => {
           const CatIcon = CATEGORY_ICONS[c.name];
           const catKey = CAT_KEY_MAP[c.name];
@@ -66,14 +66,14 @@ function Sidebar({ active, onSelect, lang }: { active: string; onSelect: (c: str
 function MobileCatBar({ active, onSelect }: { active: string; onSelect: (c: string) => void }) {
   const { t } = useLang();
   return (
-    <div className="scroll-x flex gap-1 pb-3 lg:hidden">
-      <button onClick={() => onSelect("")} className={`shrink-0 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-default ${!active ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--accent)]" : "border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--fg-secondary)]"}`}>
+    <div className="scroll-x flex gap-1.5 pb-4 lg:hidden">
+      <button onClick={() => onSelect("")} className={`shrink-0 rounded-[7px] border px-3 py-1.5 text-[12px] font-medium tg ${!active ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--accent)]" : "border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--fg-secondary)] hover:border-[var(--border)]"}`}>
         {t("all")}
       </button>
       {CATEGORIES.map((c) => {
         const catKey = CAT_KEY_MAP[c.name];
         return (
-          <button key={c.name} onClick={() => onSelect(c.name === active ? "" : c.name)} className={`shrink-0 rounded-md border px-2.5 py-1 text-[12px] font-medium transition-default ${c.name === active ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--accent)]" : "border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--fg-secondary)]"}`}>
+          <button key={c.name} onClick={() => onSelect(c.name === active ? "" : c.name)} className={`shrink-0 rounded-[7px] border px-3 py-1.5 text-[12px] font-medium tg ${c.name === active ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--accent)]" : "border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--fg-secondary)] hover:border-[var(--border)]"}`}>
             {catKey ? t(catKey) : c.name}
           </button>
         );
@@ -152,46 +152,51 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
   const isSearching = q.trim() || cat;
 
   return (
-    <div>
-      <section className="pt-10 pb-8 sm:pt-14 sm:pb-10">
-        <h1 className="text-[28px] font-bold tracking-tight text-[var(--fg)] sm:text-[36px]" style={{ lineHeight: 1.15 }}>
-          {t("heroTitle1")}
-          <br />
-          {t("heroTitle2")}
-        </h1>
-        <p className="mt-3 max-w-md text-[14px] leading-relaxed text-[var(--fg-secondary)]">
-          {t("heroDesc")}
-        </p>
+    <div className="page-enter">
+      {/* ── Hero ── */}
+      <section className="pt-12 pb-10 sm:pt-16 sm:pb-12">
+        <div className="max-w-2xl">
+          <h1 className="text-[32px] font-bold tracking-[-0.03em] text-[var(--fg)] sm:text-[42px]" style={{ lineHeight: 1.1 }}>
+            {t("heroTitle1")}
+            <br />
+            {t("heroTitle2")}
+          </h1>
+          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-[var(--fg-secondary)]">
+            {t("heroDesc")}
+          </p>
+        </div>
 
-        <div className="mt-5 flex max-w-lg items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] px-3 transition-default focus-within:border-[var(--accent)]">
+        <div className="mt-6 flex max-w-lg items-center gap-2.5 rounded-[10px] border border-[var(--border)] bg-[var(--bg-elevated)] px-3.5 tg focus-within:border-[var(--accent)] focus-within:shadow-[0_0_0_3px_var(--accent-bg)]">
           <svg className="h-4 w-4 shrink-0 text-[var(--fg-muted)]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("searchInput", enabledTools.length)}
-            className="h-10 w-full bg-transparent text-[14px] text-[var(--fg)] outline-none placeholder:text-[var(--fg-muted)]"
+            className="h-11 w-full bg-transparent text-[14px] text-[var(--fg)] outline-none placeholder:text-[var(--fg-muted)]"
             aria-label="Search tools"
           />
           {q && (
-            <button onClick={() => setQ("")} className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--fg-muted)]">{t("clear")}</button>
+            <button onClick={() => setQ("")} className="shrink-0 rounded-[5px] bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--fg-muted)] tg hover:bg-[var(--bg-hover)]">{t("clear")}</button>
           )}
         </div>
 
-        <div className="mt-3 flex gap-4 text-[12px] text-[var(--fg-muted)]">
+        <div className="mt-3.5 flex gap-5 text-[12px] text-[var(--fg-muted)]">
           <span>{enabledTools.length} {t("statTools")}</span>
+          <span className="w-px bg-[var(--border)]" />
           <span>{t("statClient")}</span>
+          <span className="w-px bg-[var(--border)]" />
           <span>{t("statFree")}</span>
         </div>
       </section>
 
       <MobileCatBar active={cat} onSelect={setCat} />
 
-      <div className="flex gap-8">
-        <Sidebar active={cat} onSelect={setCat} lang={lang} />
+      <div className="flex gap-10">
+        <Sidebar active={cat} onSelect={setCat} />
 
         <div className="min-w-0 flex-1">
           {!isSearching && recentTools.length > 0 && (
-            <section className="mb-8">
+            <section className="mb-10">
               <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{t("continueUsing")}</h2>
               <div className="space-y-1">
                 {recentTools.slice(0, 4).map((tool) => (
@@ -202,18 +207,18 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
           )}
 
           {!isSearching && mostUsedTools.length > 0 && (
-            <section className="mb-8">
+            <section className="mb-10">
               <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{t("mostUsed")}</h2>
               <div className="space-y-1">
                 {mostUsedTools.map(({ tool, count }) => (
                   <Link key={tool.slug} href={`/cong-cu/${tool.slug}`} className="tool-row group">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7px] bg-[var(--bg-recessed)] text-[var(--fg-muted)]">
                       <Icon name={tool.icon} className="h-4 w-4" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <h3 className="truncate text-[13px] font-medium text-[var(--fg)]">{getToolDisplay(tool, lang).name}</h3>
                     </div>
-                    <span className="shrink-0 rounded bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--fg-muted)]">{count}x</span>
+                    <span className="shrink-0 rounded-[4px] bg-[var(--bg-recessed)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--fg-muted)]">{count}x</span>
                   </Link>
                 ))}
               </div>
@@ -231,14 +236,14 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
                 ))}
               </div>
               {filtered.length === 0 && (
-                <div className="rounded-lg border border-dashed border-[var(--border)] px-6 py-12 text-center text-[13px] text-[var(--fg-muted)]">
+                <div className="rounded-[10px] border border-dashed border-[var(--border)] px-6 py-14 text-center text-[13px] text-[var(--fg-muted)]">
                   {t("noResults")}
                 </div>
               )}
             </section>
           ) : (
             <>
-              <section className="mb-8">
+              <section className="mb-10">
                 <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{t("featured")}</h2>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {featuredTools.map((tool) => (
@@ -249,7 +254,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
 
               <AdSlot zone="in-content" />
 
-              <section className="mb-8">
+              <section className="mb-10">
                 <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--fg-muted)]">{t("trending")}</h2>
                 <div className="space-y-1">
                   {trendingTools.map((tool) => (
@@ -261,7 +266,7 @@ export default function HomeClient({ q0 = "", cat0 = "" }: { q0?: string; cat0?:
               {grouped?.map(([cname, tools]) => {
                 const catKey = CAT_KEY_MAP[cname];
                 return (
-                  <section key={cname} className="mb-8">
+                  <section key={cname} className="mb-10">
                     <div className="mb-3 flex items-baseline gap-2">
                       <h2 className="text-[14px] font-semibold text-[var(--fg)]">{catKey ? t(catKey) : cname}</h2>
                       <span className="text-[11px] text-[var(--fg-muted)]">{tools.length} {t("statTools")}</span>

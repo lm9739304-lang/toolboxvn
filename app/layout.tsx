@@ -76,7 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <LanguageProvider>
             <Header />
             <AdSlot zone="header-top" />
-            <main className="mx-auto w-full max-w-6xl flex-1 px-4">{children}</main>
+            <main className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6">{children}</main>
             <Footer />
           </LanguageProvider>
         </SiteProvider>

@@ -21,12 +21,10 @@ export default function ThemeToggle() {
     localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
 
-  const toggle = () => setDark((d) => !d);
-
   return (
     <button
-      onClick={toggle}
-      className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[var(--fg-muted)] transition-default hover:bg-[var(--bg-recessed)] hover:text-[var(--fg)]"
+      onClick={() => setDark((d) => !d)}
+      className="inline-flex h-7 w-7 items-center justify-center rounded-[6px] text-[var(--fg-muted)] tg hover:bg-[var(--bg-hover)] hover:text-[var(--fg)]"
       aria-label={dark ? "Switch to light" : "Switch to dark"}
       title={dark ? "Switch to light" : "Switch to dark"}
     >
